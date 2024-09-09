@@ -24,6 +24,29 @@ val transformerFile = file("src/main/resources/accesstransformer.cfg")
 
 val requiredOdinVersion = requiredOdin.substringAfterLast("-").substringBefore(".jar")
 
+tasks.register("downloadOdin") {
+    val downloadUrl = "https://github.com/SubAt0m1c/Odin/releases/download/${requiredOdinVersion}/${requiredOdin}"
+    val targetFile = file("build/resources/Odin")
+
+    doLast {
+        targetFile.mkdirs()
+
+        URL(downloadUrl).openStream().use { input ->
+            FileOutputStream(File(targetFile, requiredOdin)).use { output ->
+                input.copyTo(output)
+            }
+        }
+    }
+}
+
+tasks.named("compileJava") {
+    dependsOn("downloadOdin")
+}
+
+tasks.named("compileKotlin") {
+    dependsOn("downloadOdin")
+}
+
 // Toolchains:
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(8))
@@ -34,7 +57,6 @@ loom {
     log4jConfigs.from(file("log4j2.xml"))
     launchConfigs {
         "client" {
-            // If you don't want mixins, remove these lines
             property("mixin.debug", "true")
             arg("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
         }
@@ -79,7 +101,7 @@ repositories {
     mavenCentral()
     maven("https://repo.spongepowered.org/maven/")
     // If you don't want to log in with your real minecraft account, remove this line
-    maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
+    //maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 }
 
 val shadowImpl: Configuration by configurations.creating {
@@ -107,26 +129,6 @@ dependencies {
 }
 
 // Tasks:
-
-tasks.register("downloadOdin") {
-    val downloadUrl = "https://github.com/SubAt0m1c/Odin/releases/download/${requiredOdinVersion}/${requiredOdin}"
-    val targetFile = file("build/resources/Odin")
-
-    doLast {
-        targetFile.mkdirs()
-
-        URL(downloadUrl).openStream().use { input ->
-            FileOutputStream(File(targetFile, requiredOdin)).use { output ->
-                input.copyTo(output)
-            }
-        }
-    }
-}
-
-tasks.getByName("jar") {
-    dependsOn("downloadOdin")
-}
-
 tasks.withType(JavaCompile::class) {
     options.encoding = "UTF-8"
 }
