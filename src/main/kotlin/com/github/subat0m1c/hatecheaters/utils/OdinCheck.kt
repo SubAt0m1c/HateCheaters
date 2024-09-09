@@ -98,7 +98,7 @@ object OdinCheck {
         JOptionPane.showOptionDialog(
             frame,
             errorMessage,
-            "Odin Error",
+            "HateCheaters Error",
             JOptionPane.DEFAULT_OPTION,
             JOptionPane.ERROR_MESSAGE,
             null,
@@ -118,8 +118,6 @@ object OdinCheck {
      * @return -1 if version1 is older, 1 if version1 is newer, 0 if they're the same.
      */
     private fun compareVersions(version1: String): Int {
-        val versionRegex = Regex("(\\d)\\.(\\d)\\.(\\d)(?:\\.(\\d))?(?:\\.beta(\\d))?")
-
         val v1 = versionRegex.find(version1)?.groupValues?.drop(1)?.map { it.toIntOrNull() } ?: return -2
         val v2 = versionRegex.find("@REQUIREDODINVERSION@")?.groupValues?.drop(1)?.map { it.toIntOrNull() } ?: return -2
 

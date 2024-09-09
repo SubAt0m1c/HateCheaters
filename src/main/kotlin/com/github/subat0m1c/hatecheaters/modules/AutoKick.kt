@@ -7,6 +7,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import me.odinmain.features.Category
 import me.odinmain.features.Module
+import me.odinmain.features.impl.render.CustomHighlight.highlightList
 import me.odinmain.features.settings.Setting.Companion.withDependency
 import me.odinmain.features.settings.impl.BooleanSetting
 import me.odinmain.features.settings.impl.NumberSetting
@@ -15,7 +16,7 @@ import me.odinmain.utils.skyblock.sendCommand
 
 object AutoKick : Module(
     name = "Auto Kick",
-    description = "Automatically kicks players who dont meet certain stats.",
+    description = "Automatically kicks players who don't meet certain stats.",
     category = Category.DUNGEON
 ) {
     //private val useRating: Boolean by BooleanSetting("Use Rating", default = false, description = "Takes collected data, assigns values to them, and adds them to get a rating. Uses this rating number to kick, higher is better.")
@@ -39,35 +40,41 @@ object AutoKick : Module(
         onMessage(pfRegex) {
             val name = pfRegex.find(it)?.groupValues?.get(1).toString()
             GlobalScope.launch(Dispatchers.IO) {
-                var kicked = false
+                val kickedReasons = mutableListOf<String>()
 
                 val currentProfile = getCurrentProfile(name)
 
                 val dungeon = if (!mmToggle) currentProfile?.dungeons?.catacombs else currentProfile?.dungeons?.mastercatacombs
-                val fastestTime = dungeon?.floors?.get(floor)?.stats?.fastestTimeSPlus
-                fastestTime?.let {
-                    if (timeKick && it < (timereq * 1000)) {
+                dungeon?.floors?.get(floor)?.stats?.fastestTimeSPlus?.let {
+                    if (!timeKick) return@let
+                    if (it < (timereq * 1000)) {
                         modMessage("$it | ${timereq * 1000}")
-                        kicked = true
+                        kickedReasons.add("Did not meet time req: ${it*0.001}/${timereq}")
                     } else modMessage("$it | ${timereq * 1000}")
                 }
 
                 val secretCount = currentProfile?.dungeons?.secretsFound
                 secretCount?.let {
-                    if (secretKick && it < (secretsreq * 1000)) {
+                    if (!secretKick) return@let
+                    if (it < (secretsreq * 1000)) {
                         modMessage("$it | ${secretsreq * 1000}")
-                        kicked = true
+                        kickedReasons.add("Did not meet secret req: ${it}/${secretsreq}")
                     } else modMessage("$it | ${secretsreq * 1000}")
                 }
 
                 val floorComps = (currentProfile?.dungeons?.floorCompletions ?: 0)
-                val savg = (secretCount?.toDouble() ?: 0.0)/floorComps.toDouble()
-                if (savg.toFloat() < savgreq) {
-                    modMessage("${savg.toFloat()} | $savgreq | $floorComps")
-                    kicked = true
-                } else modMessage("${savg.toFloat()} | $savgreq | $floorComps")
+                ((secretCount?.toDouble() ?: 0.0)/floorComps.toDouble()).let {
+                    if (!savgKick) return@let
+                    if (it.toFloat() < savgreq) {
+                        modMessage("${it.toFloat()} | $savgreq | $floorComps")
+                        kickedReasons.add("Did not meet savg req: ${it.toFloat()}/${savgreq}")
+                    } else modMessage("${it.toFloat()} | $savgreq | $floorComps")
+                }
 
-                if (kicked) sendCommand("party kick $name")
+                if (kickedReasons.isNotEmpty()) {
+                    sendCommand("party kick $name")
+                    me.odinmain.utils.skyblock.modMessage("Kick reasons:\n${kickedReasons.joinToString("\n")}")
+                }
             }
         }
     }
