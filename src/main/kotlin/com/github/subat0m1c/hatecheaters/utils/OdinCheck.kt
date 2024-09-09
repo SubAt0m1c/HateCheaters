@@ -1,6 +1,6 @@
 package com.github.subat0m1c.hatecheaters.utils
 
-import me.odinmain.OdinMain.VERSION
+import me.odinmain.utils.equalsOneOf
 import net.minecraft.client.Minecraft
 import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.Loader
@@ -29,7 +29,8 @@ object OdinCheck {
         }
 
         try {
-            if (isOldOdin) odinWarning("Odin is outdated!")
+            val currentOdin = Loader.instance().activeModList.find { it.modId == "od" || it.modId == "odclient" }?.version ?: ""
+            if (compareVersions(currentOdin) == -1) odinWarning("Odin is outdated!", currentOdin)
         } catch (e: Throwable) {
             odinWarning("An unknown error occurred trying to determine Odin version!")
             return
@@ -37,12 +38,13 @@ object OdinCheck {
 
     }
 
-    private fun odinWarning(what: String) {
+    private fun odinWarning(what: String, currentOdin: String? = null) {
         openPopupWindow(
             "$what\n" +
-                    "HateCheaters requires a fairly recent version of Odin to work. (@REQUIREDODINVERSION@)\n" +
-                    "If you're SURE you're using the correct odin, contact SubAt0mic on discord.\n" +
-                    "Otherwise, use these links to download the latest version of odin:",
+                    "HateCheaters requires a fairly recent version of Odin to work.\n" +
+                    "Expected Odin version: @REQUIREDODINVERSION@" + (if (currentOdin != null) " | Found: $currentOdin\n" else "\n") +
+                    (if ("@REQUIREDODINVERSION@" == currentOdin) "Since your version seems to be correct, contact SubAt0mic on discord.\n" else "") +
+                    "Use these links to download the latest version of odin:",
             Pair("Open Odin GitHub", "https://github.com/odtheking/Odin"),
             Pair("Join Odin Discord", "https://discord.gg/odin-1041616706327552000"),
             Pair("Open Mods Folder", File(Minecraft.getMinecraft().mcDataDir, "mods").toURI().toString()),
@@ -112,13 +114,37 @@ object OdinCheck {
 
     private val versionRegex = Regex("(\\d)\\.(\\d)\\.(\\d)(?:\\.(\\d))?(?:\\.beta(\\d))?")
 
-    private val isOldOdin: Boolean get() {
-        val odinVersion = Loader.instance().activeModList.find { it.modId == "od" || it.modId == "odclient" }?.version ?: ""
-        val matchResult = versionRegex.find(odinVersion)?.groupValues
-        val odinResult = versionRegex.find("@REQUIREDODINVERSION@")?.groupValues
+    /**
+     * @return -1 if version1 is older, 1 if version1 is newer, 0 if they're the same.
+     */
+    private fun compareVersions(version1: String): Int {
+        val versionRegex = Regex("(\\d)\\.(\\d)\\.(\\d)(?:\\.(\\d))?(?:\\.beta(\\d))?")
 
-        return matchResult?.mapIndexedNotNull { index, s ->
-            if ((s.toIntOrNull() ?: 0) < (odinResult?.get(index)?.toIntOrNull() ?: 0)) true else null
-        }?.isNotEmpty() ?: true
+        val v1 = versionRegex.find(version1)?.groupValues?.drop(1)?.map { it.toIntOrNull() } ?: return -2
+        val v2 = versionRegex.find("@REQUIREDODINVERSION@")?.groupValues?.drop(1)?.map { it.toIntOrNull() } ?: return -2
+
+        fun compareNumbers(n1: Int?, n2: Int?): Int {
+            if (n1 == null && n2 == null) return 0
+            if (n1 == null) return -1
+            if (n2 == null) return 1
+            return n1.compareTo(n2)
+        }
+
+        for (i in 0..2) {
+            val compared = compareNumbers(v1[i], v2[i])
+            if (compared != 0) return compared
+        }
+
+        val comparedFourth = compareNumbers(v1.getOrNull(3), v2.getOrNull(3))
+        if (comparedFourth != 0) return comparedFourth
+
+        val v1Beta = v1.getOrNull(4)
+        val v2Beta = v2.getOrNull(4)
+
+        if (v1Beta != null && v2Beta != null) return compareNumbers(v1Beta, v2Beta)
+        else if (v1Beta != null) return -1
+        else if (v2Beta != null) return 1
+
+        return 0
     }
 }
