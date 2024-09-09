@@ -39,9 +39,6 @@ object OdinCheck {
         closeMinecraft()
     }
 
-    /**
-     * Taken and modified from Skytils
-     */
     private fun openPopupWindow(errorMessage: String, vararg options: Pair<String, String>) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
