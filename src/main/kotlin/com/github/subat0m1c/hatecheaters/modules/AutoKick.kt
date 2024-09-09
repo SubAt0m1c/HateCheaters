@@ -15,7 +15,7 @@ import me.odinmain.utils.skyblock.sendCommand
 
 object AutoKick : Module(
     name = "Auto Kick",
-    description = "Automatically kicks players who dont meet certain stats. /hc autokick to configure",
+    description = "Automatically kicks players who dont meet certain stats.",
     category = Category.DUNGEON
 ) {
     //private val useRating: Boolean by BooleanSetting("Use Rating", default = false, description = "Takes collected data, assigns values to them, and adds them to get a rating. Uses this rating number to kick, higher is better.")
