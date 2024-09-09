@@ -9,6 +9,7 @@ plugins {
     id("dev.architectury.architectury-pack200") version "0.1.3"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     kotlin("jvm") version "2.0.0-Beta1"
+    id("net.kyori.blossom") version "1.3.1"
 }
 
 //Constants:
@@ -21,8 +22,11 @@ val mixinGroup = "$baseGroup.mixin"
 val modid: String by project
 val transformerFile = file("src/main/resources/accesstransformer.cfg")
 
-
 val requiredOdinVersion = requiredOdin.substringAfterLast("-").substringBefore(".jar")
+
+blossom {
+    replaceToken("@REQUIREDODINVERSION@", requiredOdinVersion)
+}
 
 tasks.register("downloadOdin") {
     val downloadUrl = "https://github.com/SubAt0m1c/Odin/releases/download/${requiredOdinVersion}/${requiredOdin}"
