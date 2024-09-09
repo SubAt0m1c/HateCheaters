@@ -10,7 +10,7 @@ object ChatUtils {
      * hippity hoppity odins modmessage is now my property and slightly modified
      */
     fun modMessage(message: Any?, prefix: Boolean = true, chatStyle: ChatStyle? = null) {
-        val chatComponent = ChatComponentText(if (prefix) "§bHC §8»§r $message" else message.toString())
+        val chatComponent = ChatComponentText(if (prefix) "§bH§3C §8»§r $message" else message.toString())
         chatStyle?.let { chatComponent.setChatStyle(it) } // Set chat style using setChatStyle method
         try { mc.thePlayer?.addChatMessage(chatComponent) }
         catch (e: Exception) { println("Error sending message: ${e.message}")

@@ -34,7 +34,7 @@ object AutoKick : Module(
     private val savgKick: Boolean by BooleanSetting("Check Secret Average", default = false, description = "Kicks for secret average.")
     private val savgreq: Float by NumberSetting("Secret Average", 0f, 0f, 20f, description = "Secret average minimum.").withDependency { savgKick }
 
-    private val pfRegex = Regex("Party Finder > (?:\\[.{1,7}])? ?(.{1,16}) joined the dungeon group! \\((?:.*)\\)")
+    private val pfRegex = Regex("Party Finder > (?:\\[.{1,7}])? ?(.{1,16}) joined the dungeon group! \\((?:.*)\\)") //https://regex101.com/r/XYnAVm/1
 
     init {
         onMessage(pfRegex) {
@@ -47,7 +47,7 @@ object AutoKick : Module(
                 val dungeon = if (!mmToggle) currentProfile?.dungeons?.catacombs else currentProfile?.dungeons?.mastercatacombs
                 dungeon?.floors?.get(floor)?.stats?.fastestTimeSPlus?.let {
                     if (!timeKick) return@let
-                    if (it < (timereq * 1000)) {
+                    if (it > (timereq * 1000)) {
                         modMessage("$it | ${timereq * 1000}")
                         kickedReasons.add("Did not meet time req: ${it*0.001}/${timereq}")
                     } else modMessage("$it | ${timereq * 1000}")
@@ -73,7 +73,7 @@ object AutoKick : Module(
 
                 if (kickedReasons.isNotEmpty()) {
                     sendCommand("party kick $name")
-                    me.odinmain.utils.skyblock.modMessage("Kick reasons:\n${kickedReasons.joinToString("\n")}")
+                    modMessage("Kick reasons:\n${kickedReasons.joinToString("\n")}")
                 }
             }
         }
