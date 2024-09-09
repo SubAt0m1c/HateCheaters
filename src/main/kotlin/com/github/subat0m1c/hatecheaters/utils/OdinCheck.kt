@@ -15,7 +15,7 @@ import javax.swing.JOptionPane
 import javax.swing.UIManager
 
 /**
- * Modified from SkyHanni under LGPL-2.1, which includes parts modified from Skytils under MIT.
+ * Modified from SkyHanni under LGPL-2.1, which includes parts modified from Skytils under AGPL-3.0
  */
 object OdinCheck {
 
