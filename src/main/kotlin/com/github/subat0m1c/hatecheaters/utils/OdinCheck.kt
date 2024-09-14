@@ -1,6 +1,5 @@
 package com.github.subat0m1c.hatecheaters.utils
 
-import me.odinmain.utils.equalsOneOf
 import net.minecraft.client.Minecraft
 import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.Loader
@@ -42,7 +41,7 @@ object OdinCheck {
         openPopupWindow(
             "$what\n" +
                     "HateCheaters requires a fairly recent version of Odin to work.\n" +
-                    "Expected Odin version: @REQUIREDODINVERSION@" + (if (currentOdin != null) " | Found: $currentOdin\n" else "\n") +
+                    "Expected: @REQUIREDODINVERSION@" + (if (currentOdin != null) " | Found: $currentOdin\n" else "\n") +
                     (if ("@REQUIREDODINVERSION@" == currentOdin) "Since your version seems to be correct, contact SubAt0mic on discord.\n" else "") +
                     "Use these links to download the latest version of odin:",
             Pair("Open Odin GitHub", "https://github.com/odtheking/Odin"),
@@ -121,13 +120,6 @@ object OdinCheck {
         val v1 = versionRegex.find(version1)?.groupValues?.drop(1)?.map { it.toIntOrNull() } ?: return -2
         val v2 = versionRegex.find("@REQUIREDODINVERSION@")?.groupValues?.drop(1)?.map { it.toIntOrNull() } ?: return -2
 
-        fun compareNumbers(n1: Int?, n2: Int?): Int {
-            if (n1 == null && n2 == null) return 0
-            if (n1 == null) return -1
-            if (n2 == null) return 1
-            return n1.compareTo(n2)
-        }
-
         for (i in 0..2) {
             val compared = compareNumbers(v1[i], v2[i])
             if (compared != 0) return compared
@@ -144,5 +136,12 @@ object OdinCheck {
         else if (v2Beta != null) return 1
 
         return 0
+    }
+
+    private fun compareNumbers(n1: Int?, n2: Int?): Int {
+        if (n1 == null && n2 == null) return 0
+        if (n1 == null) return -1
+        if (n2 == null) return 1
+        return n1.compareTo(n2)
     }
 }

@@ -1,9 +1,4 @@
-i hate cheaters
+# i hate cheaters
+### (fairly) simple mod which adds modules into odin.
 
-(fairly) simple mod which adds modules into odin.
-
-Current modules: 
-Autokick
-Block wrong clicks (terminals)
-
-coming soon: idk
+Requires any version of odin 1.2.5.beta8 or newer.

@@ -9,6 +9,7 @@ plugins {
     id("dev.architectury.architectury-pack200") version "0.1.3"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     kotlin("jvm") version "2.0.0-Beta1"
+    kotlin("plugin.serialization") version "2.0.0-Beta1"
     id("net.kyori.blossom") version "1.3.1"
 }
 
@@ -118,6 +119,8 @@ dependencies {
     forge("net.minecraftforge:forge:1.8.9-11.15.1.2318-1.8.9")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8")
     implementation(files("build/resources/Odin/${requiredOdin}"))
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0") // Use the latest version
+    implementation(kotlin("reflect"))
 
     shadowImpl(kotlin("stdlib-jdk8"))
 
@@ -185,10 +188,6 @@ tasks.shadowJar {
             println("Copying dependencies into mod: ${it.files}")
         }
     }
-
-    // If you want to include other dependencies and shadow them, you can relocate them in here
-    fun relocate(name: String) = relocate(name, "$baseGroup.deps.$name")
 }
 
 tasks.assemble.get().dependsOn(tasks.remapJar)
-
