@@ -35,7 +35,7 @@ object ProfileData {
     @Serializable
     data class ProfileRaw(
         @SerialName("accessory_bag_storage")
-        val accessory_bag_storage: AccessoryBagStorage? = null
+        val accessoryBagStorage: AccessoryBagStorage? = null
     )
 
     @Serializable
@@ -43,21 +43,21 @@ object ProfileData {
         @SerialName("tuning")
         val tuning: AccessoryBagTuning? = null,
         @SerialName("selected_power")
-        val selected_power: String? = null,
+        val selectedPower: String? = null,
         @SerialName("unlocked_powers")
-        val unlocked_powers: List<String>? = null,
+        val unlockedPowers: List<String>? = null,
         @SerialName("bag_upgrades_purchased")
-        val bag_upgrades_purchased: Int = 0,
+        val bagUpgradesPurchased: Int = 0,
         @SerialName("highest_magical_power")
-        val highest_magical_power: Int = 0,
+        val highestMagicalPower: Int = 0,
     )
 
     @Serializable
     data class AccessoryBagTuning(
         @SerialName("highest_unlocked_slot")
-        val highest_unlocked_slot: Int? = null,
+        val highestUnlockedSlot: Int? = null,
         @SerialName("slot_0")
-        val slot_0: Map<String, Int>? = null
+        val currentTunings: Map<String, Int>? = null
     )
 
     @Serializable
@@ -65,13 +65,13 @@ object ProfileData {
         @SerialName("stats")
         val stats: Map<String, Double>,
         @SerialName("display_name")
-        val display_name: String,
+        val displayName: String,
         @SerialName("rank_prefix")
-        val rank_prefix: String,
+        val rankPrefix: String,
         @SerialName("uuid")
         val uuid: String,
         @SerialName("skin_data")
-        val skin_data: SkinData,
+        val skinData: SkinData,
         @SerialName("profile")
         val profile: ProfileInfo,
         @SerialName("profiles")
@@ -81,15 +81,15 @@ object ProfileData {
         @SerialName("social")
         val social: Map<String, String>,
         @SerialName("visited_zones")
-        val visited_zones: List<String>,
+        val visitedZones: List<String>,
         @SerialName("visited_modes")
-        val visited_modes: List<String>,
+        val visitedModes: List<String>,
         @SerialName("perks")
         val perks: Map<String, Int>,
         @SerialName("harp_quest")
-        val harp_quest: HarpQuest,
+        val harpQuest: HarpQuest,
         @SerialName("fairy_souls")
-        val fairy_souls: FairySouls? = null,
+        val fairySouls: FairySouls? = null,
         @SerialName("slayer")
         val slayer: Slayer? = null,
         @SerialName("kills")
@@ -107,23 +107,23 @@ object ProfileData {
         @SerialName("enchanting")
         val enchanting: Enchanting? = null,
         @SerialName("crimson_isle")
-        val crimson_isle: CrimsonIsle? = null,
+        val crimsonIsle: CrimsonIsle? = null,
         @SerialName("misc")
         val misc: Misc? = null,
         @SerialName("bingo")
         val bingo: Bingo? = null,
         @SerialName("user_data")
-        val user_data: UserData,
+        val userData: UserData,
         @SerialName("currencies")
         val currencies: Moneys,
         @SerialName("temp_stats")
-        val temp_stats: TempStats,
+        val tempStats: TempStats,
         @SerialName("rift")
         val rift: Rift? = null,
         @SerialName("mining")
         val mining: Mining,
         @SerialName("skyblock_level")
-        val skyblock_level: Level,
+        val skyblockLevel: Level,
         @SerialName("dungeons")
         val dungeons: Dungeons? = null,
         @SerialName("skills")
@@ -157,9 +157,9 @@ object ProfileData {
         @SerialName("recombobulated")
         val recombobulated: Int,
         @SerialName("total_recombobulated")
-        val total_recombobulated: Int,
+        val totalRecombobulated: Int,
         @SerialName("magical_power")
-        val magical_power: AccessoryMagicPower,
+        val magicalPower: AccessoryMagicPower,
     )
 
     @Serializable
@@ -169,7 +169,7 @@ object ProfileData {
         @SerialName("abiphone")
         val abiphone: Int,
         @SerialName("rift_prism")
-        val rift_prism: Int,
+        val riftPrism: Int,
         @SerialName("hegemony")
         val hegemony: Int,
         @SerialName("total")
@@ -183,21 +183,21 @@ object ProfileData {
         @SerialName("amount")
         val amount: Int,
         @SerialName("magical_power")
-        val magical_power: Int,
+        val magicalPower: Int,
     )
 
     @Serializable
     data class MissingTalisman(
         @SerialName("_id")
-        val _id: String,
+        val idString: String,
         @SerialName("id")
-        val id: Long,
+        val idLong: Long,
         @SerialName("category")
         val category: String,
         @SerialName("damage")
         val damage: Int,
         @SerialName("item_id")
-        val item_id: Int,
+        val itemId: Int,
         @SerialName("material")
         val material: String,
         @SerialName("name")
@@ -207,9 +207,9 @@ object ProfileData {
         @SerialName("tier")
         val tier: String,
         @SerialName("texture_path")
-        val texture_path: String? = null,
+        val texturePath: String? = null,
         @SerialName("display_name")
-        val display_name: String,
+        val displayName: String,
         @SerialName("rarity")
         val rarity: String,
         @SerialName("extra")
@@ -223,7 +223,7 @@ object ProfileData {
         @SerialName("requirements")
         val requirements: List<MissingRequirements>? = null,
         @SerialName("npc_sell_price")
-        val npc_sell_price: Long? = null,
+        val npcSellPrice: Long? = null,
     )
 
     @Serializable
@@ -231,7 +231,7 @@ object ProfileData {
         @SerialName("type")
         val type: String,
         @SerialName("slayer_boss_type")
-        val slayer_boss_type: String? = null,
+        val slayerBossType: String? = null,
         @SerialName("reward")
         val reward: String? = null,
         @SerialName("level")
@@ -245,7 +245,7 @@ object ProfileData {
         @SerialName("display")
         val display: MissingDisplay? = null,
         @SerialName("ExtraAttributes")
-        val ExtraAttributes: MissingExtraAttributes,
+        val extraAttributes: MissingExtraAttributes,
     )
 
     @Serializable
@@ -257,7 +257,7 @@ object ProfileData {
     data class MissingDisplay(
         @Serializable(with = Serializers.LoreEntry.LoreSerializer::class)
         @SerialName("Lore")
-        val Lore: Serializers.LoreEntry? = null
+        val lore: Serializers.LoreEntry? = null
     )
 
     @Serializable
@@ -297,7 +297,7 @@ object ProfileData {
         @SerialName("missing")
         val missing: List<PetEntry>,
         @SerialName("pet_score")
-        val pet_score: PetScore
+        val petScore: PetScore
     )
 
     @Serializable
@@ -349,13 +349,13 @@ object ProfileData {
         @SerialName("stats")
         val stats: Map<String, Double?>,
         @SerialName("texture_path")
-        val texture_path: String? = null,
+        val texturePath: String? = null,
         @SerialName("ref")
         val ref: PetReference,
         @SerialName("tag")
         val tag: PetNBTTag,
         @SerialName("display_name")
-        val display_name: String,
+        val displayName: String,
         @SerialName("emoji")
         val emoji: String,
         @SerialName("extra")
@@ -415,43 +415,43 @@ object ProfileData {
         @SerialName("wardrobe")
         val wardrobe: List<List<ItemEntry?>> = emptyList(),
         @SerialName("wardrobe_inventory")
-        val wardrobe_inventory: List<ItemEntry>,
+        val wardrobeInventory: List<ItemEntry>,
         @SerialName("inventory")
         val inventory: List<ItemEntry>,
         @SerialName("enderchest")
         val enderchest: List<ItemEntry>,
         @SerialName("accessory_bag")
-        val accessory_bag: List<ItemEntry>,
+        val accessoryBag: List<ItemEntry>,
         @SerialName("fishing_bag")
-        val fishing_bag: List<ItemEntry>,
+        val fishingBag: List<ItemEntry>,
         @SerialName("quiver")
         val quiver: List<ItemEntry>,
         @SerialName("potion_bag")
-        val potion_bag: List<ItemEntry>,
+        val potionBag: List<ItemEntry>,
         @SerialName("personal_vault")
-        val personal_vault: List<ItemEntry>,
+        val personalVault: List<ItemEntry>,
         @SerialName("storage")
         val storage: List<ItemEntry>,
         @SerialName("hotm")
         val hotm: List<ItemEntry>,
         @SerialName("candy_bag")
-        val candy_bag: List<ItemEntry>,
+        val candyBag: List<ItemEntry>,
         @SerialName("museumItems")
         val museumItems: List<ItemEntry>,
         @SerialName("museum")
         val museum: List<ItemEntry>,
         @SerialName("bingo_card")
-        val bingo_card: List<ItemEntry>,
+        val bingoCard: List<ItemEntry>,
         @SerialName("accessories")
         val accessories: Accessories,
         @SerialName("weapons")
         val weapons: Weapons,
         @SerialName("farming_tools")
-        val farming_tools: toolList,
+        val farmingTools: toolList,
         @SerialName("mining_tools")
-        val mining_tools: toolList,
+        val miningTools: toolList,
         @SerialName("fishing_tools")
-        val fishing_tools: toolList,
+        val fishingTools: toolList,
         @SerialName("pets")
         val pets: List<PetEntry>,
         @SerialName("disabled")
@@ -465,7 +465,7 @@ object ProfileData {
         @SerialName("armor")
         val armor: List<ItemEntry>,
         @SerialName("set_rarity")
-        val set_rarity: String? = null,
+        val setRarity: String? = null,
     )
 
     @Serializable
@@ -473,7 +473,7 @@ object ProfileData {
         @SerialName("inventory")
         val inventory: Boolean,
         @SerialName("personal_vault")
-        val personal_vault: Boolean
+        val personalVault: Boolean
     )
 
     @Serializable
@@ -481,7 +481,7 @@ object ProfileData {
         @SerialName("tools")
         val tools: List<ItemEntry>,
         @SerialName("highest_priority_tool")
-        val highest_priority_tool: ItemEntry? = null,
+        val highestPriorityTool: ItemEntry? = null,
     )
 
     @Serializable
@@ -489,7 +489,7 @@ object ProfileData {
         @SerialName("weapons")
         val weapons: List<ItemEntry>,
         @SerialName("highest_priority_weapon")
-        val highest_priority_weapon: ItemEntry? = null,
+        val highestPriorityWeapon: ItemEntry? = null,
     )
 
     @Serializable
@@ -497,9 +497,9 @@ object ProfileData {
         @SerialName("accessories")
         val accessories: List<ItemEntry>,
         @SerialName("accessory_ids")
-        val accessory_ids: List<AccessoryId>,
+        val accessoryIds: List<AccessoryId>,
         @SerialName("accessory_rarities")
-        val accessory_rarities: AccessoryRarities
+        val accessoryRarities: AccessoryRarities
     )
 
     @Serializable
@@ -519,13 +519,13 @@ object ProfileData {
         @SerialName("special")
         val special: Int,
         @SerialName("very_special")
-        val very_special: Int,
+        val verySpecial: Int,
         @SerialName("hegemony")
         val hegemony: Map<String, String>? = null,
         @SerialName("abicase")
         val abicase: Map<String, String>? = null,
         @SerialName("rift_prism")
-        val rift_prism: Boolean? = null,
+        val riftPrism: Boolean? = null,
     )
 
     @Serializable
@@ -551,9 +551,9 @@ object ProfileData {
         @SerialName("extra")
         val extra: ItemExtra? = null,
         @SerialName("display_name")
-        val display_name: String? = null,
+        val displayName: String? = null,
         @SerialName("texture_path")
-        val texture_path: String? = null,
+        val texturePath: String? = null,
         @SerialName("rarity")
         val rarity: String? = null,
         @SerialName("categories")
@@ -565,13 +565,13 @@ object ProfileData {
         @SerialName("shiny")
         val shiny: Boolean? = null,
         @SerialName("item_index")
-        val item_index: Long? = null,
+        val itemIndex: Long? = null,
         @SerialName("itemId")
         val itemId: String,
         @SerialName("glowing")
         val glowing: Boolean? = null,
         @SerialName("base_name")
-        val base_name: String? = null,
+        val baseName: String? = null,
         @SerialName("enrichment")
         val enrichment: String? = null,
 
@@ -599,29 +599,29 @@ object ProfileData {
         @SerialName("ench")
         val ench: List<ItemEnch>? = null,
         @SerialName("CustomPotionEffects")
-        val CustomPotionEffects: List<CustomPotionEffect>? = null,
+        val customPotionEffects: List<CustomPotionEffect>? = null,
         @SerialName("unbreakable")
         val unbreakable: Int? = null,
         @SerialName("HideFlags")
-        val HideFlags: Int? = null,
+        val hideFlags: Int? = null,
         @SerialName("SkullOwner")
-        val SkullOwner: SkullOwner? = null,
+        val skullOwner: SkullOwner? = null,
         @SerialName("display")
         val display: ItemDisplay,
         @SerialName("ExtraAttributes")
-        val ExtraAttributes: ExtraAttributes? = null,
+        val extraAttributes: ExtraAttributes? = null,
     )
 
     @Serializable
     data class CustomPotionEffect(
         @SerialName("Ambient")
-        val Ambient: Int,
+        val ambient: Int,
         @SerialName("Duration")
-        val Duration: Int,
+        val duration: Int,
         @SerialName("Id")
-        val Id: Int,
+        val id: Int,
         @SerialName("Amplifier")
-        val Amplifier: Int,
+        val amplifier: Int,
     )
 
     @Serializable
@@ -635,17 +635,17 @@ object ProfileData {
     @Serializable
     data class ExtraAttributes(
         @SerialName("rarity_upgrades")
-        val rarity_upgrades: Int? = null,
+        val rarityUpgrades: Int? = null,
         @SerialName("runes")
         val runes: Map<String, Int>? = null,
-        @SerialName("baseStatBoostpercentage")
-        val baseStatBoostpercentage: Int = -1,
+        @SerialName("baseStatBoostPercentage")
+        val baseStatBoostPercentage: Int = -1,
         @SerialName("modifier")
         val modifier: String? = null,
         @SerialName("upgrade_level")
         val upgrade_level: Int? = null,
         @SerialName("dungeon_item_level")
-        val dungeon_item_level: Int? = null,
+        val dungeonItemLevel: Int? = null,
         @SerialName("id")
         val id: String? = null,
         @SerialName("enchantments")
@@ -653,37 +653,37 @@ object ProfileData {
         @SerialName("uuid")
         val uuid: String? = null,
         @SerialName("dye_item")
-        val dye_item: String? = null,
+        val dyeItem: String? = null,
         @SerialName("hot_potato_count")
-        val hot_potato_count: Int? = null,
+        val hotPotatoCount: Int? = null,
         @SerialName("attributes")
         val attributes: Map<String, Int>? = null,
         @SerialName("boss_tier")
-        val boss_tier: Int? = null,
+        val bossTier: Int? = null,
         @SerialName("artOfPeaceApplied")
         val artOfPeaceApplied: Int? = null,
         @SerialName("donated_museum")
-        val donated_museum: Int? = null,
+        val donatedMuseum: Int? = null,
         @SerialName("originTag")
         val originTag: String? = null,
         @SerialName("gems")
         val gems: Map<String, @Serializable(with = Serializers.Gemstone.GemStoneSerializer::class) Serializers.Gemstone>? = null,
         @SerialName("anvil_uses")
-        val anvil_uses: Int? = null,
+        val anviUses: Int? = null,
     )
 
     @Serializable
     data class GemstoneData(
         val gems: Map<String, String> = emptyMap(),
         @SerialName("unlocked_slots")
-        val unlocked_slots: List<String>? = null,
+        val unlockedSlots: List<String>? = null,
     )
 
     @Serializable
     data class ItemDisplay(
         @Serializable(with = Serializers.LoreEntry.LoreSerializer::class)
         @SerialName("Lore")
-        val Lore: Serializers.LoreEntry? = null,
+        val lore: Serializers.LoreEntry? = null,
         @SerialName("color")
         val color: Int? = null,
         @SerialName("name")
@@ -693,9 +693,9 @@ object ProfileData {
     @Serializable
     data class SkullOwner(
         @SerialName("Id")
-        val Id: String,
+        val id: String,
         @SerialName("Properties")
-        val Properties: SkullOwnerProperties,
+        val properties: SkullOwnerProperties,
     )
 
     @Serializable
@@ -707,7 +707,7 @@ object ProfileData {
     @Serializable
     data class TextureValue(
         @SerialName("Value")
-        val Value: String
+        val value: String
     )
 
     @Serializable
@@ -725,7 +725,7 @@ object ProfileData {
         @SerialName("rift")
         val rift: CollectionData,
         @SerialName("BOSS")
-        val BOSS: CollectionData,
+        val boss: CollectionData,
         @SerialName("totalCollections")
         val totalCollections: Int,
         @SerialName("maxedCollections")
@@ -793,21 +793,21 @@ object ProfileData {
         @SerialName("dragons")
         val dragons: Dragons? = null,
         @SerialName("endstone_protector")
-        val endstone_protector: EndstoneProtector? = null,
+        val endstoneProtector: EndstoneProtector? = null,
         @SerialName("damage")
         val damage: MiscDamage? = null,
         @SerialName("pet_milestones")
-        val pet_milestones: Map<String, PetMilestoneData> = emptyMap(),
+        val petMilestones: Map<String, PetMilestoneData> = emptyMap(),
         @SerialName("mythological_event")
-        val mythological_event: MythosEvent? = null,
+        val mythologicalEvent: MythosEvent? = null,
         @SerialName("effects")
         val effects: Effects,
         @SerialName("profile_upgrades")
-        val profile_upgrades: Map<String, Int> = emptyMap(),
+        val profileUpgrades: Map<String, Int> = emptyMap(),
         @SerialName("auctions")
         val auctions: Auctions? = null,
         @SerialName("claimed_items")
-        val claimed_items: Map<String, Long> = emptyMap(),
+        val claimedItems: Map<String, Long> = emptyMap(),
         @SerialName("uncategorized")
         val uncategorized: Map<String, UncategorizedData> = emptyMap(),
     )
@@ -831,9 +831,9 @@ object ProfileData {
         @SerialName("bonuses")
         val bonuses: Map<String, Map<String, Int>>,
         @SerialName("crop_weight")
-        val crop_weight: Int,
+        val cropWeight: Int,
         @SerialName("bonus_weight")
-        val bonus_weight: Int,
+        val bonusWeight: Int,
     )
 
     @Serializable
@@ -915,9 +915,9 @@ object ProfileData {
         @SerialName("weight")
         val weight: Double,
         @SerialName("weight_overflow")
-        val weight_overflow: Double,
+        val weightOverflow: Double,
         @SerialName("total_weight")
-        val total_weight: Double? = null,
+        val totalWeight: Double? = null,
     )
 
     @Serializable
@@ -925,9 +925,9 @@ object ProfileData {
         @SerialName("weight")
         val weight: Double,
         @SerialName("overflow_weight")
-        val overflow_weight: Double,
+        val overflowWeight: Double,
         @SerialName("total_weight")
-        val total_weight: Double? = null,
+        val totalWeight: Double? = null,
     )
 
     @Serializable
@@ -959,19 +959,19 @@ object ProfileData {
         @SerialName("tokens")
         val tokens: CoreTokenData,
         @SerialName("selected_pickaxe_ability")
-        val selected_pickaxe_ability: String? = null,
+        val selectedPickaxeAbility: String? = null,
         @SerialName("powder")
         val powder: Map<String, PowderData>,
         @SerialName("crystal_nucleus")
-        val crystal_nucleus: CrystalNucleus,
+        val crystalNucleus: CrystalNucleus,
         @SerialName("daily_ores")
-        val daily_ores: DailyOres,
+        val dailyOres: DailyOres,
         @SerialName("hotm_last_reset")
-        val hotm_last_reset: Long,
+        val hotmLastReset: Long,
         @SerialName("crystal_hollows_last_access")
-        val crystal_hollows_last_access: Long,
+        val lastCHAccess: Long,
         @SerialName("daily_effect")
-        val daily_effect: DailyEffect,
+        val dailyEffect: DailyEffect,
         @SerialName("nodes")
         val nodes: Map<String, JsonElement>,
     )
@@ -981,7 +981,7 @@ object ProfileData {
         @SerialName("effect")
         val effect: String? = null,
         @SerialName("last_changes")
-        val last_changes: Int? = null,
+        val lastChanges: Int? = null,
     )
 
     @Serializable
@@ -1005,7 +1005,7 @@ object ProfileData {
     @Serializable
     data class CrystalNucleus(
         @SerialName("times_completed")
-        val times_completed: Int,
+        val timesCompleted: Int,
         @SerialName("crystals")
         val crystals: Map<String, CrystalData>,
         @SerialName("precursor")
@@ -1015,9 +1015,9 @@ object ProfileData {
     @Serializable
     data class PrecursorData(
         @SerialName("parts_delivered")
-        val parts_delivered: List<String> = emptyList(),
+        val partsDelivered: List<String> = emptyList(),
         @SerialName("talked_to_professor")
-        val talked_to_professor: Boolean? = null
+        val talkedToProfessor: Boolean? = null
     )
 
     @Serializable
@@ -1025,9 +1025,9 @@ object ProfileData {
         @SerialName("state")
         val state: String? = null,
         @SerialName("total_placed")
-        val total_placed: Int? = null,
+        val totalPlaced: Int? = null,
         @SerialName("total_found")
-        val total_found: Int? = null,
+        val totalFound: Int? = null,
     )
 
     @Serializable
@@ -1071,11 +1071,11 @@ object ProfileData {
         @SerialName("enigma")
         val enigma: EnigmaData,
         @SerialName("wither_cage")
-        val wither_cage: WitherCage,
+        val witherCage: WitherCage,
         @SerialName("timecharms")
-        val timecharms: TimeCharms,
+        val timeCharms: TimeCharms,
         @SerialName("dead_cats")
-        val dead_cats: DeadCats,
+        val deadCats: DeadCats,
         @SerialName("castle")
         val castle: RiftCastleData
     )
@@ -1083,9 +1083,9 @@ object ProfileData {
     @Serializable
     data class RiftCastleData(
         @SerialName("grubber_stacks")
-        val grubber_stacks: Int,
+        val grubberStacks: Int,
         @SerialName("max_burgers")
-        val max_burgers: Int
+        val maxBurgers: Int
     )
 
     @Serializable
@@ -1093,7 +1093,7 @@ object ProfileData {
         @SerialName("montezuma")
         val montezuma: Montezuma,
         @SerialName("found_cats")
-        val found_cats: List<String> = emptyList()
+        val foundCats: List<String> = emptyList()
     )
 
     @Serializable
@@ -1135,7 +1135,7 @@ object ProfileData {
         @SerialName("stats")
         val stats: Map<String, Double?> = emptyMap(),
         @SerialName("texture_path")
-        val texture_path: String? = null,
+        val texturePath: String? = null,
         @SerialName("ref")
         val ref: PetReference? = null,
         @SerialName("tag")
@@ -1151,9 +1151,9 @@ object ProfileData {
     @Serializable
     data class TimeCharms(
         @SerialName("timecharms")
-        val timecharms: List<TimeCharm>,
+        val timeCharms: List<TimeCharm>,
         @SerialName("obtained_timecharms")
-        val obtained_timecharms: Int,
+        val obtainedTimeCharms: Int,
     )
 
     @Serializable
@@ -1167,13 +1167,13 @@ object ProfileData {
         @SerialName("damage")
         val damage: Int,
         @SerialName("unlocked_at")
-        val unlocked_at: Long? = null,
+        val unlockedAt: Long? = null,
     )
 
     @Serializable
     data class WitherCage(
         @SerialName("killed_eyes")
-        val killed_eyes: List<KilledEye>
+        val killedEyes: List<KilledEye>
     )
 
     @Serializable
@@ -1191,7 +1191,7 @@ object ProfileData {
         @SerialName("souls")
         val souls: Int,
         @SerialName("total_souls")
-        val total_souls: Int,
+        val totalSouls: Int,
     )
 
 
@@ -1208,7 +1208,7 @@ object ProfileData {
     @Serializable
     data class TempStats(
         @SerialName("century_cakes")
-        val century_cakes: List<CenturyCake>
+        val centuryCakes: List<CenturyCake>
     )
 
     @Serializable
@@ -1230,17 +1230,17 @@ object ProfileData {
     @Serializable
     data class UserData(
         @SerialName("first_join")
-        val first_join: UnixTimeData,
+        val firstJoin: UnixTimeData,
         @SerialName("current_area")
-        val current_area: CurrentArea
+        val currentArea: CurrentArea
     )
 
     @Serializable
     data class CurrentArea(
         @SerialName("current_area")
-        val current_area: String = "missing",
+        val currentArea: String = "missing",
         @SerialName("current_area_updated")
-        val current_area_updated: Boolean? = null,
+        val currentAreaUpdated: Boolean? = null,
     )
 
     @Serializable
@@ -1250,7 +1250,7 @@ object ProfileData {
         @SerialName("points")
         val points: Int,
         @SerialName("completed_goals")
-        val completed_goals: Int,
+        val completedGoals: Int,
     )
 
     @Serializable
@@ -1266,25 +1266,25 @@ object ProfileData {
     @Serializable
     data class Auctions(
         @SerialName("highest_bid")
-        val highest_bid: Long = 0,
+        val highestBid: Long = 0,
         @SerialName("fees")
         val fees: Long = 0,
         @SerialName("won")
         val won: Int = 0,
         @SerialName("no_bids")
-        val no_bids: Int = 0,
+        val noBids: Int = 0,
         @SerialName("created")
         val created: Int = 0,
         @SerialName("gold_spent")
-        val gold_spent: Long = 0,
+        val goldSpent: Long = 0,
         @SerialName("gold_earned")
-        val gold_earned: Long = 0,
+        val goldEarned: Long = 0,
         @SerialName("total_bought")
-        val total_bought: Map<String, Int> = emptyMap(),
+        val totalBought: Map<String, Int> = emptyMap(),
         @SerialName("completed")
         val completed: Int = 0,
         @SerialName("total_sold")
-        val total_sold: Map<String, Int> = emptyMap(),
+        val totalSold: Map<String, Int> = emptyMap(),
     )
 
     @Serializable
@@ -1306,7 +1306,7 @@ object ProfileData {
         @SerialName("modifiers")
         val modifiers: List<EffectModifier>,
         @SerialName("ticks_remaining")
-        val ticks_remaining: Long,
+        val ticksRemaining: Long,
         @SerialName("infinite")
         val infinite: Boolean,
     )
@@ -1322,15 +1322,15 @@ object ProfileData {
     @Serializable
     data class MythosEvent(
         @SerialName("burrows_dug_treasure")
-        val burrows_dug_treasure: BurrowsDugData? = null,
+        val burrowsDugTreasure: BurrowsDugData? = null,
         @SerialName("burrows_chains_complete")
-        val burrows_chains_complete: BurrowsDugData? = null,
+        val burrowsChainsComplete: BurrowsDugData? = null,
         @SerialName("kills")
         val kills: Int = 0,
         @SerialName("burrows_dug_combat")
-        val burrows_dug_combat: BurrowsDugData? = null,
+        val burrowsDugCombat: BurrowsDugData? = null,
         @SerialName("burrows_dug_next")
-        val burrows_dug_next: BurrowsDugData? = null,
+        val burrowsDugNext: BurrowsDugData? = null,
     )
 
     @Serializable
@@ -1362,7 +1362,7 @@ object ProfileData {
     @Serializable
     data class MiscDamage(
         @SerialName("highest_critical_damage")
-        val highest_critical_damage: Double
+        val highestCriticalDamage: Double
     )
 
     @Serializable
@@ -1376,11 +1376,11 @@ object ProfileData {
     @Serializable
     data class Dragons(
         @SerialName("ender_crystals_destroyed")
-        val ender_crystals_destroyed: Int? = 0,
+        val enderCrystalsDestroyed: Int? = 0,
         @SerialName("most_damage")
-        val most_damage: Map<String, Double> = emptyMap(),
+        val mostDamage: Map<String, Double> = emptyMap(),
         @SerialName("fastest_kill")
-        val fastest_kill: Map<String, Int> = emptyMap(),
+        val fastestKill: Map<String, Int> = emptyMap(),
         @SerialName("kills")
         val kills: Map<String, Int>,
         @SerialName("deaths")
@@ -1396,13 +1396,13 @@ object ProfileData {
     @Serializable
     data class Winter(
         @SerialName("most_snowballs_hit")
-        val most_snowballs_hit: Int,
+        val mostSnowballsHit: Int,
         @SerialName("most_damage_dealt")
-        val most_damage_dealt: Int,
+        val mostDamageDealt: Int,
         @SerialName("most_magma_damage_dealt")
-        val most_magma_damage_dealt: Int,
+        val mostMagmaDamageDealt: Int,
         @SerialName("most_cannonballs_hit")
-        val most_cannonballs_hit: Int,
+        val mostCannonballsHit: Int,
     )
 
     @Serializable
@@ -1418,11 +1418,11 @@ object ProfileData {
         @SerialName("other")
         val other: OtherRace? = null,
         @SerialName("giant_mushroom")
-        val giant_mushroom: RaceTypeData? = null,
+        val giantMushroom: RaceTypeData? = null,
         @SerialName("precursor_ruins")
-        val precursor_ruins: RaceTypeData? = null,
+        val precursorRuins: RaceTypeData? = null,
         @SerialName("crystal_core")
-        val crystal_core: RaceTypeData? = null,
+        val crystalCore: RaceTypeData? = null,
     )
 
     @Serializable
@@ -1464,7 +1464,7 @@ object ProfileData {
         @SerialName("dojo")
         val dojo: Dojo? = null,
         @SerialName("trophy_fish")
-        val trophy_fish: TrophyFish? = null,
+        val trophyFish: TrophyFish? = null,
         @SerialName("abiphone")
         val abiphone: Abiphone,
     )
@@ -1480,13 +1480,13 @@ object ProfileData {
     @Serializable
     data class ContactData(
         @SerialName("incoming_calls_count")
-        val incoming_calls_count: Int? = null,
+        val incomingCallsCount: Int? = null,
         @SerialName("talked_to")
-        val talked_to: Boolean? = null,
+        val talkedTo: Boolean? = null,
         @SerialName("last_call_incoming")
-        val last_call_incoming: Long? = null,
+        val lastCallIncoming: Long? = null,
         @SerialName("completed_quest")
-        val completed_quest: Boolean? = null,
+        val completedQuest: Boolean? = null,
         @SerialName("specific")
         val specific: Map<String, JsonElement>? = null,
     )
@@ -1496,7 +1496,7 @@ object ProfileData {
         @SerialName("fish")
         val fish: List<TrophyFishData>,
         @SerialName("total_caught")
-        val total_caught: Long,
+        val totalCaught: Long,
         @SerialName("maxed")
         val maxed: Boolean,
         @SerialName("stage")
@@ -1516,11 +1516,11 @@ object ProfileData {
         @SerialName("diamond")
         val diamond: Int,
         @SerialName("highest_tier")
-        val highest_tier: String? = null,
+        val highestTier: String? = null,
         @SerialName("texture")
         val texture: String? = null,
         @SerialName("display_name")
-        val display_name: String,
+        val displayName: String,
         @SerialName("description")
         val description: String,
         @SerialName("textures")
@@ -1544,7 +1544,7 @@ object ProfileData {
         @SerialName("dojo")
         val dojo: Map<String, DojoTypeData>,
         @SerialName("total_points")
-        val total_points: Int,
+        val totalPoints: Int,
     )
 
     @Serializable
@@ -1582,11 +1582,11 @@ object ProfileData {
     @Serializable
     data class IsleFactions(
         @SerialName("selected_faction")
-        val selected_faction: String,
+        val selectedFaction: String,
         @SerialName("mages_reputation")
-        val mages_reputation: Int,
+        val magesReputation: Int,
         @SerialName("barbarians_reputation")
-        val barbarians_reputation: Int,
+        val barbariansReputation: Int,
     )
 
     @Serializable
@@ -1626,7 +1626,7 @@ object ProfileData {
         @SerialName("claims")
         val claims: Int,
         @SerialName("best_score")
-        val best_score: Int? = null,
+        val bestScore: Int? = null,
     )
 
     @Serializable
@@ -1660,17 +1660,17 @@ object ProfileData {
         @SerialName("claims")
         val claims: Int,
         @SerialName("best_score")
-        val best_score: Int? = null,
+        val bestScore: Int? = null,
     )
 
     @Serializable
     data class ExperimentStats(
         @SerialName("bonus_clicks")
-        val bonus_clicks: Int = 0,
+        val bonusClicks: Int = 0,
         @SerialName("last_attempt")
-        val last_attempt: UnixTimeData? = null,
+        val lastAttempt: UnixTimeData? = null,
         @SerialName("last_claimed")
-        val last_claimed: UnixTimeData? = null,
+        val lastClaimed: UnixTimeData? = null,
     )
 
     @Serializable
@@ -1688,17 +1688,17 @@ object ProfileData {
         @SerialName("pelts")
         val pelts: Int,
         @SerialName("current_badges")
-        val current_badges: Map<String, Int>? = null,
+        val currentBadges: Map<String, Int>? = null,
         @SerialName("total_badges")
-        val total_badges: Map<String, Int>? = null,
+        val totalBadges: Map<String, Int>? = null,
         @SerialName("perks")
         val perks: Map<String, Int>? = null,
         @SerialName("unique_golds")
-        val unique_golds: Int = 0,
+        val uniqueGolds: Int = 0,
         @SerialName("unique_platinums")
-        val unique_platinums: Int = 0,
+        val uniquePlatinums: Int = 0,
         @SerialName("unique_diamonds")
-        val unique_diamonds: Int = 0,
+        val uniqueDiamonds: Int = 0,
         @SerialName("crops")
         val crops: Map<String, CropData> = emptyMap(),
         @SerialName("contests")
@@ -1708,9 +1708,9 @@ object ProfileData {
     @Serializable
     data class Contests(
         @SerialName("attended_contests")
-        val attended_contests: Int,
+        val attendedContests: Int,
         @SerialName("all_contests")
-        val all_contests: List<ContestData>
+        val allContests: List<ContestData>
     )
 
     @Serializable
@@ -1746,11 +1746,11 @@ object ProfileData {
         @SerialName("attended")
         val attended: Boolean,
         @SerialName("highest_tier")
-        val highest_tier: String,
+        val highestTier: String,
         @SerialName("contests")
         val contests: Int,
         @SerialName("personal_best")
-        val personal_best: Long,
+        val personalBest: Long,
         @SerialName("badges")
         val badges: Map<String, Int>
     )
@@ -1762,13 +1762,13 @@ object ProfileData {
         @SerialName("treasure")
         val treasure: Int,
         @SerialName("treasure_large")
-        val treasure_large: Int,
+        val treasureLarge: Int,
         @SerialName("shredder_fished")
-        val shredder_fished: Int,
+        val shredderFished: Int,
         @SerialName("shredder_bait")
-        val shredder_bait: Int,
+        val shredderBait: Int,
         @SerialName("trophy_fish")
-        val trophy_fish: Int
+        val trophyFish: Int
     )
 
     @Serializable
@@ -1876,11 +1876,11 @@ object ProfileData {
         @SerialName("type")
         val type: String,
         @SerialName("entity_id")
-        val entity_id: String,
+        val entityId: String,
         @SerialName("amount")
         val amount: Int,
         @SerialName("entity_name")
-        val entity_name: String,
+        val entityName: String,
     )
 
     @Serializable
@@ -1888,9 +1888,9 @@ object ProfileData {
         @SerialName("slayers")
         val slayers: Map<String, SlayerData>? = null,
         @SerialName("total_slayer_xp")
-        val total_slayer_xp: Long,
+        val totalSlayerXp: Long,
         @SerialName("total_coins_spent")
-        val total_coins_spent: Long,
+        val totalCoinsSpent: Long,
     )
 
     @Serializable
@@ -1898,7 +1898,7 @@ object ProfileData {
         @SerialName("level")
         val level: SlayerLevel,
         @SerialName("coins_spent")
-        val coins_spent: Long,
+        val coinsSpent: Long,
         @SerialName("kills")
         val kills: SlayerKills,
         @SerialName("name")
@@ -1910,15 +1910,15 @@ object ProfileData {
     @Serializable
     data class SlayerKills(
         @SerialName("1")
-        val Tier1: Int = 0,
+        val tier1: Int = 0,
         @SerialName("2")
-        val Tier2: Int = 0,
+        val tier2: Int = 0,
         @SerialName("3")
-        val Tier3: Int = 0,
+        val tier3: Int = 0,
         @SerialName("4")
-        val Tier4: Int = 0,
+        val tier4: Int = 0,
         @SerialName("5")
-        val Tier5: Int? = null,
+        val tier5: Int? = null,
         @SerialName("total")
         val total: Int
     )
@@ -1944,7 +1944,7 @@ object ProfileData {
         @SerialName("weight")
         val weight: Double,
         @SerialName("weight_overflow")
-        val weight_overflow: Double
+        val weightOverflow: Double
     )
 
     @Serializable
@@ -1956,18 +1956,18 @@ object ProfileData {
         @SerialName("progress")
         val progress: Double,
         @SerialName("fairy_exchanges")
-        val fairy_exchanges: Int = 0
+        val fairyExchanges: Int = 0
     )
 
     @Serializable
     data class HarpQuest(
         @SerialName("selected_song")
-        val selected_song: String? = null,
+        val selectedSong: String? = null,
         @SerialName("selected_song_epoch")
-        val selected_song_epoch: Long? = null,
+        val selectedSongEpoch: Long? = null,
         @SerialName("claimed_talisman")
-        val claimed_talisman: Boolean? = null,
-        val harps: Map<String, Double> = emptyMap()
+        val claimedTalisman: Boolean? = null,
+        //todo harp data
     )
 
     @Serializable
@@ -1975,19 +1975,19 @@ object ProfileData {
         @SerialName("uuid")
         val uuid: String,
         @SerialName("display_name")
-        val display_name: String,
+        val displayName: String,
         @SerialName("skin_data")
-        val skin_data: SkinData
+        val skinData: SkinData
     )
 
     @Serializable
     data class ProfileInfo(
         @SerialName("cute_name")
-        val cute_name: String,
+        val cuteName: String,
         @SerialName("profile_id")
-        val profile_id: String,
+        val profileId: String,
         @SerialName("game_mode")
-        val game_mode: String? = null,
+        val gameMode: String? = null,
     )
 
     @Serializable
@@ -1995,9 +1995,9 @@ object ProfileData {
         @SerialName("model")
         val model: String,
         @SerialName("skinurl")
-        val skinurl: String,
+        val skinUrl: String,
         @SerialName("capeurl")
-        val capeurl: String? = null
+        val capeUrl: String? = null
     )
 
     @Serializable
@@ -2027,75 +2027,4 @@ object ProfileData {
         @SerialName("maxExperience")
         val maxExperience: Int? = null
     )
-
-    @Serializable
-    data class StatName(
-        @SerialName("health")
-        val health: String,
-        @SerialName("defense")
-        val defense: String,
-        @SerialName("strength")
-        val strength: String,
-        @SerialName("speed")
-        val speed: String,
-        @SerialName("crit_chance")
-        val crit_chance: String,
-        @SerialName("crit_damage")
-        val crit_damage: String,
-        @SerialName("intelligence")
-        val intelligence: String,
-        @SerialName("bonus_attack_speed")
-        val bonus_attack_speed: String,
-        @SerialName("sea_creature_chance")
-        val sea_creature_chance: String,
-        @SerialName("magic_find")
-        val magic_find: String,
-        @SerialName("pet_luck")
-        val pet_luck: String,
-        @SerialName("true_defense")
-        val true_defense: String,
-        @SerialName("ferocity")
-        val ferocity: String,
-        @SerialName("ability_damage")
-        val ability_damage: String,
-        @SerialName("mining_speed")
-        val mining_speed: String,
-        @SerialName("mining_fortune")
-        val mining_fortune: String,
-        @SerialName("farming_fortune")
-        val farming_fortune: String,
-        @SerialName("foraging_fortune")
-        val foraging_fortune: String,
-        @SerialName("pristine")
-        val pristine: String,
-        @SerialName("fishing_speed")
-        val fishing_speed: String,
-        @SerialName("health_regen")
-        val health_regen: String,
-        @SerialName("vitality")
-        val vitality: String,
-        @SerialName("mending")
-        val mending: String,
-        @SerialName("combat_wisdom")
-        val combat_wisdom: String,
-        @SerialName("mining_wisdom")
-        val mining_wisdom: String,
-        @SerialName("farming_wisdom")
-        val farming_wisdom: String,
-        @SerialName("foraging_wisdom")
-        val foraging_wisdom: String,
-        @SerialName("fishing_wisdom")
-        val fishing_wisdom: String,
-        @SerialName("enchanting_wisdom")
-        val enchanting_wisdom: String,
-        @SerialName("alchemy_wisdom")
-        val alchemy_wisdom: String,
-        @SerialName("carpentry_wisdom")
-        val carpentry_wisdom: String,
-        @SerialName("runecrafting_wisdom")
-        val runecrafting_wisdom: String,
-        @SerialName("social_wisdom")
-        val social_wisdom: String
-    )
-
 }

@@ -65,7 +65,7 @@ object AutoKick : Module(
 
                     val currentProfile = getDungeonProfile(name)
 
-                    val dungeon = if (!mmToggle) currentProfile?.dungeons?.catacombs else currentProfile?.dungeons?.mastercatacombs
+                    val dungeon = if (!mmToggle) currentProfile?.dungeons?.catacombs else currentProfile?.dungeons?.masterCatacombs
                     dungeon?.floors?.get(floor)?.stats?.fastestTimeSPlus?.times(0.001)?.let {
                         if (!timeKick) return@let
                         if (it > (timereq)) {

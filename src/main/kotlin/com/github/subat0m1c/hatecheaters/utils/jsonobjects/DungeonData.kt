@@ -9,8 +9,6 @@ object DungeonData {
     data class Profiles(
         @SerialName("profiles")
         val profiles: Map<String, Profile> = emptyMap(),
-        @SerialName("error")
-        val error: String? = null
     )
 
     @Serializable
@@ -30,7 +28,7 @@ object DungeonData {
         @SerialName("catacombs")
         val catacombs: DungeonsData,
         @SerialName("master_catacombs")
-        val mastercatacombs: DungeonsData? = null,
+        val masterCatacombs: DungeonsData? = null,
         @SerialName("floor_completions")
         val floorCompletions: Int,
         @SerialName("classes")
@@ -96,11 +94,11 @@ object DungeonData {
         @SerialName("levelCap")
         val levelcap: Double,
         @SerialName("uncappedLevel")
-        val uncappedlevel: Int,
+        val uncappedLevel: Int,
         @SerialName("levelWithProgress")
         val levelWithProgress: Double,
         @SerialName("unlockableLevelWithProgress")
-        val unlockablelevel: Double,
+        val unlockableLevel: Double,
         @SerialName("rank")
         val rank: Int? = null
     )

@@ -37,16 +37,16 @@ object ProfileDataTest : Module(
                         else modMessage("Player doesnt exist!")
                         return@withContext
                     }
-                    modMessage("current area: " + profile.data.user_data.current_area.current_area)
+                    modMessage("current area: " + profile.data.userData.currentArea.currentArea)
                     val profileKills = profile.data.kills?.kills
-                    val bloodMobs = (profileKills?.find { it.entity_id == "watcher_summon_undead" }?.amount ?: 0) + (profileKills?.find { it.entity_id == "master_watcher_summon_undead" }?.amount ?: 0)
+                    val bloodMobs = (profileKills?.find { it.entityId == "watcher_summon_undead" }?.amount ?: 0) + (profileKills?.find { it.entityId == "master_watcher_summon_undead" }?.amount ?: 0)
                     modMessage("bloodmobs: $bloodMobs")
                     modMessage("secrets: " + profile.data.dungeons?.secretsFound)
-                    modMessage("magic power: " + profile.data.accessories?.magical_power?.total)
-                    modMessage(profile.raw.accessory_bag_storage?.tuning)
-                    val tuningData = profile.raw.accessory_bag_storage?.tuning?.slot_0?.entries?.map { "${it.key} | ${it.value}" }
+                    modMessage("magic power: " + profile.data.accessories?.magicalPower?.total)
+                    modMessage(profile.raw.accessoryBagStorage?.tuning)
+                    val tuningData = profile.raw.accessoryBagStorage?.tuning?.currentTunings?.entries?.map { "${it.key} | ${it.value}" }
                     modMessage("tunings:\n${tuningData?.joinToString("\n")}")
-                    val weaponGemstones = getMappedGemstones(profile.data.items.weapons.highest_priority_weapon?.tag?.ExtraAttributes?.gems)
+                    val weaponGemstones = getMappedGemstones(profile.data.items.weapons.highestPriorityWeapon?.tag?.extraAttributes?.gems)
                     val weaponsNormalized = Pair(weaponGemstones.first.map { "${it.key} | ${it.value}" }, weaponGemstones.second.map { "${it.key} | ${it.value.name} = ${it.value.tier}" })
                     modMessage("Unmapped Gems:\n${weaponsNormalized.first.joinToString("\n")}\nMapped Gems:\n${weaponsNormalized.second.joinToString("\n")}")
                 }
