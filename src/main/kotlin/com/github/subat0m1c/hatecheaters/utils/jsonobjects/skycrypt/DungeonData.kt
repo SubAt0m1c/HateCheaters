@@ -1,4 +1,4 @@
-package com.github.subat0m1c.hatecheaters.utils.jsonobjects
+package com.github.subat0m1c.hatecheaters.utils.jsonobjects.skycrypt
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

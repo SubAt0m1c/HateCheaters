@@ -1,10 +1,9 @@
-package com.github.subat0m1c.hatecheaters.utils.jsonobjects
+package com.github.subat0m1c.hatecheaters.utils.jsonobjects.skycrypt
 
-import com.github.subat0m1c.hatecheaters.utils.jsonobjects.DungeonData.Dungeons
+import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelApiStats
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.*
 
 object ProfileData {
 
@@ -27,12 +26,12 @@ object ProfileData {
         @SerialName("current")
         val current: Boolean,
         @SerialName("raw")
-        val raw: ProfileRaw,
-        @SerialName("data")
-        val data: ProfileData,
+        val raw: HypixelApiStats.MemberData, // only gonna use rawdata so its perfectly compatable with hypixel format. (i think)
+        //@SerialName("data")
+        //val data: ProfileData,
     )
 
-    @Serializable
+    /**@Serializable
     data class ProfileRaw(
         @SerialName("accessory_bag_storage")
         val accessoryBagStorage: AccessoryBagStorage? = null
@@ -574,7 +573,10 @@ object ProfileData {
         val baseName: String? = null,
         @SerialName("enrichment")
         val enrichment: String? = null,
-
+        @SerialName("inBackpack")
+        val inBackpack: Boolean? = null,
+        @SerialName("backpackIndex")
+        val backpackIndex: Int? = null,
     )
 
     @Serializable
@@ -2026,5 +2028,5 @@ object ProfileData {
         val rank: Int? = null,
         @SerialName("maxExperience")
         val maxExperience: Int? = null
-    )
+    ) */
 }

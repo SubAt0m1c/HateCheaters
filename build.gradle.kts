@@ -119,8 +119,8 @@ dependencies {
     forge("net.minecraftforge:forge:1.8.9-11.15.1.2318-1.8.9")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8")
     implementation(files("build/resources/Odin/${requiredOdin}"))
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0") // Use the latest version
-    implementation(kotlin("reflect"))
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    //implementation("com.github.Stivais:Commodore:1.8.9-1.3.0")
 
     shadowImpl(kotlin("stdlib-jdk8"))
 
