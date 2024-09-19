@@ -24,7 +24,7 @@ object LogHandler {
 
     private fun compressOldLogs() {
         scope.launch {
-            val logDir = File("logs")
+            val logDir = File("config/hatecheaters/mod_logs")
             if (logDir.exists() && logDir.isDirectory) {
                 val logFiles = logDir.listFiles { file -> file.isFile && file.name.endsWith(".log") }
                 logFiles?.forEach { file ->
@@ -56,14 +56,14 @@ object LogHandler {
 
     private fun setupLogger() {
         try {
-            val logDir = File("logs")
+            val logDir = File("config/hatecheaters/mod_logs")
             if (!logDir.exists()) {
                 logDir.mkdirs()
             }
 
             val dateFormat = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss")
             val dateString = dateFormat.format(Date())
-            val logFileName = "${logDir.absolutePath}/yourmod_$dateString.log"
+            val logFileName = "${logDir.absolutePath}/$dateString.log"
 
             val fileHandler = FileHandler(logFileName, true)
             fileHandler.formatter = SimpleFormatter()
