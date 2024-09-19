@@ -5,6 +5,7 @@ import com.github.subat0m1c.hatecheaters.modules.HateCheaters
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.magicalPower
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.getSkyblockProfile
+import com.github.subat0m1c.hatecheaters.utils.WebUtils.testQue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -18,15 +19,26 @@ val DevCommand = commodore("hcdev") {
 
     var server: String? = null
 
-    literal("apitest").runs { name: String ->
+    literal("apitest") {
+        literal("get").runs { name: String, skipCache: Boolean, forceSkycrypt: Boolean ->
+            scope.launch(Dispatchers.IO) {
+                withContext(Dispatchers.IO) {
+                    val profiles = getSkyblockProfile(name, skipCache, forceSkyCrypt = forceSkycrypt) ?: return@withContext modMessage("Player does not exist!")
 
-        scope.launch(Dispatchers.IO) {
-            withContext(Dispatchers.IO) {
-                val profiles = getSkyblockProfile(name) ?: return@withContext modMessage("Player does not exist!")
+                    val profile = profiles.profileData.profiles.find { it.selected }?.members?.get(profiles.uuid)
+                        ?: return@withContext modMessage("Could not find player data.")
+                    modMessage("Succeeded!")
+                }
+            }
+        }
 
-                val profile = profiles.profileData.profiles.find { it.selected }?.members?.get(profiles.uuid)
-                    ?: return@withContext modMessage("Could not find player data.")
-                modMessage("Succeeded!")
+        literal("que").runs {
+            scope.launch {
+                modMessage("testing que...")
+                testQue()
+                testQue()
+                testQue()
+                testQue()
             }
         }
     }
