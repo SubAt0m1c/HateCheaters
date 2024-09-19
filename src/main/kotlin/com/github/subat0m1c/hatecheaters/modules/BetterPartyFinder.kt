@@ -9,13 +9,11 @@ import com.github.subat0m1c.hatecheaters.utils.ApiUtils.toMCItems
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.add
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.addHoverText
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.createHoverStyle
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.print
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.secondsToMinutes
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.short
-import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.getHypixelSkyblockProfile
-import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.server
+import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.getSkyblockProfile
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelApiStats
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,7 +25,6 @@ import me.odinmain.features.settings.impl.*
 import me.odinmain.utils.capitalizeFirst
 import me.odinmain.utils.noControlCodes
 import me.odinmain.utils.skyblock.*
-import net.minecraft.event.HoverEvent
 import net.minecraft.util.ChatComponentText
 
 object BetterPartyFinder : Module(
@@ -68,7 +65,7 @@ object BetterPartyFinder : Module(
             if (name == mc.session.username) return@onMessage
 
             scope.launch(Dispatchers.IO) {
-                val profiles = getHypixelSkyblockProfile(name, false)
+                val profiles = getSkyblockProfile(name, false)
                 profiles?.profileData?.profiles
                     ?.find { it.selected }?.members?.get(profiles.uuid)
                     ?.let { displayDungeonData(it, name) }
@@ -77,7 +74,7 @@ object BetterPartyFinder : Module(
                             ${getChatBreak()}
                             Could not find info for player $name
                             ${getChatBreak()}
-                            """.trimIndent()
+                            """.trimIndent(), false
                         )
                     }
             }
@@ -100,13 +97,14 @@ object BetterPartyFinder : Module(
                 withContext(Dispatchers.IO) {
                     val kickedReasons = mutableListOf<String>()
 
-                    val profiles = getHypixelSkyblockProfile(name, false)
+                    val profiles = getSkyblockProfile(name, false)
                     val currentProfile = profiles?.profileData?.profiles?.find { it.selected }?.members?.get(profiles.uuid) ?: run {
                         modMessage("""
                             ${getChatBreak()}
                             Could not find info for player $name
                             ${getChatBreak()}
-                        """.trimIndent())
+                        """.trimIndent(), false
+                        )
                         return@withContext
                     }
 
@@ -114,7 +112,6 @@ object BetterPartyFinder : Module(
                     dungeon.fastestTimeSPlus["$floor"]?.times(0.001)?.let {
                         if (!timeKick) return@let
                         if (it > (timereq)) {
-                            modMessage("$it | $timereq}")
                             kickedReasons.add("Did not meet time req: ${secondsToMinutes(it)}/${secondsToMinutes(it)}")
                         } else modMessage("$it | $timereq")
                     } ?: kickedReasons.add("Couldn't confirm completion status!")
@@ -123,7 +120,6 @@ object BetterPartyFinder : Module(
                     secretCount.let {
                         if (!secretKick) return@let
                         if (it < (secretsreq * 1000)) {
-                            modMessage("$it | ${secretsreq * 1000}")
                             kickedReasons.add("Did not meet secret req: ${it}/${secretsreq}")
                         } else modMessage("$it | ${secretsreq * 1000}")
                     }
@@ -133,7 +129,6 @@ object BetterPartyFinder : Module(
                     ((secretCount.toDouble()/(mmComps + floorComps).toDouble()).toFloat()).let {
                         if (!savgKick) return@let
                         if (it < savgreq) {
-                            modMessage("$it | $savgreq | $floorComps")
                             kickedReasons.add("Did not meet savg req: $it/${savgreq}")
                         } else modMessage("$it | $savgreq | $floorComps")
                     }
@@ -175,18 +170,18 @@ object BetterPartyFinder : Module(
         chatComponent.add(
             getChatBreak() +
                 "\n§3| §2Player: §b$name" +
-                "\n§3| §4Cata Level: §f${catacombs.dungeonTypes.cataLevel.short} §8: "
+                "\n§3| §4Cata Level: §f${catacombs.dungeonTypes.cataLevel.short.colorize(50)} §8: "
         )
-        chatComponent.addHoverText("§aClass Avg: §6${catacombs.classAverage.short}\n",
+        chatComponent.addHoverText("§dClass Avg: §6${catacombs.classAverage.short.colorize(50)}\n",
             catacombs.classes.entries.joinToString("\n") {
-                "§e${it.key.capitalizeFirst()} §7| ${it.value.classLevel.short}"
+                "§e${it.key.capitalizeFirst()} §7| ${it.value.classLevel.short.colorize(50)}"
             }
         )
         chatComponent.add("""
-            §3| §bSecrets: §f${catacombs.secrets} §8: §bAverage: §f${(catacombs.secrets.toDouble()/(mmComps + floorComps)).short}
+            §3| §bSecrets: §f${catacombs.secrets.colorize(100000)} §8: §bAverage: §f${(catacombs.secrets.toDouble()/(mmComps + floorComps)).short.colorize(15.0)}
             §3| §cBlood mobs: §f${(profileKills["watcher_summon_undead"] ?: 0) + (profileKills["master_watcher_summon_undead"] ?: 0)}
             
-            §3| ${if (allItems.isNotEmpty()) "§eMagical power: §e${currentProfile.magicalPower} §7(${currentProfile.accessoryBagStorage.selectedPower})" else "§o§4Inventory Api Disabled!"}
+            §3| ${if (allItems.isNotEmpty()) "§eMagical power: ${currentProfile.magicalPower.colorize(1697)} §7(${currentProfile.accessoryBagStorage.selectedPower})" else "§o§4Inventory Api Disabled!"}
             
             §3| §5Wither Impact: ${if (allItems.any { it?.lore?.any { it.noControlCodes.matches(witherImpactRegex) } == true }) "§l§2Found!" else "§o§4Missing!"}
             """.trimIndent())
@@ -213,5 +208,18 @@ object BetterPartyFinder : Module(
         """.trimIndent())
 
         chatComponent.print()
+    }
+    private fun Number.colorize(max: Number): String {
+        val double = this.toDouble()
+        val maxDouble = max.toDouble()
+        val color = when {
+            double >= maxDouble -> "§2"
+            double >= (maxDouble * 0.85) -> "§a"
+            double >= (maxDouble * 0.7) -> "§b"
+            double >= (maxDouble * 0.5) -> "§e"
+            double >= (maxDouble * 0.25) -> "§c"
+            else -> "§4"
+        }
+        return "$color$this"
     }
 }

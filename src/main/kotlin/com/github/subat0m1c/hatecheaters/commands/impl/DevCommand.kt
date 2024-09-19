@@ -4,12 +4,13 @@ import com.github.subat0m1c.hatecheaters.commands.commodore
 import com.github.subat0m1c.hatecheaters.modules.HateCheaters
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.magicalPower
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
-import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.getHypixelSkyblockProfile
+import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.getSkyblockProfile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.odinmain.OdinMain.scope
 import me.odinmain.config.Config
+import me.odinmain.utils.skyblock.sendCommand
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -21,17 +22,11 @@ val DevCommand = commodore("hcdev") {
 
         scope.launch(Dispatchers.IO) {
             withContext(Dispatchers.IO) {
-                val profiles = getHypixelSkyblockProfile(name) ?: return@withContext modMessage("Player does not exist!")
+                val profiles = getSkyblockProfile(name) ?: return@withContext modMessage("Player does not exist!")
 
-                val profile = profiles.profileData.profiles.find { it.selected }?.members?.get(profiles.uuid) ?: return@withContext modMessage("Could not find player data.")
-
-                val profileKills = profile.playerStats.kills
-                val bloodMobs = (profileKills["watcher_summon_undead"] ?: 0) + (profileKills["master_watcher_summon_undead"] ?: 0)
-                modMessage("bloodmobs: $bloodMobs")
-                modMessage("secrets: " + profile.dungeons.secrets)
-                modMessage("magic power: " + profile.magicalPower)
-                val tuningData = profile.accessoryBagStorage.tuning.currentTunings.entries.map { "${it.key} | ${it.value}" }
-                modMessage("tunings:\n${tuningData.joinToString("\n")}")
+                val profile = profiles.profileData.profiles.find { it.selected }?.members?.get(profiles.uuid)
+                    ?: return@withContext modMessage("Could not find player data.")
+                modMessage("Succeeded!")
             }
         }
     }
@@ -56,5 +51,4 @@ val DevCommand = commodore("hcdev") {
             Config.save()
         } ?: modMessage("Server not set! Run /hcdev server to set one.")
     }
-
 }

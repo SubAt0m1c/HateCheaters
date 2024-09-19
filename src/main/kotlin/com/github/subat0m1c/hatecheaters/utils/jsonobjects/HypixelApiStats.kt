@@ -10,12 +10,14 @@ object HypixelApiStats {
         val profileData: ProfilesData,
         val uuid: String,
         val name: String,
+        val skyCrypt: Boolean = false
     )
 
     @Serializable
     data class ProfilesData(
+        val cause: String? = null,
         @SerialName("profiles")
-        val profiles: List<Profiles> = emptyList()
+        val profiles: List<Profiles> = emptyList(),
     )
 
     @Serializable

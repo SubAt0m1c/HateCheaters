@@ -1,12 +1,9 @@
 package com.github.subat0m1c.hatecheaters.utils
 
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import me.odinmain.OdinMain.mc
-import net.minecraft.event.ClickEvent
 import net.minecraft.event.HoverEvent
 import net.minecraft.util.ChatComponentText
 import net.minecraft.util.ChatStyle
-import net.minecraft.util.EnumChatFormatting
 import kotlin.math.floor
 
 object ChatUtils {

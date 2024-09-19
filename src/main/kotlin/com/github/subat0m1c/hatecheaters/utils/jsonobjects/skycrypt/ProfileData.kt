@@ -7,6 +7,27 @@ import kotlinx.serialization.Serializable
 
 object ProfileData {
 
+    //dummy hypixel data to parse into
+
+    fun skyCryptToHypixel(profiles: Profiles, name: String, uuid: String = "SkyCryptPlayer"): HypixelApiStats.PlayerInfo {
+        return HypixelApiStats.PlayerInfo(
+            uuid = uuid,
+            name = name,
+            skyCrypt = true,
+            profileData = HypixelApiStats.ProfilesData(
+                profiles = profiles.profiles.entries.map {
+                    HypixelApiStats.Profiles(
+                        profileId = it.key,
+                        gameMode = it.value.gameMode,
+                        cuteName = it.value.cuteName,
+                        selected = it.value.current,
+                        members = mapOf(uuid to it.value.raw),
+                    )
+                }
+            )
+        )
+    }
+
     @Serializable
     data class Profiles(
         @SerialName("profiles")

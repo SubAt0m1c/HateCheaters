@@ -12,18 +12,20 @@ val ItemCommand = commodore("hcitems") {
         val name = item.string.lowercase().replace("_", " ").capitalizeWords()
         if (name in importantItems) return@runs modMessage("$name is already in the list!")
         importantItems.add(name)
+        modMessage("$name has been added to the list!")
         Config.save()
     }
 
     literal("remove").runs { item: GreedyString ->
         val name = item.string.lowercase().replace("_", " ").capitalizeWords()
-        if (importantItems.remove(name)) modMessage("$name has been added to the list!")
+        if (importantItems.remove(name)) modMessage("$name has been removed from the list!")
         else modMessage("$name is not in the list!")
         Config.save()
     }
 
     literal("list").runs {
-        modMessage("items:\n${importantItems.joinToString("\n")}")
+        if (importantItems.isEmpty()) modMessage("Item list is empty!")
+        else modMessage("items:\n${importantItems.joinToString("\n")}")
     }
 
     literal("clear").runs {

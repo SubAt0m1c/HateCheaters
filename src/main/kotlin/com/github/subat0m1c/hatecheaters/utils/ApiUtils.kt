@@ -27,28 +27,8 @@ object ApiUtils {
     /**
      * Taken and modified from Skytils under AGPL-3.0
      */
-    /**val HypixelApiStats.MemberData.magicalPower: Int get() =
-        inventory.bagContents["talisman_bag"]?.toMCItems?.filterNotNull()?.map { tali ->
-            val id = tali.itemID
-                .let { it.takeUnless { it.startsWith("PARTY_HAT_") } ?: "PARTY_HAT" }
-                .takeUnless { tali.lore.any { it.matches(Regex("§7§4☠ §cRequires §5.+§c.")) } }
-                ?: Pair(tali.itemID, 0)
-
-            val mp = mpMap[getRarity(tali.lore)] ?: 0
-
-            Pair(id, mp + when (id) {
-                "HEGEMONY_ARTIFACT" -> mp
-                "ABICASE" -> (crimsonIsle.abiphone.activeContacts.size / 2).floor().toInt()
-                else -> 0
-            })
-        }?.groupBy { it.first }?.mapValues { entry ->
-            entry.value.maxBy { it.second }
-        }?.values?.fold(0) { acc, pair ->
-            acc + pair.second
-        }?.apply { (this + 11).takeIf { rift.access.consumedPrism } } ?: 0 */
-
-    val HypixelApiStats.MemberData.magicalPower: Int get() {
-        return inventory.bagContents["talisman_bag"]?.toMCItems?.filterNotNull()
+    val HypixelApiStats.MemberData.magicalPower: Int get() =
+        inventory.bagContents["talisman_bag"]?.toMCItems?.filterNotNull()
             ?.filterNot { it.lore.any { it.matches(Regex("§7§4☠ §cRequires §5.+§c.")) }}
             ?.map {
                 var mp = it.getMagicalPower
@@ -60,7 +40,6 @@ object ApiUtils {
             }?.values?.fold(0) { acc, pair ->
                 acc + pair.second
             }?.apply { (this+11).takeIf { rift.access.consumedPrism } } ?: 0
-    }
 
     /**
      * taken and modified from skytils under AGPL-3.0

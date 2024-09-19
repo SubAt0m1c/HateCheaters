@@ -15,7 +15,6 @@ object WebUtils {
         return@withContext try {
             val connection = setupHTTPConnection(URL(url))
 
-            modMessage(connection.contentType)
             if (connection.responseCode == HttpURLConnection.HTTP_OK) {
                 connection.inputStream.also {
                     modMessage("Successfully fetched data for $data")
@@ -34,7 +33,7 @@ object WebUtils {
         val connection = url.openConnection() as HttpURLConnection
         connection.requestMethod = "GET"
         connection.setRequestProperty("Accept", "application/json")
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0")
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36")
         return connection
     }
 
