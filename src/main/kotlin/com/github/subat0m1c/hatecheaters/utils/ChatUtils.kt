@@ -12,7 +12,13 @@ import kotlin.math.floor
 object ChatUtils {
 
     /**
-     * hippity hoppity odins modmessage is now my property and slightly modified
+     * Sends a client-side message with an optional prefix.
+     *
+     * Taken and modified from [Odin](https://github.com/odtheking/Odin) under [BSD-3](https://github.com/odtheking/Odin/blob/main/LICENSE).
+     *
+     * @param message Message to be sent.
+     * @param prefix If `true`, adds a prefix to the message.
+     * @param chatStyle Optional chat style to be applied to the message.
      */
     fun modMessage(message: Any?, prefix: Boolean = true, chatStyle: ChatStyle? = null) {
         val chatComponent = ChatComponentText(if (prefix) "§bH§3C §8»§r $message" else message.toString())

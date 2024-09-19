@@ -1,5 +1,6 @@
 package com.github.subat0m1c.hatecheaters.utils
 
+import com.github.subat0m1c.hatecheaters.modules.HateCheaters
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.json
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
@@ -13,6 +14,8 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 object WebUtils {
+
+    inline val apiServer: String get() = if (HateCheaters.server == "default") "http://subat0mic.duckdns.org/rawProfile?uuid=" else HateCheaters.server
 
     private val queue = SuspendQueue()
 

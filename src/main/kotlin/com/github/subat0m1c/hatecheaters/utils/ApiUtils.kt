@@ -13,7 +13,7 @@ import kotlin.math.floor
 object ApiUtils {
 
     /**
-     * Taken and modified from Skytils under AGPL-3.0
+     * Taken and modified from [Skytils](https://github.com/Skytils/SkytilsMod) under [AGPL-3.0](https://github.com/Skytils/SkytilsMod/blob/1.x/LICENSE.md).
      */
     @OptIn(ExperimentalEncodingApi::class)
     val HypixelProfileData.InventoryContents.itemStacks: List<ItemStack?> get() = data.let {
@@ -23,7 +23,7 @@ object ApiUtils {
     }
 
     /**
-     * Taken and modified from Skytils under AGPL-3.0
+     * Taken and modified from [Skytils](https://github.com/Skytils/SkytilsMod) under [AGPL-3.0](https://github.com/Skytils/SkytilsMod/blob/1.x/LICENSE.md).
      */
     val HypixelProfileData.MemberData.magicalPower: Int get() =
         inventory.bagContents["talisman_bag"]?.itemStacks?.filterNotNull()
@@ -40,7 +40,7 @@ object ApiUtils {
             }?.apply { (this+11).takeIf { rift.access.consumedPrism } } ?: 0
 
     /**
-     * taken and modified from skytils under AGPL-3.0
+     * Taken and modified from [Skytils](https://github.com/Skytils/SkytilsMod) under [AGPL-3.0](https://github.com/Skytils/SkytilsMod/blob/1.x/LICENSE.md).
      */
     fun getLevelWithProgress(experience: Double, values: Array<Long>): Double {
         var xp = experience

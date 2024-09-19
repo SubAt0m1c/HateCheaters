@@ -1,9 +1,9 @@
 package com.github.subat0m1c.hatecheaters.utils
 
-import com.github.subat0m1c.hatecheaters.modules.HateCheaters
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.getCurrentDateTimeString
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
+import com.github.subat0m1c.hatecheaters.utils.LogHandler.logJsonToFile
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
+import com.github.subat0m1c.hatecheaters.utils.WebUtils.apiServer
 import com.github.subat0m1c.hatecheaters.utils.WebUtils.getInputStream
 import com.github.subat0m1c.hatecheaters.utils.WebUtils.getUUIDbyName
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData
@@ -13,14 +13,9 @@ import com.github.subat0m1c.hatecheaters.utils.jsonobjects.SkyCryptProfileData.s
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import java.io.File
 import java.io.InputStream
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 object JsonParseUtils {
-
-    private inline val server: String get() = if (HateCheaters.server == "default") "http://subat0mic.duckdns.org/rawProfile?uuid=" else HateCheaters.server
 
     private val cachedPlayerData: MutableMap<String, Pair<PlayerInfo, Long>> = mutableMapOf()
 
@@ -54,7 +49,7 @@ object JsonParseUtils {
             if (forceSkyCrypt) throw FailedToGetHypixelException("Forced SkyCrypt!")
 
             val uuid = getUUIDbyName(name) ?: throw FailedToGetHypixelException("Couldn't get UUID!")
-            val inputStream = getInputStream(name, "$server$uuid") ?: throw FailedToGetHypixelException("Couldn't get Hypixel API input stream!")
+            val inputStream = getInputStream(name, "$apiServer$uuid") ?: throw FailedToGetHypixelException("Couldn't get Hypixel API input stream!")
             val profiles = parseHypixelData(inputStream, uuid, name)
             return@withContext profiles.also { addToCache(name, profiles) }
         } catch (e: FailedToGetHypixelException) {
@@ -76,19 +71,6 @@ object JsonParseUtils {
         val profileData = skyCryptToHypixel(profiles, name, name)
         addToCache(name, profileData)
         return@withContext profileData.also { logJsonToFile(json.encodeToString(HypixelProfileData.ProfilesData.serializer(), it.profileData), name, "parsed_skycrypt_profile", "skycrypt_logs") }
-    }
-
-    private fun logJsonToFile(jsonString: String, name: String = "unknown", type: String = "unknown", dir: String = "hypixel_logs") {
-        if (!HateCheaters.enabled || !HateCheaters.logJson) return
-        val minecraftDir = File("config/hatecheaters")
-        val logFolder = File(minecraftDir, dir)
-        if (!logFolder.exists()) {
-            logFolder.mkdirs()
-        }
-
-        val logFile = File(logFolder, "${name}_${type}_${getCurrentDateTimeString()}.json")
-
-        logFile.writeText(jsonString)
     }
 
 

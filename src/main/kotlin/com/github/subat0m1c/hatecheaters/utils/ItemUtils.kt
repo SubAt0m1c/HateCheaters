@@ -6,14 +6,6 @@ import net.minecraft.item.ItemStack
 
 object ItemUtils {
 
-    /**
-     * returns an items display name.
-     */
-    val ItemStack?.getDisplayName: String? get() = this?.tagCompound?.takeIf { it.hasKey("display", 10) }?.let {
-        val nbtTag = this.tagCompound.getCompoundTag("display")
-        return nbtTag.getString("Name").takeIf { nbtTag.hasKey("name", 8) } ?: this.item.getItemStackDisplayName(this)
-    } ?: this?.item?.getItemStackDisplayName(this)
-
     val ItemStack?.getMagicalPower: Int get() {
         var baseMp = mpMap[getRarity(this?.lore ?: emptyList())] ?: 0
         if (this.itemID == "HEGEMONY_ARTIFACT") baseMp *= 2
@@ -32,8 +24,10 @@ object ItemUtils {
     )
 
     /**
-     * broken in odin LOL
-     * fixed soon but this is code taken from odin under BSD-3
+     * previously broken in odin.
+     * remaining until odin real 1.2.5.beta8 release since most beta8 users are before this was fixed.
+     *
+     * Taken and modified from [Odin](https://github.com/odtheking/Odin) under [BSD-3](https://github.com/odtheking/Odin/blob/main/LICENSE).
      */
     enum class ItemRarity(
         val loreName: String,
@@ -55,6 +49,9 @@ object ItemUtils {
 
     /**
      * Gets the rarity of an item
+     *
+     * Taken from [Odin](https://github.com/odtheking/Odin) under [BSD-3](https://github.com/odtheking/Odin/blob/main/LICENSE).
+     *
      * @param lore Lore of an item
      * @return ItemRarity or null if not found
      */

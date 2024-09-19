@@ -15,7 +15,8 @@ import javax.swing.JOptionPane
 import javax.swing.UIManager
 
 /**
- * Modified from SkyHanni under LGPL-2.1, which includes parts modified from Skytils under AGPL-3.0
+ * Modified from [SkyHanni](https://github.com/hannibal002/SkyHanni) under [LGPL-2.1](https://github.com/hannibal002/SkyHanni/blob/beta/LICENSE).
+ * Includes parts modified from [Skytils](https://github.com/Skytils/SkytilsMod) under [AGPL-3.0](https://github.com/Skytils/SkytilsMod/blob/1.x/LICENSE.md).
  */
 object OdinCheck {
 
@@ -53,7 +54,8 @@ object OdinCheck {
     }
 
     /**
-     * Modified from Skytils
+     * Modified by [SkyHanni](https://github.com/hannibal002/SkyHanni) under [LGPL-2.1](https://github.com/hannibal002/SkyHanni/blob/beta/LICENSE).
+     * Taken from [Skytils](https://github.com/Skytils/SkytilsMod) under [AGPL-3.0](https://github.com/Skytils/SkytilsMod/blob/1.x/LICENSE.md).
      */
     private fun openPopupWindow(errorMessage: String, vararg options: Pair<String, String>) {
         try {

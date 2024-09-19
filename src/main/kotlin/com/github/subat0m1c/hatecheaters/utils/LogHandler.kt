@@ -1,6 +1,8 @@
 package com.github.subat0m1c.hatecheaters.utils
 
 import com.github.subat0m1c.hatecheaters.HateCheatersObject.scope
+import com.github.subat0m1c.hatecheaters.modules.HateCheaters
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.getCurrentDateTimeString
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileInputStream
@@ -12,7 +14,6 @@ import java.util.logging.FileHandler
 import java.util.logging.Logger
 import java.util.logging.SimpleFormatter
 import java.util.zip.GZIPOutputStream
-import kotlin.concurrent.thread
 
 object LogHandler {
     val logger: Logger = Logger.getLogger("HateCheatersLogger")
@@ -61,9 +62,7 @@ object LogHandler {
                 logDir.mkdirs()
             }
 
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss")
-            val dateString = dateFormat.format(Date())
-            val logFileName = "${logDir.absolutePath}/$dateString.log"
+            val logFileName = "${logDir.absolutePath}/${getCurrentDateTimeString()}.log"
 
             val fileHandler = FileHandler(logFileName, true)
             fileHandler.formatter = SimpleFormatter()
@@ -72,5 +71,18 @@ object LogHandler {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
+
+    fun logJsonToFile(jsonString: String, name: String = "unknown", type: String = "unknown", dir: String = "hypixel_logs") {
+        if (!HateCheaters.enabled || !HateCheaters.logJson) return
+        val minecraftDir = File("config/hatecheaters")
+        val logFolder = File(minecraftDir, dir)
+        if (!logFolder.exists()) {
+            logFolder.mkdirs()
+        }
+
+        val logFile = File(logFolder, "${name}_${type}_${getCurrentDateTimeString()}.json")
+
+        logFile.writeText(jsonString)
     }
 }
