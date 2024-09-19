@@ -1,9 +1,12 @@
 package com.github.subat0m1c.hatecheaters.utils
 
+import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
 import me.odinmain.OdinMain.mc
 import net.minecraft.event.HoverEvent
 import net.minecraft.util.ChatComponentText
 import net.minecraft.util.ChatStyle
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.floor
 
 object ChatUtils {
@@ -14,8 +17,9 @@ object ChatUtils {
     fun modMessage(message: Any?, prefix: Boolean = true, chatStyle: ChatStyle? = null) {
         val chatComponent = ChatComponentText(if (prefix) "§bH§3C §8»§r $message" else message.toString())
         chatStyle?.let { chatComponent.setChatStyle(it) } // Set chat style using setChatStyle method
+        logger.info("Messaged >> $message")
         try { mc.thePlayer?.addChatMessage(chatComponent) }
-        catch (e: Exception) { println("Error sending message: ${e.message}")
+        catch (e: Exception) { logger.warning("Error sending message: ${e.message}")
         }
     }
 
@@ -49,11 +53,18 @@ object ChatUtils {
         this.appendSibling(componentText)
     }
 
+    fun getCurrentDateTimeString(): String {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss")
+        val currentDateTime = LocalDateTime.now()
+        return currentDateTime.format(formatter)
+    }
+
+
     fun ChatComponentText.print() {
         try {
             mc.thePlayer.addChatMessage(this)
         } catch (e: Exception) {
-            modMessage("Error sending chat message: ${e.message}")
+            logger.warning("Error sending chat message: ${e.message}")
         }
     }
 }

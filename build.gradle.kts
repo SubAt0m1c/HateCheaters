@@ -120,7 +120,9 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8")
     implementation(files("build/resources/Odin/${requiredOdin}"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
-    //implementation("com.github.Stivais:Commodore:1.8.9-1.3.0")
+
+    shadowImpl("org.apache.logging.log4j:log4j-core:2.20.0")
+    shadowImpl("org.apache.logging.log4j:log4j-api:2.20.0")
 
     shadowImpl(kotlin("stdlib-jdk8"))
 

@@ -1,5 +1,6 @@
 package com.github.subat0m1c.hatecheaters.utils
 
+import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
 import net.minecraft.client.Minecraft
 import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.Loader
@@ -34,7 +35,7 @@ object OdinCheck {
             odinWarning("An unknown error occurred trying to determine Odin version!")
             return
         }
-
+        logger.info("Odin Loaded!")
     }
 
     private fun odinWarning(what: String, currentOdin: String? = null) {

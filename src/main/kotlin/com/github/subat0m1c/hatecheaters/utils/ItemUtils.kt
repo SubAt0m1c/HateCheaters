@@ -1,4 +1,4 @@
-package com.github.subat0m1c.hatecheaters.utils.jsonobjects
+package com.github.subat0m1c.hatecheaters.utils
 
 import me.odinmain.utils.render.Color
 import me.odinmain.utils.skyblock.*

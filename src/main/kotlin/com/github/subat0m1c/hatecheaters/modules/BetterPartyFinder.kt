@@ -1,11 +1,11 @@
 package com.github.subat0m1c.hatecheaters.modules
 
-import com.github.subat0m1c.hatecheaters.Scope.scope
+import com.github.subat0m1c.hatecheaters.HateCheatersObject.scope
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.cataLevel
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.classAverage
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.classLevel
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.magicalPower
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.toMCItems
+import com.github.subat0m1c.hatecheaters.utils.ApiUtils.itemStacks
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.add
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.addHoverText
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
@@ -13,7 +13,8 @@ import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.print
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.secondsToMinutes
 import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.getSkyblockProfile
-import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelApiStats
+import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
+import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -85,7 +86,7 @@ object BetterPartyFinder : Module(
             val name = pfRegex.find(it)?.groupValues?.get(1).toString()
             if (name == mc.session.username) return@onMessage
 
-            modMessage("$name is being searched")
+            logger.info("$name is being searched")
 
             if (kickedList.contains(name) && kickCache) {
                 sendCommand("party kick $name")
@@ -113,7 +114,7 @@ object BetterPartyFinder : Module(
                         if (!timeKick) return@let
                         if (it > (timereq)) {
                             kickedReasons.add("Did not meet time req: ${secondsToMinutes(it)}/${secondsToMinutes(it)}")
-                        } else modMessage("$it | $timereq")
+                        }
                     } ?: kickedReasons.add("Couldn't confirm completion status!")
 
                     val secretCount = currentProfile.dungeons.secrets
@@ -121,7 +122,7 @@ object BetterPartyFinder : Module(
                         if (!secretKick) return@let
                         if (it < (secretsreq * 1000)) {
                             kickedReasons.add("Did not meet secret req: ${it}/${secretsreq}")
-                        } else modMessage("$it | ${secretsreq * 1000}")
+                        }
                     }
 
                     val mmComps = (currentProfile.dungeons.dungeonTypes.mastermode.tierComps.entries.sumOf { entry ->  entry.value.takeUnless { entry.key == "total" } ?: 0 })
@@ -130,7 +131,7 @@ object BetterPartyFinder : Module(
                         if (!savgKick) return@let
                         if (it < savgreq) {
                             kickedReasons.add("Did not meet savg req: $it/${savgreq}")
-                        } else modMessage("$it | $savgreq | $floorComps")
+                        }
                     }
 
                     if (kickedReasons.isNotEmpty()) {
@@ -149,7 +150,7 @@ object BetterPartyFinder : Module(
 
     private val witherImpactRegex = Regex("(?:⦾ )?Ability: Wither Impact {2}RIGHT CLICK")
 
-    private suspend fun displayDungeonData(currentProfile: HypixelApiStats.MemberData, name: String): Unit = withContext(Dispatchers.Default) {
+    private suspend fun displayDungeonData(currentProfile: HypixelProfileData.MemberData, name: String): Unit = withContext(Dispatchers.Default) {
         val catacombs = currentProfile.dungeons
 
         val profileKills = currentProfile.playerStats.kills
@@ -157,9 +158,9 @@ object BetterPartyFinder : Module(
         val fpbs = (1..7).map { it to catacombs.dungeonTypes.catacombs.fastestTimeSPlus[it.toString()] }
         val mmpbs =  (1..7).map { it to catacombs.dungeonTypes.mastermode.fastestTimeSPlus[it.toString()] }
 
-        val allItems = (currentProfile.inventory.invContents.toMCItems + currentProfile.inventory.eChestContents.toMCItems + currentProfile.inventory.backpackContents.flatMap { it.value.toMCItems })
+        val allItems = (currentProfile.inventory.invContents.itemStacks + currentProfile.inventory.eChestContents.itemStacks + currentProfile.inventory.backpackContents.flatMap { it.value.itemStacks })
 
-        val armor = currentProfile.inventory.invArmor.toMCItems.filterNotNull().reversed()
+        val armor = currentProfile.inventory.invArmor.itemStacks.filterNotNull().reversed()
 
         val items = importantItems.toSet().map { Pair(it, it.replace(" ", "_").uppercase() in allItems.map { it.itemID } ) }
 
@@ -209,6 +210,7 @@ object BetterPartyFinder : Module(
 
         chatComponent.print()
     }
+
     private fun Number.colorize(max: Number): String {
         val double = this.toDouble()
         val maxDouble = max.toDouble()

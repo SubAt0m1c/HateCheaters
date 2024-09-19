@@ -1,13 +1,15 @@
 package com.github.subat0m1c.hatecheaters.utils
 
 import com.github.subat0m1c.hatecheaters.modules.HateCheaters
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.getCurrentDateTimeString
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
+import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
 import com.github.subat0m1c.hatecheaters.utils.WebUtils.getInputStream
 import com.github.subat0m1c.hatecheaters.utils.WebUtils.getUUIDbyName
-import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelApiStats
-import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelApiStats.PlayerInfo
-import com.github.subat0m1c.hatecheaters.utils.jsonobjects.skycrypt.ProfileData
-import com.github.subat0m1c.hatecheaters.utils.jsonobjects.skycrypt.ProfileData.skyCryptToHypixel
+import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData
+import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.PlayerInfo
+import com.github.subat0m1c.hatecheaters.utils.jsonobjects.SkyCryptProfileData
+import com.github.subat0m1c.hatecheaters.utils.jsonobjects.SkyCryptProfileData.skyCryptToHypixel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -29,23 +31,23 @@ object JsonParseUtils {
 
         logJsonToFile(jsonString, name, "profile")
 
-        val profileData: HypixelApiStats.ProfilesData = json.decodeFromString(jsonString)
+        val profileData: HypixelProfileData.ProfilesData = json.decodeFromString(jsonString)
 
         profileData.cause?.let { throw FailedToGetHypixelException("Failed to get Hypixel Data: $it") }
-        return PlayerInfo(profileData, uuid, name).also { logJsonToFile(json.encodeToString(HypixelApiStats.ProfilesData.serializer(), profileData), name, "parsed_profile") }
+        return PlayerInfo(profileData, uuid, name).also { logJsonToFile(json.encodeToString(HypixelProfileData.ProfilesData.serializer(), profileData), name, "parsed_profile") }
     }
 
     suspend fun getSkyblockProfile(name: String, skipClientCache: Boolean = false, profileId: String? = null, forceSkyCrypt: Boolean = false): PlayerInfo? = withContext(Dispatchers.IO) {
         return@withContext try {
-            modMessage("Fetching data for $name...")
+            logger.info("Fetching data for $name...")
             val cachedPlayer =  cachedPlayerData[name.lowercase()]
             cachedPlayer?.second?.let {
                 if (System.currentTimeMillis() - it >= 600000 || skipClientCache) {
-                    modMessage("removed $name from cache because they haven't been cached in 10 minutes.")
+                    logger.info("removed $name from cache because they haven't been cached in 10 minutes.")
                     cachedPlayerData.remove(name)
                     return@let null
                 }
-                modMessage("Using cached data for $name")
+                logger.info("Using cached data for $name")
                 return@withContext cachedPlayer.first
             }
 
@@ -56,10 +58,11 @@ object JsonParseUtils {
             val profiles = parseHypixelData(inputStream, uuid, name)
             return@withContext profiles.also { addToCache(name, profiles) }
         } catch (e: FailedToGetHypixelException) {
-            modMessage("Fetching data from SkyCrypt for $name... Error: ${e.message}")
+            logger.warning("Fetching data from SkyCrypt for $name... Error: ${e.message}")
             return@withContext getSkyCryptProfile(name, profileId)
         } catch (e: Exception) {
-            modMessage("Error fetching player profile data for $name: ${e.message}")
+            modMessage("Error fetching player profile data for $name: ${e.message}. Report this and include latest log found in config/hatecheaters/logs")
+            logger.severe(e.stackTraceToString())
             null
         }
     }
@@ -69,10 +72,10 @@ object JsonParseUtils {
         val jsonString = inputStream.bufferedReader().use { it.readText() }
         logJsonToFile(jsonString, name, "skycrypt_profile")
 
-        val profiles: ProfileData.Profiles = json.decodeFromString(jsonString)
+        val profiles: SkyCryptProfileData.SkyCryptProfiles = json.decodeFromString(jsonString)
         val profileData = skyCryptToHypixel(profiles, name, name)
         addToCache(name, profileData)
-        return@withContext profileData.also { logJsonToFile(json.encodeToString(HypixelApiStats.ProfilesData.serializer(), it.profileData), name, "parsed_skycrypt_profile", "skycrypt_logs") }
+        return@withContext profileData.also { logJsonToFile(json.encodeToString(HypixelProfileData.ProfilesData.serializer(), it.profileData), name, "parsed_skycrypt_profile", "skycrypt_logs") }
     }
 
     private fun logJsonToFile(jsonString: String, name: String = "unknown", type: String = "unknown", dir: String = "hypixel_logs") {
@@ -88,23 +91,18 @@ object JsonParseUtils {
         logFile.writeText(jsonString)
     }
 
-    private fun getCurrentDateTimeString(): String {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss")
-        val currentDateTime = LocalDateTime.now()
-        return currentDateTime.format(formatter)
-    }
 
     private fun addToCache(name: String, profiles: PlayerInfo) {
         val time = System.currentTimeMillis()
-        if (profiles.profileData.profiles.isEmpty()) return modMessage("Refusing to cache empty profile!")
+        if (profiles.profileData.profiles.isEmpty()) return logger.info("Refusing to cache empty profile!")
         if (cachedPlayerData.size >= 5) {
             cachedPlayerData.entries
                 .maxByOrNull { time - it.value.second }?.key
-                .let { cachedPlayerData.remove(it); modMessage("Removed $it from cache list.") }
+                .let { cachedPlayerData.remove(it); logger.info("Removed $it from cache list.") }
         }
 
         cachedPlayerData[name.lowercase()] = Pair(profiles, time)
-        modMessage("Added $name to cache list. Cache size is now ${cachedPlayerData.size}/5.")
+        logger.info("Added $name to cache list. Cache size is now ${cachedPlayerData.size}/5.")
     }
 }
 

@@ -4,7 +4,7 @@ import kotlinx.serialization.*
 import kotlinx.serialization.json.JsonElement
 
 //todo all the missing data. right now its about enough for what i currently need, however more will be needed with profile viewer.
-object HypixelApiStats {
+object HypixelProfileData {
 
     data class PlayerInfo(
         val profileData: ProfilesData,

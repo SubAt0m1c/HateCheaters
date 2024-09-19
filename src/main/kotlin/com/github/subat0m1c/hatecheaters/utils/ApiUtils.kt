@@ -1,7 +1,7 @@
 package com.github.subat0m1c.hatecheaters.utils
 
-import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelApiStats
-import com.github.subat0m1c.hatecheaters.utils.jsonobjects.ItemUtils.getMagicalPower
+import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData
+import com.github.subat0m1c.hatecheaters.utils.ItemUtils.getMagicalPower
 import me.odinmain.utils.skyblock.*
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompressedStreamTools
@@ -16,7 +16,7 @@ object ApiUtils {
      * Taken and modified from Skytils under AGPL-3.0
      */
     @OptIn(ExperimentalEncodingApi::class)
-    val HypixelApiStats.InventoryContents.toMCItems: List<ItemStack?> get() = data.let {
+    val HypixelProfileData.InventoryContents.itemStacks: List<ItemStack?> get() = data.let {
         if (it.isEmpty()) return emptyList()
         val itemNBTList = CompressedStreamTools.readCompressed(Base64.decode(it).inputStream()).getTagList("i", Constants.NBT.TAG_COMPOUND)
         (0).rangeUntil(itemNBTList.tagCount()).map { itemNBTList.getCompoundTagAt(it).takeUnless { it.hasNoTags() }?.let { ItemStack.loadItemStackFromNBT(it) } }
@@ -25,8 +25,8 @@ object ApiUtils {
     /**
      * Taken and modified from Skytils under AGPL-3.0
      */
-    val HypixelApiStats.MemberData.magicalPower: Int get() =
-        inventory.bagContents["talisman_bag"]?.toMCItems?.filterNotNull()
+    val HypixelProfileData.MemberData.magicalPower: Int get() =
+        inventory.bagContents["talisman_bag"]?.itemStacks?.filterNotNull()
             ?.filterNot { it.lore.any { it.matches(Regex("§7§4☠ §cRequires §5.+§c.")) }}
             ?.map {
                 var mp = it.getMagicalPower
@@ -46,6 +46,7 @@ object ApiUtils {
         var xp = experience
         var level = 0
         val maxLevelExperience = if (values.size > 50) values[50] else 0
+
 
         for (i in values.indices) {
             val toRemove = values[i]
@@ -68,11 +69,11 @@ object ApiUtils {
         return level.toDouble()
     }
 
-    val HypixelApiStats.DungeonsData.classAverage: Double get() =
+    val HypixelProfileData.DungeonsData.classAverage: Double get() =
         classes.values.sumOf { it.classLevel }/5
-    val HypixelApiStats.DungeonTypes.cataLevel: Double get() =
+    val HypixelProfileData.DungeonTypes.cataLevel: Double get() =
         getLevelWithProgress(catacombs.experience, dungeonsLevels)
-    val HypixelApiStats.ClassData.classLevel: Double get() =
+    val HypixelProfileData.ClassData.classLevel: Double get() =
         getLevelWithProgress(experience, dungeonsLevels)
 
     private val dungeonsLevels: Array<Long> = arrayOf(

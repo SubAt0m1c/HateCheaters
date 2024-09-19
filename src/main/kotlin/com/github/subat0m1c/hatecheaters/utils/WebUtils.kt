@@ -2,6 +2,7 @@ package com.github.subat0m1c.hatecheaters.utils
 
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.json
+import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
@@ -37,14 +38,14 @@ object WebUtils {
 
             if (connection.responseCode == HttpURLConnection.HTTP_OK) {
                 connection.inputStream.also {
-                    modMessage("Successfully fetched data for $data")
+                    logger.info("Successfully fetched data for $data")
                 }
             } else {
-                modMessage("Failed to fetch data for $data: ${connection.responseMessage}")
+                logger.warning("Failed to fetch data for $data: ${connection.responseMessage}")
                 null
             }
         } catch (e: Exception) {
-            modMessage("Error fetching data for $data: ${e.message}")
+            logger.warning("Error fetching data for $data: ${e.message}")
             null
         }
     }
@@ -67,10 +68,10 @@ object WebUtils {
                 val data: Map<String, String> = json.decodeFromString(connection.inputStream.bufferedReader().use {it.readText()})
                 return@withContext data["id"]
             } else {
-                modMessage("Failed to get uuid for player $name")
+                logger.warning("Failed to get uuid for player $name")
             }
         } catch (e: Exception) {
-            modMessage("Error fetching uuid for player $name")
+            logger.warning("Error fetching uuid for player $name")
         }
 
         return@withContext null
