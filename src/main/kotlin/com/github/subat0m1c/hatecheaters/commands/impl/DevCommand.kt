@@ -49,6 +49,7 @@ val DevCommand = commodore("hcdev") {
         server?.let {
             HateCheaters.server = it
             Config.save()
+            modMessage("Set server to $it")
         } ?: modMessage("Server not set! Run /hcdev server to set one.")
     }
 }

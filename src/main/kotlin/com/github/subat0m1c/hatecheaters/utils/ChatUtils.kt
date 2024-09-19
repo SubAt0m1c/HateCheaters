@@ -31,8 +31,6 @@ object ChatUtils {
         word.replaceFirstChar(Char::titlecase)
     }
 
-    val Double.short: Double get() = String.format("%.2f", this).toDouble()
-
     fun secondsToMinutes(totalSeconds: Number): String {
         val minutes = floor(totalSeconds.toDouble()/60.0).toInt()
         val seconds = (totalSeconds.toDouble()%60.0).toInt()

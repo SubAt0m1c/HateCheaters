@@ -12,7 +12,6 @@ import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.print
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.secondsToMinutes
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.short
 import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.getSkyblockProfile
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelApiStats
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +23,7 @@ import me.odinmain.features.settings.Setting.Companion.withDependency
 import me.odinmain.features.settings.impl.*
 import me.odinmain.utils.capitalizeFirst
 import me.odinmain.utils.noControlCodes
+import me.odinmain.utils.round
 import me.odinmain.utils.skyblock.*
 import net.minecraft.util.ChatComponentText
 
@@ -170,15 +170,15 @@ object BetterPartyFinder : Module(
         chatComponent.add(
             getChatBreak() +
                 "\n§3| §2Player: §b$name" +
-                "\n§3| §4Cata Level: §f${catacombs.dungeonTypes.cataLevel.short.colorize(50)} §8: "
+                "\n§3| §4Cata Level: §f${catacombs.dungeonTypes.cataLevel.round(2).colorize(50)} §8: "
         )
-        chatComponent.addHoverText("§dClass Avg: §6${catacombs.classAverage.short.colorize(50)}\n",
+        chatComponent.addHoverText("§dClass Avg: §6${catacombs.classAverage.round(2).colorize(50)}\n",
             catacombs.classes.entries.joinToString("\n") {
-                "§e${it.key.capitalizeFirst()} §7| ${it.value.classLevel.short.colorize(50)}"
+                "§e${it.key.capitalizeFirst()} §7| ${it.value.classLevel.round(2).colorize(50)}"
             }
         )
         chatComponent.add("""
-            §3| §bSecrets: §f${catacombs.secrets.colorize(100000)} §8: §bAverage: §f${(catacombs.secrets.toDouble()/(mmComps + floorComps)).short.colorize(15.0)}
+            §3| §bSecrets: §f${catacombs.secrets.colorize(100000)} §8: §bAverage: §f${(catacombs.secrets.toDouble()/(mmComps + floorComps)).round(2).colorize(15.0)}
             §3| §cBlood mobs: §f${(profileKills["watcher_summon_undead"] ?: 0) + (profileKills["master_watcher_summon_undead"] ?: 0)}
             
             §3| ${if (allItems.isNotEmpty()) "§eMagical power: ${currentProfile.magicalPower.colorize(1697)} §7(${currentProfile.accessoryBagStorage.selectedPower})" else "§o§4Inventory Api Disabled!"}
@@ -213,12 +213,14 @@ object BetterPartyFinder : Module(
         val double = this.toDouble()
         val maxDouble = max.toDouble()
         val color = when {
-            double >= maxDouble -> "§2"
-            double >= (maxDouble * 0.85) -> "§a"
-            double >= (maxDouble * 0.7) -> "§b"
-            double >= (maxDouble * 0.5) -> "§e"
-            double >= (maxDouble * 0.25) -> "§c"
-            else -> "§4"
+            double >= maxDouble -> "§b"
+            double >= (maxDouble*0.9) -> "§c"
+            double >= (maxDouble*0.75) -> "§d"
+            double >= (maxDouble*0.65) -> "§6"
+            double >= (maxDouble*0.50) -> "§5"
+            double >= (maxDouble*0.25) -> "§9"
+            double >= (maxDouble*0.1) -> "§a"
+            else -> "§f"
         }
         return "$color$this"
     }

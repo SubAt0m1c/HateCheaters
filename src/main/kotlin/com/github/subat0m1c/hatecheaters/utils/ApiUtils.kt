@@ -1,9 +1,7 @@
 package com.github.subat0m1c.hatecheaters.utils
 
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.short
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelApiStats
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.ItemUtils.getMagicalPower
-import me.odinmain.utils.floor
 import me.odinmain.utils.skyblock.*
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompressedStreamTools
@@ -75,7 +73,7 @@ object ApiUtils {
     val HypixelApiStats.DungeonTypes.cataLevel: Double get() =
         getLevelWithProgress(catacombs.experience, dungeonsLevels)
     val HypixelApiStats.ClassData.classLevel: Double get() =
-        getLevelWithProgress(experience, dungeonsLevels).short
+        getLevelWithProgress(experience, dungeonsLevels)
 
     private val dungeonsLevels: Array<Long> = arrayOf(
         50, 75, 110, 160, 230, 330, 470, 670, 950, 1340,
