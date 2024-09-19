@@ -30,7 +30,7 @@ import net.minecraft.util.ChatComponentText
 
 object BetterPartyFinder : Module(
     name = "Better Party Finder",
-    description = "Provides stats when a player joins your party. Includes autokick functionality.",
+    description = "Provides stats when a player joins your party. Includes autokick functionality. /hcitems to configure important items list.sk",
     category = Category.DUNGEON
 ) {
     private val statsDisplay: Boolean by BooleanSetting("Stats display", default = true, description = "Displays stats of players who join your party")
