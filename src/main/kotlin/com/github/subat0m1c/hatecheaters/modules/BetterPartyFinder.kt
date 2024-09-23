@@ -9,6 +9,7 @@ import com.github.subat0m1c.hatecheaters.utils.ApiUtils.itemStacks
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.add
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.addHoverText
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.print
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.secondsToMinutes
@@ -69,7 +70,7 @@ object BetterPartyFinder : Module(
                 val profiles = getSkyblockProfile(name, false)
                 profiles?.profileData?.profiles
                     ?.find { it.selected }?.members?.get(profiles.uuid)
-                    ?.let { displayDungeonData(it, name) }
+                    ?.let { displayDungeonData(it, profiles.name) }
                     ?: run {
                         modMessage("""
                             ${getChatBreak()}
@@ -211,19 +212,4 @@ object BetterPartyFinder : Module(
         chatComponent.print()
     }
 
-    private fun Number.colorize(max: Number): String {
-        val double = this.toDouble()
-        val maxDouble = max.toDouble()
-        val color = when {
-            double >= maxDouble -> "§b"
-            double >= (maxDouble*0.9) -> "§c"
-            double >= (maxDouble*0.75) -> "§d"
-            double >= (maxDouble*0.65) -> "§6"
-            double >= (maxDouble*0.50) -> "§5"
-            double >= (maxDouble*0.25) -> "§9"
-            double >= (maxDouble*0.1) -> "§a"
-            else -> "§f"
-        }
-        return "$color$this"
-    }
 }

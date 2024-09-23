@@ -235,7 +235,7 @@ object HypixelProfileData {
     @Serializable
     data class Pet(
         val uuid: String? = null,
-        val uniqueId: String = "",
+        val uniqueId: String? = null,
         val type: String = "",
         val exp: Double = 0.0,
         val active: Boolean = false,
@@ -578,6 +578,32 @@ object HypixelProfileData {
         val experience: Map<String, Double> = emptyMap(),
         @SerialName("fastest_target_practice")
         val fastestTargetPractice: Double? = null,
+    )
+
+    @Serializable
+    data class Experience( //maybe useful but accessing as a list is better for most situations.
+        @SerialName("SKILL_FISHING")
+        val fishing: Double = 0.0,
+        @SerialName("SKILL_ALCHEMY")
+        val alchemy: Double = 0.0,
+        @SerialName("SKILL_RUNECRAFTING")
+        val runeCrafting: Double = 0.0,
+        @SerialName("SKILL_MINING")
+        val mining: Double = 0.0,
+        @SerialName("SKILL_FARMING")
+        val farming: Double = 0.0,
+        @SerialName("SKILL_ENCHANTING")
+        val enchanting: Double = 0.0,
+        @SerialName("SKILL_TAMING")
+        val taming: Double = 0.0,
+        @SerialName("SKILL_FORAGING")
+        val foraging: Double = 0.0,
+        @SerialName("SKILL_SOCIAL")
+        val social: Double = 0.0,
+        @SerialName("SKILL_CARPENTRY")
+        val carpentry: Double = 0.0,
+        @SerialName("SKILL_COMBAT")
+        val combat: Double = 0.0,
     )
 
     @Serializable

@@ -1,6 +1,6 @@
 package com.github.subat0m1c.hatecheaters.utils
 
-import com.github.subat0m1c.hatecheaters.modules.HateCheaters
+import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.json
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
@@ -15,7 +15,7 @@ import java.net.URL
 
 object WebUtils {
 
-    inline val apiServer: String get() = if (HateCheaters.server == "default") "http://subat0mic.duckdns.org/rawProfile?uuid=" else HateCheaters.server
+    inline val apiServer: String get() = if (HateCheatersModule.server == "default") "http://subat0mic.duckdns.org/rawProfile?uuid=" else HateCheatersModule.server
 
     private val queue = SuspendQueue()
 
@@ -44,11 +44,11 @@ object WebUtils {
                     logger.info("Successfully fetched data for $data")
                 }
             } else {
-                logger.warning("Failed to fetch data for $data: ${connection.responseMessage}")
+                logger.warn("Failed to fetch data for $data: ${connection.responseMessage}")
                 null
             }
         } catch (e: Exception) {
-            logger.warning("Error fetching data for $data: ${e.message}")
+            logger.error("Error fetching data for $data: ${e.message}")
             null
         }
     }
@@ -63,18 +63,18 @@ object WebUtils {
         return connection
     }
 
-    suspend fun getUUIDbyName(name: String): String? = withContext(Dispatchers.IO) {
-        val connection = setupHTTPConnection(URL("https://api.mojang.com/users/profiles/minecraft/$name"))
-
+    suspend fun getUUIDbyName(name: String): Pair<String?, String?>? = withContext(Dispatchers.IO) {
         try {
+            val connection = setupHTTPConnection(URL("https://api.mojang.com/users/profiles/minecraft/$name"))
+
             if (connection.responseCode == HttpURLConnection.HTTP_OK) {
                 val data: Map<String, String> = json.decodeFromString(connection.inputStream.bufferedReader().use {it.readText()})
-                return@withContext data["id"]
+                return@withContext Pair(data["id"], data["name"])
             } else {
-                logger.warning("Failed to get uuid for player $name")
+                logger.error("Failed to get uuid for player $name")
             }
         } catch (e: Exception) {
-            logger.warning("Error fetching uuid for player $name")
+            logger.error("Error fetching uuid for player $name")
         }
 
         return@withContext null

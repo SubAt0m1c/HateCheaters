@@ -2,7 +2,7 @@ package com.github.subat0m1c.hatecheaters.commands.impl
 
 import com.github.subat0m1c.hatecheaters.HateCheatersObject.scope
 import com.github.subat0m1c.hatecheaters.commands.commodore
-import com.github.subat0m1c.hatecheaters.modules.HateCheaters
+import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.getSkyblockProfile
 import com.github.subat0m1c.hatecheaters.utils.WebUtils.testQue
@@ -57,7 +57,7 @@ val DevCommand = commodore("hcdev") {
 
     literal("confirm").runs {
         server?.let {
-            HateCheaters.server = it
+            HateCheatersModule.server = it
             Config.save()
             modMessage("Set server to $it")
         } ?: modMessage("Server not set! Run /hcdev server to set one.")

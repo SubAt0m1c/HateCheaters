@@ -27,6 +27,7 @@ val requiredOdinVersion = requiredOdin.substringAfterLast("-").substringBefore("
 
 blossom {
     replaceToken("@REQUIREDODINVERSION@", requiredOdinVersion)
+    replaceToken("@MODVERSION@", version)
 }
 
 tasks.register("downloadOdin") {
@@ -105,6 +106,7 @@ sourceSets.main {
 repositories {
     mavenCentral()
     maven("https://repo.spongepowered.org/maven/")
+    maven("https://repo.essential.gg/repository/maven-public/")
     // If you don't want to log in with your real minecraft account, remove this line
     //maven("https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1")
 }
@@ -131,6 +133,10 @@ dependencies {
         isTransitive = false
     }
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT")
+
+    runtimeOnly("gg.essential:loader-launchwrapper:1.1.3")
+    runtimeOnly("gg.essential:essential-1.8.9-forge:12132+g6e2bf4dc5")
+    runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
 
     // If you don't want to log in with your real minecraft account, remove this line
     //runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.2.1")

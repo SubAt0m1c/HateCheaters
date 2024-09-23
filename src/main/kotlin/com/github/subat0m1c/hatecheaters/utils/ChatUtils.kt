@@ -1,7 +1,11 @@
 package com.github.subat0m1c.hatecheaters.utils
 
+import com.github.subat0m1c.hatecheaters.pvgui.PVGui.c
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
+import com.ibm.icu.text.DecimalFormat
 import me.odinmain.OdinMain.mc
+import me.odinmain.utils.render.getMCTextWidth
 import net.minecraft.event.HoverEvent
 import net.minecraft.util.ChatComponentText
 import net.minecraft.util.ChatStyle
@@ -25,7 +29,7 @@ object ChatUtils {
         chatStyle?.let { chatComponent.setChatStyle(it) } // Set chat style using setChatStyle method
         logger.info("Messaged >> $message")
         try { mc.thePlayer?.addChatMessage(chatComponent) }
-        catch (e: Exception) { logger.warning("Error sending message: ${e.message}")
+        catch (e: Exception) { logger.warn("Error sending message: ${e.message}")
         }
     }
 
@@ -70,7 +74,70 @@ object ChatUtils {
         try {
             mc.thePlayer.addChatMessage(this)
         } catch (e: Exception) {
-            logger.warning("Error sending chat message: ${e.message}")
+            logger.error("Error sending chat message: ${e.message}")
         }
+    }
+
+    fun String.colorizeNumber(max: Number): String {
+        val number = this.replace(",", "").toDouble()
+        val maxDouble = max.toDouble()
+        val color = when {
+            number >= maxDouble -> "§b"
+            number >= (maxDouble*0.9) -> "§c"
+            number >= (maxDouble*0.75) -> "§d"
+            number >= (maxDouble*0.65) -> "§6"
+            number >= (maxDouble*0.50) -> "§5"
+            number >= (maxDouble*0.25) -> "§9"
+            number >= (maxDouble*0.1) -> "§a"
+            else -> "§f"
+        }
+        return "$color$this"
+    }
+
+    fun Number.colorize(max: Number): String {
+        val double = this.toDouble()
+        val maxDouble = max.toDouble()
+        val color = when {
+            double >= maxDouble -> "§b"
+            double >= (maxDouble*0.9) -> "§c"
+            double >= (maxDouble*0.75) -> "§d"
+            double >= (maxDouble*0.65) -> "§6"
+            double >= (maxDouble*0.50) -> "§5"
+            double >= (maxDouble*0.25) -> "§9"
+            double >= (maxDouble*0.1) -> "§a"
+            else -> "§f"
+        }
+        return "$color$this"
+    }
+
+    val String.mcWidth get() = getMCTextWidth(this)
+
+    val String.colorClass: String get() = when (this.lowercase()) {
+        "archer" -> "§6$this"
+        "mage" -> "§b$this"
+        "berserk" -> "§c$this"
+        "healer" -> "§d$this"
+        "tank" -> "§7$this"
+        else -> this
+    }
+
+    val Number.commas: String get() {
+        return toString()
+            .reversed()
+            .chunked(3)
+            .joinToString(",")
+            .reversed()
+    }
+
+    val String.colorStat: String get() = when (this.lowercase().replace(" ", "_")) {
+        "health" -> "§c$this"
+        "defense" -> "§a$this"
+        "walk_speed" -> "§${c}$this"
+        "strength" -> "§c$this"
+        "critical_chance" -> "§9$this"
+        "critical_damage" -> "§9$this"
+        "attack_speed" -> "§e$this"
+        "intelligence" -> "§b$this"
+        else -> this
     }
 }

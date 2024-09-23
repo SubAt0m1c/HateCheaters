@@ -32,7 +32,10 @@ object JsonParseUtils {
         return PlayerInfo(profileData, uuid, name).also { logJsonToFile(json.encodeToString(HypixelProfileData.ProfilesData.serializer(), profileData), name, "parsed_profile") }
     }
 
-    suspend fun getSkyblockProfile(name: String, skipClientCache: Boolean = false, profileId: String? = null, forceSkyCrypt: Boolean = false): PlayerInfo? = withContext(Dispatchers.IO) {
+    suspend fun getSkyblockProfile(playerName: String, skipClientCache: Boolean = false, profileId: String? = null, forceSkyCrypt: Boolean = false): PlayerInfo? = withContext(Dispatchers.IO) {
+        val data = getUUIDbyName(playerName) ?: return@withContext null
+        val uuid = data.first ?: return@withContext null
+        val name = data.second ?: return@withContext null
         return@withContext try {
             logger.info("Fetching data for $name...")
             val cachedPlayer =  cachedPlayerData[name.lowercase()]
@@ -48,27 +51,26 @@ object JsonParseUtils {
 
             if (forceSkyCrypt) throw FailedToGetHypixelException("Forced SkyCrypt!")
 
-            val uuid = getUUIDbyName(name) ?: throw FailedToGetHypixelException("Couldn't get UUID!")
             val inputStream = getInputStream(name, "$apiServer$uuid") ?: throw FailedToGetHypixelException("Couldn't get Hypixel API input stream!")
             val profiles = parseHypixelData(inputStream, uuid, name)
             return@withContext profiles.also { addToCache(name, profiles) }
         } catch (e: FailedToGetHypixelException) {
-            logger.warning("Fetching data from SkyCrypt for $name... Error: ${e.message}")
-            return@withContext getSkyCryptProfile(name, profileId)
+            logger.warn("Fetching data from SkyCrypt for $name... Error: ${e.message}")
+            return@withContext getSkyCryptProfile(name, profileId, uuid)
         } catch (e: Exception) {
             modMessage("Error fetching player profile data for $name: ${e.message}. Report this and include latest log found in config/hatecheaters/logs")
-            logger.severe(e.stackTraceToString())
+            logger.error(e.stackTraceToString())
             null
         }
     }
 
-    private suspend fun getSkyCryptProfile(name: String, profileId: String?): PlayerInfo = withContext(Dispatchers.IO) {
-        val inputStream = getInputStream(name, "https://sky.shiiyu.moe/api/v2/profile/${name}") ?: throw FailedToGetSkyCryptException("Couldn't get SkyCrypt API input stream!")
+    private suspend fun getSkyCryptProfile(name: String, profileId: String?, uuid: String): PlayerInfo? = withContext(Dispatchers.IO) {
+        val inputStream = getInputStream(name, "https://sky.shiiyu.moe/api/v2/profile/${name}") ?: return@withContext null
         val jsonString = inputStream.bufferedReader().use { it.readText() }
-        logJsonToFile(jsonString, name, "skycrypt_profile")
+        logJsonToFile(jsonString, name, "skycrypt_profile", "skycrypt_logs")
 
         val profiles: SkyCryptProfileData.SkyCryptProfiles = json.decodeFromString(jsonString)
-        val profileData = skyCryptToHypixel(profiles, name, name)
+        val profileData = skyCryptToHypixel(profiles, name, uuid)
         addToCache(name, profileData)
         return@withContext profileData.also { logJsonToFile(json.encodeToString(HypixelProfileData.ProfilesData.serializer(), it.profileData), name, "parsed_skycrypt_profile", "skycrypt_logs") }
     }
