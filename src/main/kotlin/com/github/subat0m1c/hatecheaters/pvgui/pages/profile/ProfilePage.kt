@@ -15,6 +15,7 @@ import com.github.subat0m1c.hatecheaters.utils.ApiUtils.skillAverage
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.mcWidth
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.truncate
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.PlayerInfo
 import me.odinmain.utils.render.Color
 import me.odinmain.utils.render.getMCTextHeight
@@ -39,9 +40,9 @@ object ProfilePage: PVGuiPage() {
             val usableY = lineY + screen.outlineThickness + screen.lineY
 
             roundedRectangle(screen.mainCenterX, screen.lineY, screen.outlineThickness, screen.mainHeight, line)
-            val skillX = screen.mainCenterX + screen.outlineThickness + usableY
+            val skillX = screen.mainCenterX + screen.outlineThickness + screen.lineY
 
-            val textList = it.playerData.experience.entries.sortedByDescending { it.value }.map {
+            val textList = it.playerData.experience.entries.sortedByDescending { it.value }.filter { it.key != "SKILL_DUNGEONEERING" }.map {
                 val level = getSkillLevel(it.value).round(2).toDouble()
                 val skill = it.key.lowercase().substringAfter("skill_")
                 val cap = getSkillCap(skill).toDouble()
@@ -52,6 +53,17 @@ object ProfilePage: PVGuiPage() {
             textList.forEachIndexed { i, text ->
                 mcText(text.second, screen.mainX, (usableY + (entryHeight * i) + entryHeight/2) - ((getMCTextHeight() *4f)/2), 4f, getSkillColor(text.first), center = false)
             }
+
+            val rightList = listOf(
+                "Bank§7: §6${player.profileData.profiles.find { it.selected }?.banking?.balance?.truncate ?: 0}§8/§6${it.profile.bankAccount.truncate}",
+                "§ePurse§7: §6${it.currencies.coins.truncate}"
+            )
+
+            val rightHeight = (screen.mainHeight-usableY + screen.lineY)/rightList.size
+            rightList.forEachIndexed { i, text ->
+                mcText(text, skillX, (usableY + (rightHeight * i) + rightHeight/2) - ((getMCTextHeight()*4f)/2), 4f, font, center = false)
+            }
+
             return
         }
 

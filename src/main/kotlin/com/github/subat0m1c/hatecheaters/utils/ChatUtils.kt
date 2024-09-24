@@ -6,6 +6,7 @@ import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
 import com.ibm.icu.text.DecimalFormat
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.render.getMCTextWidth
+import me.odinmain.utils.round
 import net.minecraft.event.HoverEvent
 import net.minecraft.util.ChatComponentText
 import net.minecraft.util.ChatStyle
@@ -139,5 +140,12 @@ object ChatUtils {
         "attack_speed" -> "§e$this"
         "intelligence" -> "§b$this"
         else -> this
+    }
+
+    val Double.truncate: String get() = when {
+        this >= 1_000_000_000 -> "${String.format("%.2f", this / 1_000_000_000)}b"
+        this >= 1_000_000 -> "${(this.toInt() / 1_000_000)}m"
+        this >= 1_000 -> "${(this.toInt() / 1_000)}k"
+        else -> "${this.toInt()}"
     }
 }

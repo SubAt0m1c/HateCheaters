@@ -47,11 +47,12 @@ object DungeonsPage: PVGuiPage() {
         val profileKills = player.playerStats.kills
         val mmComps = (player.dungeons.dungeonTypes.mastermode.tierComps.toMutableMap().apply { this.remove("total") }).values.sum()
         val floorComps = (player.dungeons.dungeonTypes.catacombs.tierComps.toMutableMap().apply { this.remove("total") }).values.sum()
-        val renderStrings: MutableList<String> = mutableListOf()
-        renderStrings.add("§bSecrets§7: ${player.dungeons.secrets.commas.colorizeNumber(100000)}")
-        renderStrings.add("§dAverage Secret Count§7: ${(player.dungeons.secrets.toDouble()/(mmComps + floorComps)).round(2).colorize(15.0)}")
-        renderStrings.add("§cBlood Mob Kills§7: ${((profileKills["watcher_summon_undead"] ?: 0) + (profileKills["master_watcher_summon_undead"] ?: 0)).commas}")
-        renderStrings.add("§7Spirit Pet: ${if (player.pets.pets.any { it.type == "SPIRIT" && it.tier == "LEGENDARY" }) "§l§2Found!" else "§o§4Missing!"}")
+        val renderStrings = listOf(
+            "§bSecrets§7: ${player.dungeons.secrets.commas.colorizeNumber(100000)}",
+            "§dAverage Secret Count§7: ${(player.dungeons.secrets.toDouble()/(mmComps + floorComps)).round(2).colorize(15.0)}",
+            "§cBlood Mob Kills§7: ${((profileKills["watcher_summon_undead"] ?: 0) + (profileKills["master_watcher_summon_undead"] ?: 0)).commas}",
+            "§7Spirit Pet: ${if (player.pets.pets.any { it.type == "SPIRIT" && it.tier == "LEGENDARY" }) "§l§2Found!" else "§o§4Missing!"}",
+        )
 
         val scale = 3.5f
         val y = lineY + screen.lineY*2

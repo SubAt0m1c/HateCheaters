@@ -19,6 +19,7 @@ import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
 import org.lwjgl.opengl.Display
 import kotlin.math.floor
+import kotlin.math.max
 
 object BackgroundDraw {
 
@@ -90,7 +91,7 @@ object BackgroundDraw {
         val disHeight = Display.getHeight().toDouble()
         val width = floor(disHeight*1.245)
         val height = floor(disHeight*0.7)
-        val ot = floor(disHeight*0.001)
+        val ot = max(floor(disHeight*0.001), 1.0)
         val lineX = floor(disHeight*0.2) - 2
         val lineY =  floor(disHeight*0.01) - 2
 

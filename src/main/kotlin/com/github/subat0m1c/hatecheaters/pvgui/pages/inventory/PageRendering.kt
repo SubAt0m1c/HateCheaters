@@ -203,12 +203,40 @@ object PageRendering {
         }
     }
 
+    var currentEnderChestPage = 0
+    val enderChestButtons: MutableList<BoxPosition> = mutableListOf()
+
     fun enderChestDraw(screen: ScreenObjects, player: MemberData, startY: Double) {
-        //val inventory = player.inventory.eChestContents.itemStacks
-        //modMessage(inventory.size)
+        val inventory = player.inventory.eChestContents.itemStacks
+        val pages = ceil(inventory.size/45.0).toInt()
+
+        val buttonHeight = getBoxHeight((18), screen, screen.mainWidth.toInt()) //same height as backpack height
+        val buttonWidth = getBoxHeight(pages, screen, screen.mainWidth.toInt())
+
+        val ot = screen.outlineThickness
+        (0..<pages).forEach {
+            val x = screen.mainX + ((buttonWidth + screen.lineY) * (it))
+            roundedRectangle(x - ot, startY - ot, buttonWidth + ot * 2, floor(buttonHeight + ot * 2), accent, radius = 10f, edgeSoftness = 1f)
+            if (currentEnderChestPage == it) roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), selected, radius = 10f, edgeSoftness = 1f)
+            else roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), button, radius = 10f, edgeSoftness = 1f)
+
+            if (enderChestButtons.size <= it) enderChestButtons.add(BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight)))
+            else enderChestButtons[it] = BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight))
+
+            val centerX = x + (buttonWidth/2) - (("${it+1}".mcWidth*3)/2)
+            val centerY = startY + (buttonHeight/2) - ((getMCTextHeight()*3)/2)
+            mcText((it+1).toString(), centerX, centerY, 3f, font, center = false)
+        }
+        val invWidth = screen.mainWidth * 0.8
+        val centerY = (startY + buttonHeight + screen.lineY) + (screen.mainHeight - (startY + buttonHeight))/2
+        renderItemStackGrid(getSubset(inventory, currentEnderChestPage, 45), (screen.mainCenterX - invWidth/2).toInt(), centerY.toInt(), invWidth.toInt(), 5, 9, screen.lineY, screen) { (listOf(it.displayName) + it.lore) }
     }
 
     fun enderChestCLick(button: Int) {
-
+        enderChestButtons.find { isObjectHovered(it.x, it.y, it.width, it.height, screen ?: return) }?.let {
+            if (currentEnderChestPage == it.name.toInt()) return
+            currentEnderChestPage = it.name.toInt()
+            playLoudSound("gui.button.press", 0.5f, 1.1f)
+        }
     }
 }

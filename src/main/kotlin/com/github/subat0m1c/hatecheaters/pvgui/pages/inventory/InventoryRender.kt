@@ -120,7 +120,7 @@ object InventoryRender {
     fun <T> getSubset(lst: List<T>, index: Int, subsetSize: Int = 36): List<T> {
         val startIndex = index * subsetSize
         val endIndex = startIndex + subsetSize
-        return lst.subList(startIndex, endIndex.coerceAtMost(lst.size))
+        return lst.subList(startIndex.coerceAtMost(lst.size), endIndex.coerceAtMost(lst.size))
     }
 
     fun <T> insertItemsAtIndexes(targetList: List<T>, items: List<Pair<Int, T>>): List<T> {
