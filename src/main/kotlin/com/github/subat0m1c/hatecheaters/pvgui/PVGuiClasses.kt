@@ -12,6 +12,7 @@ import me.odinmain.OdinMain.mc
 import me.odinmain.utils.render.getMCTextHeight
 import me.odinmain.utils.render.mcText
 import net.minecraft.client.gui.ScaledResolution
+import net.minecraft.item.ItemStack
 import org.lwjgl.input.Mouse
 
 inline val scaledFactor get() = 1f / ScaledResolution(mc).scaleFactor
@@ -30,6 +31,15 @@ data class PVPage(
     val name: String,
     val page: PVGuiPage,
     val current: Boolean = false,
+)
+
+data class taliData(
+    val mp: String,
+    val tuningList: List<String>,
+    val selected: String,
+    val talis: List<ItemStack?>,
+    val abiphone: String,
+    val riftPrism: Boolean,
 )
 
 abstract class PVGuiPage {

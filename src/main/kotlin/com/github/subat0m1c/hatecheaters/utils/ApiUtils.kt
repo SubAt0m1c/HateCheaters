@@ -48,7 +48,7 @@ object ApiUtils {
                 acc + pair.second
             }?.apply { (this+11).takeIf { rift.access.consumedPrism } } ?: 0
 
-    val petItemRegex = Regex("(?:PET_ITEM_)?([A-Z_]+?)(?:_(COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC))?")
+    private val petItemRegex = Regex("(?:PET_ITEM_)?([A-Z_]+?)(?:_(COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC))?")
 
     val Pet.petItem: String? get() {
         val (heldItem, rarity) = petItemRegex.matchEntire(heldItem ?: return null)?.destructured ?: return null

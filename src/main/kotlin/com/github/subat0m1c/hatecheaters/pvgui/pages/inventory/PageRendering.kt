@@ -15,6 +15,7 @@ import com.github.subat0m1c.hatecheaters.pvgui.pages.inventory.InventoryRender.g
 import com.github.subat0m1c.hatecheaters.pvgui.pages.inventory.InventoryRender.renderItemStackGrid
 import com.github.subat0m1c.hatecheaters.pvgui.pvutils.RenderUtils.isObjectHovered
 import com.github.subat0m1c.hatecheaters.pvgui.ScreenObjects
+import com.github.subat0m1c.hatecheaters.pvgui.taliData
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.itemStacks
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.magicalPower
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
@@ -22,11 +23,15 @@ import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorStat
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.mcWidth
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.getMagicalPower
+import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.MemberData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import me.odinmain.utils.render.*
 import me.odinmain.utils.skyblock.PlayerUtils.playLoudSound
 import me.odinmain.utils.skyblock.lore
 import me.odinmain.utils.skyblock.modMessage
+import net.minecraft.item.ItemStack
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -122,48 +127,60 @@ object PageRendering {
     val talismanButtons = mutableListOf<BoxPosition>()
     var currentTaliPage = 0
 
+    var taliItems: taliData? = null
+
     fun talismanDraw(screen: ScreenObjects, player: MemberData, startY: Double) {
-        val talis = player.inventory.bagContents["talisman_bag"]?.itemStacks?.filterNotNull() ?: emptyList()
-        val magicalPowerText = "Magical Power: ${player.magicalPower.colorize(1697)}"
-        val selectedPowerText = "§aSelected Power: §6${player.accessoryBagStorage.selectedPower?.capitalizeWords() ?: "§cNone!"}"
-        val tuningText = player.accessoryBagStorage.tuning.currentTunings.map { "${it.key.replace("_", " ").capitalizeWords().colorStat}§7: ${it.value.colorize(ceil(player.magicalPower/10.0))}" }
+        taliItems?.let {
+            val talis = it.talis
+            val magicalPowerText = it.mp
+            val selectedPowerText = it.selected
+            val tuningText = it.tuningList
+            val abiphoneText = it.abiphone
 
-        val textList = listOf(magicalPowerText) + listOf(selectedPowerText) + tuningText
+            val textList = listOf(magicalPowerText, selectedPowerText, abiphoneText) + tuningText
 
-        val entryHeight = (screen.mainHeight - startY + screen.lineY)/textList.size
+            val entryHeight = (screen.mainHeight - startY + screen.lineY)/textList.size
 
-        val itemMax = maxRows*9
+            val itemMax = maxRows*9
 
-        val pages = ceil(talis.size.toDouble()/itemMax).toInt()
+            val pages = ceil(talis.size.toDouble()/itemMax).toInt()
 
-        val lineX = floor(screen.mainX + (screen.mainWidth * 0.38))
-        val startX = lineX+screen.lineY
-        val width = screen.mainWidth - (lineX - screen.mainX + screen.lineY)//+screen.outlineThickness + screen.lineY)
+            val lineX = floor(screen.mainX + (screen.mainWidth * 0.38))
+            val startX = lineX+screen.lineY
+            val width = screen.mainWidth - (lineX - screen.mainX + screen.lineY)//+screen.outlineThickness + screen.lineY)
 
-        val buttonHeight = getBoxHeight((18), screen, screen.mainWidth.toInt()) //same height as backpack height
-        val buttonWidth = getBoxHeight(pages, screen, width.toInt())
+            val buttonHeight = getBoxHeight((18), screen, screen.mainWidth.toInt()) //same height as backpack height
+            val buttonWidth = getBoxHeight(pages, screen, width.toInt())
 
-        val ot = screen.outlineThickness
+            val ot = screen.outlineThickness
 
-        roundedRectangle(lineX, startY, screen.outlineThickness, (screen.mainHeight - startY + screen.lineY), line)
+            roundedRectangle(lineX, startY, screen.outlineThickness, (screen.mainHeight - startY + screen.lineY), line)
 
-        (0..<pages).forEach {
-            val x = startX + ((buttonWidth + screen.lineY) * (it))
-            roundedRectangle(x - ot, startY - ot, buttonWidth + ot * 2, floor(buttonHeight + ot * 2), accent, radius = 10f, edgeSoftness = 1f)
-            if (currentTaliPage == it) roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), selected, radius = 10f, edgeSoftness = 1f)
-            else roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), button, radius = 10f, edgeSoftness = 1f)
+            (0..<pages).forEach {
+                val x = startX + ((buttonWidth + screen.lineY) * (it))
+                roundedRectangle(x - ot, startY - ot, buttonWidth + ot * 2, floor(buttonHeight + ot * 2), accent, radius = 10f, edgeSoftness = 1f)
+                if (currentTaliPage == it) roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), selected, radius = 10f, edgeSoftness = 1f)
+                else roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), button, radius = 10f, edgeSoftness = 1f)
 
-            if (talismanButtons.size <= it) talismanButtons.add(BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight)))
-            else talismanButtons[it] = BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight))
+                if (talismanButtons.size <= it) talismanButtons.add(BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight)))
+                else talismanButtons[it] = BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight))
+            }
+
+            textList.forEachIndexed { i, text ->
+                mcText(text, screen.mainX, (startY + (entryHeight * i) + entryHeight/2) - ((getMCTextHeight()*3f)/2), 3f, font, center = false)
+            }
+
+            roundedRectangle(lineX, startY, screen.outlineThickness, (screen.mainHeight - startY + screen.lineY), line)
+            val centerY = (startY + buttonHeight + screen.lineY) + (screen.mainHeight - (startY + buttonHeight))/2
+            renderItemStackGrid(getSubset(talis.sortedByDescending { it.getMagicalPower }, currentTaliPage, itemMax), startX.toInt(), centerY.toInt(), (width).toInt(), maxRows, 9, screen.lineY, screen) { (listOf("${it.displayName} §7(${it.getMagicalPower.colorize(22)}§7)") + it.lore) }
+            return
         }
-
-        textList.forEachIndexed { i, text ->
-            mcText(text, screen.mainX, (startY + (entryHeight * i) + entryHeight/2) - ((getMCTextHeight()*3f)/2), 3f, font, center = false)
-        }
-
-        roundedRectangle(lineX, startY, screen.outlineThickness, (screen.mainHeight - startY + screen.lineY), line)
-        val centerY = (startY + buttonHeight + screen.lineY) + (screen.mainHeight - (startY + buttonHeight))/2
-        renderItemStackGrid(getSubset(talis.sortedByDescending { it.getMagicalPower }, currentTaliPage, itemMax), startX.toInt(), centerY.toInt(), (width).toInt(), maxRows, 9, screen.lineY, screen) { (listOf("${it.displayName} §7(${it.getMagicalPower.colorize(22)}§7)") + it.lore) }
+        val text = "Loading talisman data..."
+        val text2 = "Please report this if you've waited more than 5 seconds."
+        val centerY = screen.mainCenterY
+        val fontScale = 3f
+        mcText(text, screen.mainCenterX - ((text.mcWidth * fontScale) / 2), centerY - ((getMCTextHeight() * fontScale)), fontScale, font, center = false)
+        mcText(text2, screen.mainCenterX - ((text2.mcWidth * fontScale) / 2), centerY + ((getMCTextHeight() * fontScale)), fontScale, font, center = false)
     }
 
     fun talismanClick(button: Int) {
@@ -174,4 +191,23 @@ object PageRendering {
         }
     }
 
+    suspend fun getTaliData(data: HypixelProfileData.PlayerInfo): Unit = withContext(Dispatchers.Default) {
+        data.profileData.profiles.find { it.selected }?.members?.get(data.uuid)?.let { player ->
+            val talis = player.inventory.bagContents["talisman_bag"]?.itemStacks?.filterNotNull() ?: emptyList()
+            val magicalPowerText = "Magical Power: ${player.magicalPower.colorize(1697)}"
+            val selectedPowerText = "§aSelected Power: §6${player.accessoryBagStorage.selectedPower?.capitalizeWords() ?: "§cNone!"}"
+            val tuningText = player.accessoryBagStorage.tuning.currentTunings.map { "${it.key.replace("_", " ").capitalizeWords().colorStat}§7: ${it.value.colorize(ceil(player.magicalPower/10.0))}" }
+            val abiphoneText = "§5Abicase: ${floor(player.crimsonIsle.abiphone.activeContacts.size/2.0).toInt()}"
+            val riftPrism = player.rift.access.consumedPrism
+            taliItems = taliData(
+                magicalPowerText,
+                tuningText,
+                selectedPowerText,
+                talis,
+                abiphoneText,
+                riftPrism
+            )
+
+        }
+    }
 }

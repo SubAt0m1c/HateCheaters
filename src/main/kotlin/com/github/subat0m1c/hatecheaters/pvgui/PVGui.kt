@@ -2,6 +2,8 @@ package com.github.subat0m1c.hatecheaters.pvgui
 
 import com.github.subat0m1c.hatecheaters.HateCheatersObject.scope
 import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.currentTheme
+import com.github.subat0m1c.hatecheaters.pvgui.pages.inventory.PageRendering.getTaliData
+import com.github.subat0m1c.hatecheaters.pvgui.pages.inventory.PageRendering.taliItems
 import com.github.subat0m1c.hatecheaters.pvgui.pages.overview.OverviewPage.getPlayer
 import com.github.subat0m1c.hatecheaters.pvgui.pvutils.BackgroundDraw
 import com.github.subat0m1c.hatecheaters.pvgui.pvutils.RenderUtils.isObjectHovered
@@ -97,6 +99,8 @@ object PVGui : Screen() {
         scope.launch {
             getSkyblockProfile(name ?: mc.thePlayer.name, false)?.let { data ->
                 player = data
+                taliItems = null
+                getTaliData(data)
                 getPlayer(data)
             } ?: run { failed = "Failed to grab profile data." }
         }
