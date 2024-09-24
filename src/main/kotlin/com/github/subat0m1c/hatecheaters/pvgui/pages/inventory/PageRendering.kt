@@ -199,15 +199,16 @@ object PageRendering {
             val tuningText = player.accessoryBagStorage.tuning.currentTunings.map { "${it.key.replace("_", " ").capitalizeWords().colorStat}§7: ${it.value.colorize(ceil(player.magicalPower/10.0))}" }
             val abiphoneText = "§5Abicase: ${floor(player.crimsonIsle.abiphone.activeContacts.size/2.0).toInt()}"
             val riftPrism = player.rift.access.consumedPrism
-            taliItems = taliData(
-                magicalPowerText,
-                tuningText,
-                selectedPowerText,
-                talis,
-                abiphoneText,
-                riftPrism
-            )
-
+            taliItems = taliData(magicalPowerText, tuningText, selectedPowerText, talis, abiphoneText, riftPrism)
         }
+    }
+
+    fun enderChestDraw(screen: ScreenObjects, player: MemberData, startY: Double) {
+        //val inventory = player.inventory.eChestContents.itemStacks
+        //modMessage(inventory.size)
+    }
+
+    fun enderChestCLick(button: Int) {
+
     }
 }

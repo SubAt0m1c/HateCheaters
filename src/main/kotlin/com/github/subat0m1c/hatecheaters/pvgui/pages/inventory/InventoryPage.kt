@@ -10,6 +10,8 @@ import com.github.subat0m1c.hatecheaters.pvgui.PVGui.screen
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.selected
 import com.github.subat0m1c.hatecheaters.pvgui.pages.inventory.PageRendering.backPackClick
 import com.github.subat0m1c.hatecheaters.pvgui.pages.inventory.PageRendering.backpackDraw
+import com.github.subat0m1c.hatecheaters.pvgui.pages.inventory.PageRendering.enderChestCLick
+import com.github.subat0m1c.hatecheaters.pvgui.pages.inventory.PageRendering.enderChestDraw
 import com.github.subat0m1c.hatecheaters.pvgui.pages.inventory.PageRendering.inventoryDraw
 import com.github.subat0m1c.hatecheaters.pvgui.pages.inventory.PageRendering.talismanClick
 import com.github.subat0m1c.hatecheaters.pvgui.pages.inventory.PageRendering.talismanDraw
@@ -74,6 +76,7 @@ object InventoryPage: PVGuiPage() {
                 "Wardrobe" -> wardrobeDraw(screen, it, (separatorLineY + screen.lineY + ot))
                 "Talismans" -> talismanDraw(screen, it, (separatorLineY + screen.lineY + ot))
                 "Backpacks" -> backpackDraw(screen, it, (separatorLineY + screen.lineY + ot))
+                "Ender Chest" -> enderChestDraw(screen, it, (separatorLineY + screen.lineY + ot))
             }
             return
         }
@@ -92,6 +95,7 @@ object InventoryPage: PVGuiPage() {
             "Wardrobe" -> wardrobeClick(button)
             "Talismans" -> talismanClick(button)
             "Backpacks" -> backPackClick(button)
+            "Ender Chest" -> enderChestCLick(button)
         }
     }
 
