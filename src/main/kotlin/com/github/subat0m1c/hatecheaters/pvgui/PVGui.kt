@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import me.odinmain.ui.Screen
 import me.odinmain.ui.clickgui.animations.impl.EaseInOut
 import me.odinmain.utils.render.*
+import me.odinmain.utils.skyblock.PlayerUtils.playLoudSound
 import net.minecraft.client.gui.GuiScreen
 
 object PVGui : Screen() {
@@ -65,7 +66,11 @@ object PVGui : Screen() {
         val screen = screen ?: return
         pages.filterIndexed { index, pvPage ->
             isObjectHovered(screen.lineY, pvPage.getY(screen, index), screen.pageWidth, screen.pageHeight, mouseX, mouseY, screen)
-        }.firstOrNull()?.let { currentPage = it } ?: currentPage.page.mouseClick(mouseX, mouseY, mouseButton)
+        }.firstOrNull()?.let {
+            if (currentPage == it) return@let
+            currentPage = it
+            playLoudSound("gui.button.press", 0.5f, 1.1f)
+        } ?: currentPage.page.mouseClick(mouseX, mouseY, mouseButton)
         super.mouseClicked(mouseX, mouseY, mouseButton)
     }
 

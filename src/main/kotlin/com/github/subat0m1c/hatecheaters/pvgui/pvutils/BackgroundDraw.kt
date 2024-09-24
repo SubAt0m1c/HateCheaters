@@ -42,8 +42,8 @@ object BackgroundDraw {
 
         // main page
         translate(centerW - width/2, centerH -  height/2)
-        roundedRectangle(0-ot, 0-ot, width+ot*2, height+ot*2, accent, 10f, 0.1f)
-        roundedRectangle(0, 0, width, height, main, 10f, 0.1f)
+        roundedRectangle(0-ot, 0-ot, width+ot*2, height+ot*2, accent, radius = 10f, edgeSoftness = 1f)
+        roundedRectangle(0, 0, width, height, main, radius = 10f, edgeSoftness = 1f)
 
         val lineX = screen.lineX
 
@@ -63,9 +63,9 @@ object BackgroundDraw {
 
         pages.forEachIndexed { i, page ->
             val pageY = page.getY(screen, i)
-            roundedRectangle(lineY-ot, pageY-ot, pageWidth+ot*2, floor(pageHeight+ot*2), accent)
-            if (currentPage == page) roundedRectangle(lineY, pageY, pageWidth, pageHeight, selected)
-            else roundedRectangle(lineY, pageY, pageWidth, floor(pageHeight), button)
+            roundedRectangle(lineY-ot, pageY-ot, pageWidth+ot*2, floor(pageHeight+ot*2), accent, radius = 10f, edgeSoftness = 1f)
+            if (currentPage == page) roundedRectangle(lineY, pageY, pageWidth, pageHeight, selected, radius = 10f, edgeSoftness = 1f)
+            else roundedRectangle(lineY, pageY, pageWidth, floor(pageHeight), button, radius = 10f, edgeSoftness = 1f)
 
             val textWidth = getMCTextWidth(page.name)
             val textScale = 3f
@@ -75,8 +75,8 @@ object BackgroundDraw {
 
         val lastPageY = screen.lineY + ((screen.pageHeight + screen.lineY) * pages.size+1)
         val lastPageHeight = screen.totalHeight - lastPageY - lineY
-        roundedRectangle(lineY-ot, lastPageY-ot, pageWidth+ot*2, lastPageHeight+ot*2, accent)
-        roundedRectangle(lineY, lastPageY, pageWidth, lastPageHeight, main)
+        roundedRectangle(lineY-ot, lastPageY-ot, pageWidth+ot*2, lastPageHeight+ot*2, accent, radius = 10f, edgeSoftness = 1f)
+        roundedRectangle(lineY, lastPageY, pageWidth, lastPageHeight, main, radius = 10f, edgeSoftness = 1f)
         val betaText = if (currentPage != PVEntries.Overview.page && profile != null) profile.name else "HCPV Beta 0"
         val betaTextScale = if (betaText.length >= 12) 2f else 3f
         val pvTextWidth = getMCTextWidth(betaText)

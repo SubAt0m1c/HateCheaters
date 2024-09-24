@@ -66,7 +66,7 @@ object ApiUtils {
             "RARE" -> "§9"
             "EPIC" -> "§5"
             "LEGENDARY" -> "§6"
-            "MYTHIC" -> "§b"
+            "MYTHIC" -> "§d"
             else -> "§r"
         }
     }

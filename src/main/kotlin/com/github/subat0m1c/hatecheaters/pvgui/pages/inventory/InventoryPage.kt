@@ -20,6 +20,7 @@ import com.github.subat0m1c.hatecheaters.pvgui.pvutils.RenderUtils.somethingWent
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.mcWidth
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.PlayerInfo
 import me.odinmain.utils.render.*
+import me.odinmain.utils.skyblock.PlayerUtils.playLoudSound
 import me.odinmain.utils.skyblock.modMessage
 import kotlin.math.floor
 
@@ -47,9 +48,9 @@ object InventoryPage: PVGuiPage() {
             inventoryList.forEachIndexed { i, entry ->
                 val y = screen.lineY
                 val x = lineY + ((pageWidth + screen.lineY) * i)
-                roundedRectangle(x - ot, y - ot, pageWidth + ot * 2, floor(pageHeight + ot * 2), accent)
-                if (currentInventory == entry) roundedRectangle(x, y, pageWidth, pageHeight, selected)
-                else roundedRectangle(x, y, pageWidth, floor(pageHeight), button)
+                roundedRectangle(x - ot, y - ot, pageWidth + ot * 2, floor(pageHeight + ot * 2), accent, radius = 10f, edgeSoftness = 1f)
+                if (currentInventory == entry) roundedRectangle(x, y, pageWidth, pageHeight, selected, radius = 10f, edgeSoftness = 1f)
+                else roundedRectangle(x, y, pageWidth, floor(pageHeight), button, radius = 10f, edgeSoftness = 1f)
 
                 val textWidth = getMCTextWidth(entry)
                 val textScale = 3f
@@ -82,7 +83,8 @@ object InventoryPage: PVGuiPage() {
 
     override fun mouseClick(x: Int, y: Int, button: Int) {
         boxPositions.find { isObjectHovered(it.x, it.y, it.width, it.height, screen ?: return) }?.let {
-            modMessage(it.name)
+            if (currentInventory == it.name) return
+             playLoudSound("gui.button.press", 0.5f, 1.1f)
             currentInventory = it.name
         }
 

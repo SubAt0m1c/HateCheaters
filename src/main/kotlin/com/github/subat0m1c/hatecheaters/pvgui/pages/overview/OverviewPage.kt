@@ -50,12 +50,10 @@ object OverviewPage: PVGuiPage() {
         val playerBackHeight = (screen.mainWidth/5)*2
         val playerBackCenterX = screen.mainX + (playerBackWidth)/2
         val playerBackCenterY = usableY + (usableHeight/2)
-        roundedRectangle(screenCenterX-30, usableY-30, 60, 60, line)
         roundedRectangle((playerBackCenterX - playerBackWidth/2)-screen.outlineThickness,  (playerBackCenterY - playerBackHeight/2)-screen.outlineThickness, playerBackWidth+screen.outlineThickness*2, playerBackHeight+screen.outlineThickness*2, accent)
         roundedRectangle(floor(playerBackCenterX - playerBackWidth/2),  playerBackCenterY - playerBackHeight/2, playerBackWidth, playerBackHeight, main)
 
         val usableCenterY = usableY + usableHeight/2
-        roundedRectangle(screenCenterX-100, usableCenterY-100, 200, 200, Color.WHITE)
 
 
         player.profileData.profiles.find { it.selected }?.members?.get(player.uuid)?.let {

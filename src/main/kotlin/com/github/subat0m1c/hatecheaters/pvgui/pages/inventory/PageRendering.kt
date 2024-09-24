@@ -24,6 +24,7 @@ import com.github.subat0m1c.hatecheaters.utils.ChatUtils.mcWidth
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.getMagicalPower
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.MemberData
 import me.odinmain.utils.render.*
+import me.odinmain.utils.skyblock.PlayerUtils.playLoudSound
 import me.odinmain.utils.skyblock.lore
 import me.odinmain.utils.skyblock.modMessage
 import kotlin.math.ceil
@@ -51,9 +52,9 @@ object PageRendering {
         player.inventory.backpackIcons.entries.forEachIndexed { i, entry ->
             val y = startY
             val x = lineY + ((height + screen.lineY) * (i))
-            roundedRectangle(x - ot, y - ot, height + ot * 2, floor(height + ot * 2), accent)
-            if (currentBackpack == i) roundedRectangle(x, y, height, height, selected)
-            else roundedRectangle(x, y, height, floor(height), button)
+            roundedRectangle(x - ot, y - ot, height + ot * 2, floor(height + ot * 2), accent, radius = 10f, edgeSoftness = 1f)
+            if (currentBackpack == i) roundedRectangle(x, y, height, height, selected, radius = 10f, edgeSoftness = 1f)
+            else roundedRectangle(x, y, height, floor(height), button, radius = 10f, edgeSoftness = 1f)
 
             if (backpackBoxes.size <= i) backpackBoxes.add(BoxPosition(i.toString(), x, y, height, floor(height)))
             else backpackBoxes[i] = BoxPosition(i.toString(), x, y, height, floor(height))
@@ -70,7 +71,8 @@ object PageRendering {
 
     fun backPackClick(type: Int) {
         backpackBoxes.find { isObjectHovered(it.x, it.y, it.height, it.height, screen ?: return) }?.let {
-            modMessage(it.name)
+            if (currentBackpack == it.name.toInt()) return
+            playLoudSound("gui.button.press", 0.5f, 1.1f)
             currentBackpack = it.name.toInt()
         }
     }
@@ -94,9 +96,9 @@ object PageRendering {
         val ot = screen.outlineThickness
         (0..<ceil(inventory.size.toDouble()/36).toInt()).forEach {
             val x = screen.mainX + ((buttonWidth + screen.lineY) * (it))
-            roundedRectangle(x - ot, startY - ot, buttonWidth + ot * 2, floor(buttonHeight + ot * 2), accent)
-            if (currentWardrobe == it) roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), selected)
-            else roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), button)
+            roundedRectangle(x - ot, startY - ot, buttonWidth + ot * 2, floor(buttonHeight + ot * 2), accent, radius = 10f, edgeSoftness = 1f)
+            if (currentWardrobe == it) roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), selected, radius = 10f, edgeSoftness = 1f)
+            else roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), button, radius = 10f, edgeSoftness = 1f)
 
             if (wardrobeButtons.size <= it) wardrobeButtons.add(BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight)))
             else wardrobeButtons[it] = BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight))
@@ -110,7 +112,11 @@ object PageRendering {
     }
 
     fun wardrobeClick(button: Int) {
-        wardrobeButtons.find { isObjectHovered(it.x, it.y, it.width, it.height, screen ?: return) }?.let { currentWardrobe = it.name.toInt() }
+        wardrobeButtons.find { isObjectHovered(it.x, it.y, it.width, it.height, screen ?: return) }?.let {
+            if (currentWardrobe == it.name.toInt()) return
+            currentWardrobe = it.name.toInt()
+            playLoudSound("gui.button.press", 0.5f, 1.1f)
+        }
     }
 
     val talismanButtons = mutableListOf<BoxPosition>()
@@ -143,9 +149,9 @@ object PageRendering {
 
         (0..<pages).forEach {
             val x = startX + ((buttonWidth + screen.lineY) * (it))
-            roundedRectangle(x - ot, startY - ot, buttonWidth + ot * 2, floor(buttonHeight + ot * 2), accent)
-            if (currentTaliPage == it) roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), selected)
-            else roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), button)
+            roundedRectangle(x - ot, startY - ot, buttonWidth + ot * 2, floor(buttonHeight + ot * 2), accent, radius = 10f, edgeSoftness = 1f)
+            if (currentTaliPage == it) roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), selected, radius = 10f, edgeSoftness = 1f)
+            else roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), button, radius = 10f, edgeSoftness = 1f)
 
             if (talismanButtons.size <= it) talismanButtons.add(BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight)))
             else talismanButtons[it] = BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight))
@@ -161,7 +167,11 @@ object PageRendering {
     }
 
     fun talismanClick(button: Int) {
-        talismanButtons.find { isObjectHovered(it.x, it.y, it.width, it.height, screen ?: return) }?.let { currentTaliPage = it.name.toInt() }
+        talismanButtons.find { isObjectHovered(it.x, it.y, it.width, it.height, screen ?: return) }?.let {
+            if (currentTaliPage == it.name.toInt()) return
+            currentTaliPage = it.name.toInt()
+            playLoudSound("gui.button.press", 0.5f, 1.1f)
+        }
     }
 
 }
