@@ -11,6 +11,8 @@ import com.github.subat0m1c.hatecheaters.utils.ApiUtils.cataLevel
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.getSkillCap
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.getSkillColor
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.getSkillLevel
+import com.github.subat0m1c.hatecheaters.utils.ApiUtils.getSlayerCap
+import com.github.subat0m1c.hatecheaters.utils.ApiUtils.getSlayerSkillLevel
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.skillAverage
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
@@ -54,14 +56,15 @@ object ProfilePage: PVGuiPage() {
                 mcText(text.second, screen.mainX, (usableY + (entryHeight * i) + entryHeight/2) - ((getMCTextHeight() * textScale)/2), textScale, getSkillColor(text.first), center = false)
             }
 
-            val rightList = listOf(
-                "Bank§7: §6${player.profileData.profiles.find { it.selected }?.banking?.balance?.truncate ?: 0}§8/§6${it.profile.bankAccount.truncate}",
-                "§ePurse§7: §6${it.currencies.coins.truncate}"
-            )
+            val rightList = it.slayer.bosses.entries.sortedByDescending { it.value.xp }.map {
+                val level = getSlayerSkillLevel(it.value.xp.toDouble(), it.key).round(2)
+                val slayer = it.key.capitalizeWords()
+                it.key to "${slayer}§7: ${level.colorize(getSlayerCap(it.key))} §7(${it.value.xp.toDouble().truncate})"
+            }
 
             val rightHeight = (screen.mainHeight-usableY + screen.lineY)/rightList.size
             rightList.forEachIndexed { i, text ->
-                mcText(text, skillX, (usableY + (rightHeight * i) + rightHeight/2) - ((getMCTextHeight()*textScale)/2), textScale, font, center = false)
+                mcText(text.second, skillX, (usableY + (rightHeight * i) + rightHeight/2) - ((getMCTextHeight()*textScale)/2), textScale, font, center = false)
             }
 
             return

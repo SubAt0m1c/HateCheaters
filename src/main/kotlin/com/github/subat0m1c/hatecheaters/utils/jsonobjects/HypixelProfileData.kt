@@ -62,7 +62,22 @@ object HypixelProfileData {
         val crimsonIsle: CrimsonIsle = CrimsonIsle(),
         @SerialName("player_stats")
         val playerStats: PlayerStats = PlayerStats(),
+        val slayer: Slayers = Slayers(),
         val inventory: Inventory = Inventory(),
+    )
+
+    @Serializable
+    data class Slayers(
+        @SerialName("slayer_bosses")
+        val bosses: Map<String, SlayerData> = emptyMap()
+    )
+
+    @Serializable
+    data class SlayerData(
+        @SerialName("claimed_levels")
+        val claimed: Map<String, Boolean> = emptyMap(),
+        val xp: Long = 0,
+        //todo all this nonsense
     )
 
     @Serializable

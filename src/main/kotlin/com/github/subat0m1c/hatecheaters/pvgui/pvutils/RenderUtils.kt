@@ -4,6 +4,8 @@ import com.github.subat0m1c.hatecheaters.pvgui.*
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.font
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.mcWidth
 import me.odinmain.OdinMain.mc
+import me.odinmain.utils.render.Color
+import me.odinmain.utils.render.RenderUtils.bind
 import me.odinmain.utils.render.getMCTextHeight
 import me.odinmain.utils.render.mcText
 import me.odinmain.utils.render.translate
@@ -18,6 +20,7 @@ object RenderUtils {
 
     fun drawPlayerOnScreen(x: Double, y: Double, scale: Int, mouseX: Int, mouseY: Int, renderPlayer: EntityLivingBase, screen: ScreenObjects) {
         GlStateManager.disableLighting()
+        Color.WHITE.bind()
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
         translate(x, y, 200f)
         drawEntityOnScreen(0, 0, scale, ((x*2)-mouseX).toFloat(), (mouseY-y).toFloat(), renderPlayer)

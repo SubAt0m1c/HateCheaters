@@ -18,7 +18,6 @@ import me.odinmain.ui.clickgui.animations.impl.EaseInOut
 import me.odinmain.utils.render.*
 import me.odinmain.utils.skyblock.PlayerUtils.playLoudSound
 import net.minecraft.client.gui.GuiScreen
-import net.minecraftforge.client.ForgeHooksClient.preDraw
 
 object PVGui : Screen() {
     val pages: ArrayList<PVPage> = ArrayList()
@@ -91,7 +90,7 @@ object PVGui : Screen() {
     }
 
     fun drawLoading(centerX: Double, centerY: Double, x: Double, y: Double) {
-        val scale = 7f
+        val scale = 7f * scale
         var text = "Loading..."
         failed?.let { text = it }
         val width = getMCTextWidth(text)*scale

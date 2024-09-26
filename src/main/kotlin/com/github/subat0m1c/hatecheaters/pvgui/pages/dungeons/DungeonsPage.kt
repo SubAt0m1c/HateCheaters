@@ -59,7 +59,7 @@ object DungeonsPage: PVGuiPage() {
         renderStrings.forEachIndexed { i, it ->
             mcText(it, screen.mainX, y + ((tH*scale)*i*1.3), scale, font, center = false)
         }
-
+        
         val classY = y + ((tH*scale)*(renderStrings.size+1)*1.5)
         val classavgText = "§6Class Average§7: ${player.dungeons.classAverage.round(2).colorize(50)}"
         mcText(classavgText, centerLeft-((classavgText.mcWidth*cataScale)/2), classY-((tH*cataScale)/2)-screen.lineY*2, cataScale, font, center = false)

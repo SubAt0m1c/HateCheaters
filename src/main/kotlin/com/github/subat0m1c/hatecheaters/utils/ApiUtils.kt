@@ -187,4 +187,24 @@ object ApiUtils {
         6400000, 6700000, 7000000, 45000000
     )
 
+    fun getSlayerSkillLevel(exp: Double, slayer: String): Double {
+        return (if (slayer != "vampire") getLevelWithProgress(exp, slayerLevels) else getLevelWithProgress(exp, vampireLevels)).coerceAtMost(getSlayerCap(slayer).toDouble())
+    }
+
+    private val slayerLevels: Array<Long> = arrayOf(
+        5, 15, 200, 1000, 5000, 20000, 100000, 400000,
+        1000000
+    )
+
+    private val vampireLevels: Array<Long> = arrayOf(
+        20, 75, 240, 840, 2400
+    )
+
+    fun getSlayerCap(slayer: String): Int {
+        return when (slayer) {
+            "blaze" -> 7
+            "vampire" -> 5
+            else -> 9
+        }
+    }
 }
