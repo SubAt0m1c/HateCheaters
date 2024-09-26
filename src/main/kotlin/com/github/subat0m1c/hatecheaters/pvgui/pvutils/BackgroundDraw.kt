@@ -71,7 +71,7 @@ object BackgroundDraw {
             else roundedRectangle(lineY, pageY, pageWidth, floor(pageHeight), button, radius = 10f, edgeSoftness = 1f)
 
             val textWidth = getMCTextWidth(page.name)
-            val textScale = 3f
+            val textScale = 3f * screen.scale
             val centerY = lineY + (pageHeight/2 + ((pageHeight + lineY) * i))
             mcText(page.name, centerX-(textWidth/2)*textScale, centerY-(getMCTextHeight() *textScale)/2, textScale, font, shadow = true, center = false)
         }
@@ -81,7 +81,7 @@ object BackgroundDraw {
         roundedRectangle(lineY-ot, lastPageY-ot, pageWidth+ot*2, lastPageHeight+ot*2, accent, radius = 10f, edgeSoftness = 1f)
         roundedRectangle(lineY, lastPageY, pageWidth, lastPageHeight, main, radius = 10f, edgeSoftness = 1f)
         val betaText = if (currentPage != PVEntries.Overview.page && profile != null) profile.name else "HCPV Beta 0"
-        val betaTextScale = if (betaText.length >= 12) 2f else 3f
+        val betaTextScale = (if (betaText.length >= 12) 2f else 3f) * screen.scale
         val pvTextWidth = getMCTextWidth(betaText)
         val lastPageCenterY = lastPageY + (lastPageHeight/2)
         mcText(betaText, centerX - (pvTextWidth/2)*betaTextScale, lastPageCenterY-((getMCTextHeight() *betaTextScale)/2), betaTextScale, font, true, false)
@@ -91,11 +91,10 @@ object BackgroundDraw {
 
     fun getScreenObjects(): ScreenObjects {
 
-        val disWidth = mc.displayWidth.toDouble()
-        val disHeight = mc.displayHeight.toDouble()
-        val width = floor(disHeight*1.245) * scale
-        val height = floor(disHeight*0.7) * scale
-        val ot = max(floor(disHeight*0.001), 1.0)
+        val disHeight = mc.displayHeight.toDouble()  * scale
+        val width = floor(disHeight*1.245)
+        val height = floor(disHeight*0.7)
+        val ot = floor(disHeight*0.001).coerceAtLeast(1.0)
         val lineX = floor(disHeight*0.2) - 2
         val lineY =  floor(disHeight*0.01) - 2
 
@@ -108,8 +107,8 @@ object BackgroundDraw {
 
 
         val objects = ScreenObjects(
-            disWidth/2,
-            disHeight/2,
+            mc.displayWidth.toDouble()/2,
+            mc.displayHeight.toDouble()/2,
             width,
             height,
             lineX,

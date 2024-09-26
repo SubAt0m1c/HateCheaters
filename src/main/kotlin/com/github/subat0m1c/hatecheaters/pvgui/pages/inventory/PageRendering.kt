@@ -64,7 +64,7 @@ object PageRendering {
             if (backpackBoxes.size <= i) backpackBoxes.add(BoxPosition(i.toString(), x, y, height, floor(height)))
             else backpackBoxes[i] = BoxPosition(i.toString(), x, y, height, floor(height))
             val textScale = 3f * screen.scale
-            val centerX = x + (height/2) - (("${i+1}".mcWidth*3)/2)
+            val centerX = x + (height/2) - (("${i+1}".mcWidth*textScale)/2)
             val centerY = y + (height/2) - ((getMCTextHeight()*textScale)/2)
             mcText((i+1).toString(), centerX, centerY, textScale, font, center = false)
         }

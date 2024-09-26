@@ -12,8 +12,13 @@ import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.Pe
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.getMagicalPower
 import me.odinmain.utils.render.Color
 import me.odinmain.utils.skyblock.*
+import net.minecraft.init.Items
+import net.minecraft.item.Item
+import net.minecraft.item.ItemSkull
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompressedStreamTools
+import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.NBTTagList
 import net.minecraftforge.common.util.Constants
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
