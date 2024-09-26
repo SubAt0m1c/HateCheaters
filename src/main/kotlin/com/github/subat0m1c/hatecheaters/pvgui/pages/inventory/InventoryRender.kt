@@ -9,6 +9,8 @@ import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.render.Color
 import me.odinmain.utils.render.roundedRectangle
+import me.odinmain.utils.render.scale
+import me.odinmain.utils.render.translate
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.item.ItemStack
@@ -90,11 +92,13 @@ object InventoryRender {
         itemPositions.find { isObjectHovered(it.x.toDouble(), it.y.toDouble(), it.width.toDouble(), it.height.toDouble(), screen) }?.let {
             val tooltip = tooltipHandler(it.itemStack)
 
-            //GlStateManager.pushMatrix()
+            GlStateManager.pushMatrix()
 
-            //scale(1.2f, 1.2f, 0f)
-            GuiUtils.drawHoveringText(tooltip, screen.mouseX.toInt() + (screen.lineY.toInt()*3), screen.mouseY.toInt(), mc.displayWidth, mc.displayHeight, -1, fontRenderer)
-            //GlStateManager.popMatrix()
+            translate(screen.mouseX.toInt() + (screen.lineY.toInt()*3), screen.mouseY.toInt())
+            scale(2f, 2f)
+            scale(screen.scale, screen.scale)
+            GuiUtils.drawHoveringText(tooltip, 0, 0, mc.displayWidth, mc.displayHeight, -1, fontRenderer)
+            GlStateManager.popMatrix()
         }
 
         RenderHelper.disableStandardItemLighting()
