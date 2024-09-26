@@ -19,6 +19,7 @@ object ProfileViewer : Module(
     description = "Lets you view profiles. /pv name or /hcpv name",
     category = Category.RENDER
 ) {
+    val scale: Double by NumberSetting("Scale", default = 1.0, increment = 0.1, min = 0.1, max = 1, description = "Scale of the gui.")
     val maxRows: Int by NumberSetting("Tali Rows", default = 7, increment = 1, min = 1, max = 7, description = "Maximum number of rows that can be displayed in the talisman page. Lower will give more performance, but will render less items.")
     private val themesList = arrayListOf("Classic", "Light", "Custom")
     val themes: Int by SelectorSetting("Theme", defaultSelected = "Classic", themesList, description = "Preferred theme")
@@ -29,7 +30,7 @@ object ProfileViewer : Module(
     val line: Color by ColorSetting("Line", default = Color.BLACK, true, description = "Line Color (primarily separators).").withDependency { themes == themesList.lastIndex }
     val code: String by StringSetting("Code", default = "f", 1, description = "White Text Color Code (so white on white isn't bad).").withDependency { themes == themesList.lastIndex }
     val selected: Color by ColorSetting("Selected", default = Color.CYAN.withAlpha(0.8f), true, description = "Color for selected buttons.").withDependency { themes == themesList.lastIndex }
-    val button: Color by ColorSetting("Button", default = Color.DARK_GRAY, description = "Color for buttons").withDependency { themes == themesList.lastIndex }
+    val button: Color by ColorSetting("Button", default = Color("A9A9A9FF"), description = "Color for buttons").withDependency { themes == themesList.lastIndex }
 
     val petsList: MutableList<String> by ListSetting("PETsS", description = "PETS", default = mutableListOf<String>())
 

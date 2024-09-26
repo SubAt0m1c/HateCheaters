@@ -63,9 +63,10 @@ object PageRendering {
 
             if (backpackBoxes.size <= i) backpackBoxes.add(BoxPosition(i.toString(), x, y, height, floor(height)))
             else backpackBoxes[i] = BoxPosition(i.toString(), x, y, height, floor(height))
+            val textScale = 3f * screen.scale
             val centerX = x + (height/2) - (("${i+1}".mcWidth*3)/2)
-            val centerY = y + (height/2) - ((getMCTextHeight()*3)/2)
-            mcText((i+1).toString(), centerX, centerY, 3f, font, center = false)
+            val centerY = y + (height/2) - ((getMCTextHeight()*textScale)/2)
+            mcText((i+1).toString(), centerX, centerY, textScale, font, center = false)
         }
 
         val invWidth = screen.mainWidth * 0.8
@@ -166,8 +167,9 @@ object PageRendering {
                 else talismanButtons[it] = BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight))
             }
 
+            val textScale = 3f * screen.scale
             textList.forEachIndexed { i, text ->
-                mcText(text, screen.mainX, (startY + (entryHeight * i) + entryHeight/2) - ((getMCTextHeight()*3f)/2), 3f, font, center = false)
+                mcText(text, screen.mainX, (startY + (entryHeight * i) + entryHeight/2) - ((getMCTextHeight()*textScale)/2), textScale, font, center = false)
             }
 
             roundedRectangle(lineX, startY, screen.outlineThickness, (screen.mainHeight - startY + screen.lineY), line)
@@ -178,7 +180,7 @@ object PageRendering {
         val text = "Loading talisman data..."
         val text2 = "Please report this if you've waited more than 5 seconds."
         val centerY = screen.mainCenterY
-        val fontScale = 3f
+        val fontScale = 3f * screen.scale
         mcText(text, screen.mainCenterX - ((text.mcWidth * fontScale) / 2), centerY - ((getMCTextHeight() * fontScale)), fontScale, font, center = false)
         mcText(text2, screen.mainCenterX - ((text2.mcWidth * fontScale) / 2), centerY + ((getMCTextHeight() * fontScale)), fontScale, font, center = false)
     }
@@ -213,6 +215,7 @@ object PageRendering {
         val buttonHeight = getBoxHeight((18), screen, screen.mainWidth.toInt()) //same height as backpack height
         val buttonWidth = getBoxHeight(pages, screen, screen.mainWidth.toInt())
 
+        val textScale = 3f * screen.scale
         val ot = screen.outlineThickness
         (0..<pages).forEach {
             val x = screen.mainX + ((buttonWidth + screen.lineY) * (it))
@@ -224,8 +227,8 @@ object PageRendering {
             else enderChestButtons[it] = BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight))
 
             val centerX = x + (buttonWidth/2) - (("${it+1}".mcWidth*3)/2)
-            val centerY = startY + (buttonHeight/2) - ((getMCTextHeight()*3)/2)
-            mcText((it+1).toString(), centerX, centerY, 3f, font, center = false)
+            val centerY = startY + (buttonHeight/2) - ((getMCTextHeight()*textScale)/2)
+            mcText((it+1).toString(), centerX, centerY, textScale, font, center = false)
         }
         val invWidth = screen.mainWidth * 0.8
         val centerY = (startY + buttonHeight + screen.lineY) + (screen.mainHeight - (startY + buttonHeight))/2

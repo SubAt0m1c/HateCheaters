@@ -33,9 +33,9 @@ object ProfilePage: PVGuiPage() {
             roundedRectangle(screen.mainX, lineY, cataLineWidth, screen.outlineThickness, line)
             val tH = getMCTextHeight()
             val cataText = "§6Skill Average§7: §$c${it.playerData.cappedSkillAverage.round(2).colorize(55)} §7(${it.playerData.skillAverage.round(2)})"
-            val cataScale = 4f
+            val textScale = 4f * screen.scale
             val centerLeft = lineX+(screen.outlineThickness/2) - (screen.mainWidth/4)
-            mcText(cataText, centerLeft-((cataText.mcWidth * cataScale)/2), lineY - screen.lineY - (tH*cataScale), cataScale, font, center = false)
+            mcText(cataText, centerLeft-((cataText.mcWidth * textScale)/2), lineY - screen.lineY - (tH*textScale), textScale, font, center = false)
 
             val usableY = lineY + screen.outlineThickness + screen.lineY
 
@@ -51,7 +51,7 @@ object ProfilePage: PVGuiPage() {
             val entryHeight = (screen.mainHeight-usableY + screen.lineY)/textList.size
 
             textList.forEachIndexed { i, text ->
-                mcText(text.second, screen.mainX, (usableY + (entryHeight * i) + entryHeight/2) - ((getMCTextHeight() *4f)/2), 4f, getSkillColor(text.first), center = false)
+                mcText(text.second, screen.mainX, (usableY + (entryHeight * i) + entryHeight/2) - ((getMCTextHeight() * textScale)/2), textScale, getSkillColor(text.first), center = false)
             }
 
             val rightList = listOf(
@@ -61,7 +61,7 @@ object ProfilePage: PVGuiPage() {
 
             val rightHeight = (screen.mainHeight-usableY + screen.lineY)/rightList.size
             rightList.forEachIndexed { i, text ->
-                mcText(text, skillX, (usableY + (rightHeight * i) + rightHeight/2) - ((getMCTextHeight()*4f)/2), 4f, font, center = false)
+                mcText(text, skillX, (usableY + (rightHeight * i) + rightHeight/2) - ((getMCTextHeight()*textScale)/2), textScale, font, center = false)
             }
 
             return

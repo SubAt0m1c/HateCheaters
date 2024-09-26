@@ -78,6 +78,7 @@ data class ScreenObjects(
     val pageHeight: Double,
     val pageWidth: Double,
     val outlineThickness: Double,
+    val scale: Double,
 )
 
 fun ScreenObjects.getRealX(x: Double): Double {

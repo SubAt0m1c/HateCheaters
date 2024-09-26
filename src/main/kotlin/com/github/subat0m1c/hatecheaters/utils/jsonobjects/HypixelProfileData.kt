@@ -3,7 +3,7 @@ package com.github.subat0m1c.hatecheaters.utils.jsonobjects
 import kotlinx.serialization.*
 import kotlinx.serialization.json.JsonElement
 
-//todo all the missing data. right now its about enough for what i currently need, however more will be needed with profile viewer.
+//todo all the missing data. right now its about enough for what i currently need, however more will be needed with profile viewer. (more was not needed)
 object HypixelProfileData {
 
     data class PlayerInfo(

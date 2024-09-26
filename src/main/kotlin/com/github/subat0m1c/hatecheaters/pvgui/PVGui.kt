@@ -2,10 +2,12 @@ package com.github.subat0m1c.hatecheaters.pvgui
 
 import com.github.subat0m1c.hatecheaters.HateCheatersObject.scope
 import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.currentTheme
+import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.scale
 import com.github.subat0m1c.hatecheaters.pvgui.pages.inventory.PageRendering.getTaliData
 import com.github.subat0m1c.hatecheaters.pvgui.pages.inventory.PageRendering.taliItems
 import com.github.subat0m1c.hatecheaters.pvgui.pages.overview.OverviewPage.getPlayer
 import com.github.subat0m1c.hatecheaters.pvgui.pvutils.BackgroundDraw
+import com.github.subat0m1c.hatecheaters.pvgui.pvutils.BackgroundDraw.getScreenObjects
 import com.github.subat0m1c.hatecheaters.pvgui.pvutils.RenderUtils.isObjectHovered
 import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.getSkyblockProfile
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
@@ -16,6 +18,7 @@ import me.odinmain.ui.clickgui.animations.impl.EaseInOut
 import me.odinmain.utils.render.*
 import me.odinmain.utils.skyblock.PlayerUtils.playLoudSound
 import net.minecraft.client.gui.GuiScreen
+import net.minecraftforge.client.ForgeHooksClient.preDraw
 
 object PVGui : Screen() {
     val pages: ArrayList<PVPage> = ArrayList()
@@ -40,6 +43,7 @@ object PVGui : Screen() {
     var screen: ScreenObjects? = null
 
     fun init() {
+        screen?.scale?.let { if (it != scale) getScreenObjects() }
         pages.clear()
         PVEntries.entries.forEach {
             pages.add(it.page)

@@ -51,12 +51,12 @@ object OverviewPage: PVGuiPage() {
         val lineLength = screen.mainWidth * 0.8
         val screenCenterX = screen.mainCenterX
         val fontCenter = screen.lineY + (lineY)/2
-        val fontScale = 6f
+        val fontScale = 6f * screen.scale
         val nameWidth = getMCTextWidth(player.name) * fontScale
         mcText(player.name, screenCenterX - nameWidth/2, fontCenter - (getMCTextHeight()*fontScale)/2, fontScale, font, true, false)
         roundedRectangle(screenCenterX - lineLength/2, lineY, lineLength, screen.outlineThickness, line)
         player.profileData.profiles.find { it.selected }?.let {
-            mcText("Profile§7: §a${it.cuteName}", screenCenterX, lineY+screen.lineY, 3.5f, font)
+            mcText("Profile§7: §a${it.cuteName}", screenCenterX, lineY+screen.lineY, (3.5f * screen.scale), font)
         }
 
         val playerBackWidth = screen.mainWidth/5
@@ -68,7 +68,7 @@ object OverviewPage: PVGuiPage() {
 
         val usableCenterY = usableY + usableHeight/2
 
-
+        val textScale = 3f * screen.scale
         player.profileData.profiles.find { it.selected }?.members?.get(player.uuid)?.let {
             val mmComps = (it.dungeons.dungeonTypes.mastermode.tierComps.toMutableMap().apply { this.remove("total") }).values.sum()
             val floorComps = (it.dungeons.dungeonTypes.catacombs.tierComps.toMutableMap().apply { this.remove("total") }).values.sum()
@@ -83,17 +83,17 @@ object OverviewPage: PVGuiPage() {
 
             val entryHeight = (screen.mainHeight-usableY + screen.lineY)/textList.size
             textList.forEachIndexed { i, text ->
-                mcText(text, screen.mainCenterX, (usableY + (entryHeight * i) + entryHeight/2) - ((getMCTextHeight()*3f)/2), 3f, font)
+                mcText(text, screen.mainCenterX, (usableY + (entryHeight * i) + entryHeight/2) - ((getMCTextHeight()*textScale)/2), textScale, font)
             }
         }
 
         val skycryptText = "§cCached SkyCrypt Data only!"
-        if (player.skyCrypt) mcText(skycryptText, screenCenterX - (skycryptText.mcWidth*3f)/2, usableY + usableHeight - (getMCTextHeight()*3f) - screen.lineY, 3f, font, center = false)
+        if (player.skyCrypt) mcText(skycryptText, screenCenterX - (skycryptText.mcWidth*3f)/2, usableY + usableHeight - (getMCTextHeight()*textScale) - screen.lineY, 3f, font, center = false)
 
         entityPlayer?.let {
             drawPlayerOnScreen(
                 playerBackCenterX,
-                ((playerBackCenterY + playerBackHeight/2) - screen.lineY), 200,  Mouse.getX(),  Mouse.getY(), it, screen)
+                ((playerBackCenterY + playerBackHeight/2) - screen.lineY), (200 * screen.scale).toInt(),  Mouse.getX(),  Mouse.getY(), it, screen)
         }
     }
 

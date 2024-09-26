@@ -41,7 +41,7 @@ object DungeonsPage: PVGuiPage() {
         roundedRectangle(screen.mainX, lineY, cataLineWidth, screen.outlineThickness, line)
         val tH = getMCTextHeight()
         val cataText = "§4Cata Level§7: §$c${player.dungeons.dungeonTypes.cataLevel.round(2).colorize(50)}"
-        val cataScale = 4f
+        val cataScale = 4f * screen.scale
         val centerLeft = lineX+(screen.outlineThickness/2) - (screen.mainWidth/4)
         mcText(cataText, centerLeft-((cataText.mcWidth * cataScale)/2), lineY - screen.lineY - (tH*cataScale), cataScale, font, center = false)
         val profileKills = player.playerStats.kills
@@ -54,7 +54,7 @@ object DungeonsPage: PVGuiPage() {
             "§7Spirit Pet: ${if (player.pets.pets.any { it.type == "SPIRIT" && it.tier == "LEGENDARY" }) "§l§2Found!" else "§o§4Missing!"}",
         )
 
-        val scale = 3.5f
+        val scale = 3.5f * screen.scale
         val y = lineY + screen.lineY*2
         renderStrings.forEachIndexed { i, it ->
             mcText(it, screen.mainX, y + ((tH*scale)*i*1.3), scale, font, center = false)
@@ -62,7 +62,7 @@ object DungeonsPage: PVGuiPage() {
 
         val classY = y + ((tH*scale)*(renderStrings.size+1)*1.5)
         val classavgText = "§6Class Average§7: ${player.dungeons.classAverage.round(2).colorize(50)}"
-        mcText(classavgText, centerLeft-((classavgText.mcWidth*4f)/2), classY-((tH*4f)/2)-screen.lineY*2, 4f, font, center = false)
+        mcText(classavgText, centerLeft-((classavgText.mcWidth*cataScale)/2), classY-((tH*cataScale)/2)-screen.lineY*2, cataScale, font, center = false)
         roundedRectangle(screen.mainX, classY, cataLineWidth, screen.outlineThickness, line)
 
         val clazzText = "§aSelected Class§7: §$c${player.dungeons.selectedClass?.capitalizeFirst()?.colorClass}"
@@ -88,7 +88,7 @@ object DungeonsPage: PVGuiPage() {
         val tH = getMCTextHeight()
         val floorData = (0..7).map { "§3${player.dungeons.dungeonTypes.catacombs.floorStats(it.toString())}" }
         val mmData = (1..7).map { "§cMM ${player.dungeons.dungeonTypes.mastermode.floorStats(it.toString())}" }
-        val scale = 3f
+        val scale = 3f * screen.scale
 
         val entryHeight = screen.mainHeight/2 - (screen.outlineThickness/2) - screen.lineY
 

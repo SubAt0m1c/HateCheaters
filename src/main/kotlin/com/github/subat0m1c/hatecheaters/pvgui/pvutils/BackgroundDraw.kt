@@ -1,6 +1,7 @@
 package com.github.subat0m1c.hatecheaters.pvgui.pvutils
 
 import com.github.subat0m1c.hatecheaters.pvgui.*
+import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.scale
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.accent
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.button
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.currentPage
@@ -13,6 +14,7 @@ import com.github.subat0m1c.hatecheaters.pvgui.PVGui.player
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.screen
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.selected
 import me.odinmain.OdinMain
+import me.odinmain.OdinMain.mc
 import me.odinmain.utils.floor
 import me.odinmain.utils.render.*
 import net.minecraft.client.gui.ScaledResolution
@@ -87,10 +89,12 @@ object BackgroundDraw {
         GlStateManager.popMatrix()
     }
 
-    private fun getScreenObjects(): ScreenObjects {
-        val disHeight = Display.getHeight().toDouble()
-        val width = floor(disHeight*1.245)
-        val height = floor(disHeight*0.7)
+    fun getScreenObjects(): ScreenObjects {
+
+        val disWidth = mc.displayWidth.toDouble()
+        val disHeight = mc.displayHeight.toDouble()
+        val width = floor(disHeight*1.245) * scale
+        val height = floor(disHeight*0.7) * scale
         val ot = max(floor(disHeight*0.001), 1.0)
         val lineX = floor(disHeight*0.2) - 2
         val lineY =  floor(disHeight*0.01) - 2
@@ -104,7 +108,7 @@ object BackgroundDraw {
 
 
         val objects = ScreenObjects(
-            Display.getWidth().toDouble()/2,
+            disWidth/2,
             disHeight/2,
             width,
             height,
@@ -119,6 +123,7 @@ object BackgroundDraw {
             pageHeight,
             pageWidth,
             ot,
+            scale,
         )
 
         return objects.also { screen = it }

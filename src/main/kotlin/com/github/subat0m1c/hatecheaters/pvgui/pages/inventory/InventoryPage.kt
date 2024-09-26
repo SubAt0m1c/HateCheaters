@@ -55,7 +55,7 @@ object InventoryPage: PVGuiPage() {
                 else roundedRectangle(x, y, pageWidth, floor(pageHeight), button, radius = 10f, edgeSoftness = 1f)
 
                 val textWidth = getMCTextWidth(entry)
-                val textScale = 3f
+                val textScale = 3f * screen.scale
                 val centerY = screen.lineY + pageHeight / 2
                 val centerX = x + pageWidth / 2
                 if (boxPositions.size <= i) boxPositions.add(BoxPosition(entry, x, y, pageWidth, floor(pageHeight)))

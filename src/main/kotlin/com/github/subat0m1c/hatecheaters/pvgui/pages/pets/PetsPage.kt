@@ -1,6 +1,7 @@
 package com.github.subat0m1c.hatecheaters.pvgui.pages.pets
 
 import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.petsList
+import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.scale
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.c
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.font
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.line
@@ -31,12 +32,12 @@ object PetsPage: PVGuiPage() {
             val tH = getMCTextHeight()
             val activePet = it.pets.pets.find { it.active }
             val cataText = "§6Active Pet§7: §$c${activePet?.colorName ?: "None!"} ${activePet?.petItem?.let { "§7(§${c}${it}§7)" } ?: ""}"
-            val cataScale = 4f
+            val cataScale = 4f * screen.scale
             mcText(cataText, screen.mainCenterX-((cataText.mcWidth * cataScale)/2), lineY - screen.lineY - (tH*cataScale), cataScale, font, center = false)
 
             val pets = it.pets.pets.filter { it.type.lowercase().replace("_", " ").capitalizeWords() in petsList}.map { "${it.colorName} ${it.petItem?.let { "§7(§${c}${it}§7)" } ?: ""}" }
 
-            val fontScale = 2.5f
+            val fontScale = 2.5f * screen.scale
 
             val centerX = screen.mainCenterX
 
@@ -61,7 +62,7 @@ object PetsPage: PVGuiPage() {
 
             val text2 = "Add pets to the pets list to make them show up here. (/pv pets add or /hcpv pets add)"
             //mcText(text, screen.mainCenterX-((text.mcWidth*fontScale)/2), centerY-((getMCTextHeight() *fontScale)), fontScale, font, center = false)
-            mcText(text2, screen.mainCenterX, screen.mainY + screen.mainHeight - screen.lineY - ((getMCTextHeight() * 2.5f)/2), 2.5, font, center = true)
+            mcText(text2, screen.mainCenterX, screen.mainY + screen.mainHeight - screen.lineY - ((getMCTextHeight() * 2.5f * screen.scale)/2), 2.5 * screen.scale, font, center = true)
             return
         }
         somethingWentWrong(screen)
