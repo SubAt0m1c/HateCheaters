@@ -31,6 +31,8 @@ object ProfileViewer : Module(
     val code: String by StringSetting("Code", default = "f", 1, description = "White Text Color Code (so white on white isn't bad).").withDependency { themes == themesList.lastIndex }
     val selected: Color by ColorSetting("Selected", default = Color.CYAN.withAlpha(0.8f), true, description = "Color for selected buttons.").withDependency { themes == themesList.lastIndex }
     val button: Color by ColorSetting("Button", default = Color("A9A9A9FF"), description = "Color for buttons").withDependency { themes == themesList.lastIndex }
+    val roundness: Float by NumberSetting("Roundness", default = 10f, increment = 0.5, min = 0, max = 20f, description = "Roundness for the whole gui.").withDependency { themes == themesList.lastIndex }
+    val inventoryRound: Float by NumberSetting("Inventory Roundness", default = 0f, increment = 0.5, min = 0, max = 20f, description =  "Roundness for inventory item backgrounds.").withDependency { themes == themesList.lastIndex }
 
     val petsList: MutableList<String> by ListSetting("PETsS", description = "PETS", default = mutableListOf<String>())
 
@@ -45,6 +47,8 @@ object ProfileViewer : Module(
             "f",
             Color.CYAN.withAlpha(0.8f),
             Color.DARK_GRAY,
+            10f,
+            0f,
         ),
         Theme(
             "Light",
@@ -56,6 +60,8 @@ object ProfileViewer : Module(
             "0",
             Color.BLUE,
             Color.WHITE,
+            10f,
+            0f,
         )
     )
 
@@ -68,7 +74,9 @@ object ProfileViewer : Module(
         line,
         code,
         selected,
-        button
+        button,
+        roundness,
+        inventoryRound
     )
 
     override fun onKeybind() {
@@ -99,4 +107,6 @@ data class Theme(
     val fontCode: String,
     val selected: Color,
     val button: Color,
+    val roundness: Float,
+    val buttons: Float
 )

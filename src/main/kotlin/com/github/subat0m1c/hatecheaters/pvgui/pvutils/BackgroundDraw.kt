@@ -11,6 +11,7 @@ import com.github.subat0m1c.hatecheaters.pvgui.PVGui.line
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.main
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.pages
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.player
+import com.github.subat0m1c.hatecheaters.pvgui.PVGui.roundness
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.screen
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.selected
 import me.odinmain.OdinMain
@@ -45,8 +46,8 @@ object BackgroundDraw {
 
         // main page
         translate(centerW - width/2, centerH -  height/2)
-        roundedRectangle(0-ot, 0-ot, width+ot*2, height+ot*2, accent, radius = 10f, edgeSoftness = 1f)
-        roundedRectangle(0, 0, width, height, main, radius = 10f, edgeSoftness = 1f)
+        roundedRectangle(0-ot, 0-ot, width+ot*2, height+ot*2, accent, radius = roundness, edgeSoftness = 1f)
+        roundedRectangle(0, 0, width, height, main, radius = roundness, edgeSoftness = 1f)
 
         val lineX = screen.lineX
 
@@ -66,9 +67,9 @@ object BackgroundDraw {
 
         pages.forEachIndexed { i, page ->
             val pageY = page.getY(screen, i)
-            roundedRectangle(lineY-ot, pageY-ot, pageWidth+ot*2, floor(pageHeight+ot*2), accent, radius = 10f, edgeSoftness = 1f)
-            if (currentPage == page) roundedRectangle(lineY, pageY, pageWidth, pageHeight, selected, radius = 10f, edgeSoftness = 1f)
-            else roundedRectangle(lineY, pageY, pageWidth, floor(pageHeight), button, radius = 10f, edgeSoftness = 1f)
+            roundedRectangle(lineY-ot, pageY-ot, pageWidth+ot*2, floor(pageHeight+ot*2), accent, radius = roundness, edgeSoftness = 1f)
+            if (currentPage == page) roundedRectangle(lineY, pageY, pageWidth, pageHeight, selected, radius = roundness, edgeSoftness = 1f)
+            else roundedRectangle(lineY, pageY, pageWidth, floor(pageHeight), button, radius = roundness, edgeSoftness = 1f)
 
             val textWidth = getMCTextWidth(page.name)
             val textScale = 3f * screen.scale
@@ -78,8 +79,8 @@ object BackgroundDraw {
 
         val lastPageY = screen.lineY + ((screen.pageHeight + screen.lineY) * pages.size+1)
         val lastPageHeight = screen.totalHeight - lastPageY - lineY
-        roundedRectangle(lineY-ot, lastPageY-ot, pageWidth+ot*2, lastPageHeight+ot*2, accent, radius = 10f, edgeSoftness = 1f)
-        roundedRectangle(lineY, lastPageY, pageWidth, lastPageHeight, main, radius = 10f, edgeSoftness = 1f)
+        roundedRectangle(lineY-ot, lastPageY-ot, pageWidth+ot*2, lastPageHeight+ot*2, accent, radius = roundness, edgeSoftness = 1f)
+        roundedRectangle(lineY, lastPageY, pageWidth, lastPageHeight, button, radius = roundness, edgeSoftness = 1f)
         val betaText = if (currentPage != PVEntries.Overview.page && profile != null) profile.name else "HCPV Beta 0"
         val betaTextScale = (if (betaText.length >= 12) 2f else 3f) * screen.scale
         val pvTextWidth = getMCTextWidth(betaText)
@@ -91,7 +92,7 @@ object BackgroundDraw {
 
     fun getScreenObjects(): ScreenObjects {
 
-        val disHeight = mc.displayHeight.toDouble()  * scale
+        val disHeight = mc.displayHeight.toDouble() * scale
         val width = floor(disHeight*1.245)
         val height = floor(disHeight*0.7)
         val ot = floor(disHeight*0.001).coerceAtLeast(1.0)

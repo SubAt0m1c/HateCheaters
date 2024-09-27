@@ -19,8 +19,8 @@ object TestPage : PVGuiPage() {
         val text2 = "This test is for mouse positioning! YES ITS CHOPPY I KNOW"
         val centerY = screen.mainCenterY
         val fontScale = 3f * screen.scale
-        mcText(text, screen.mainCenterX-((text.mcWidth*fontScale)/2), centerY-((getMCTextHeight() *fontScale)), fontScale, font, center = false)
-        mcText(text2, screen.mainCenterX-((text2.mcWidth*fontScale)/2), centerY+((getMCTextHeight() *fontScale)), fontScale, font, center = false)
+        mcText(text, screen.mainCenterX-((text.mcWidth*fontScale)/2), centerY-((getMCTextHeight() * fontScale)), fontScale, font, center = false)
+        mcText(text2, screen.mainCenterX-((text2.mcWidth*fontScale)/2), centerY+((getMCTextHeight() * fontScale)), fontScale, font, center = false)
 
         val mouseX = screen.mouseX
         val mouseY = screen.mouseY

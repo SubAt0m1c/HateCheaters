@@ -18,13 +18,14 @@ import me.odinmain.ui.clickgui.animations.impl.EaseInOut
 import me.odinmain.utils.render.*
 import me.odinmain.utils.skyblock.PlayerUtils.playLoudSound
 import net.minecraft.client.gui.GuiScreen
+import net.minecraft.client.renderer.GlStateManager
 
 object PVGui : Screen() {
     val pages: ArrayList<PVPage> = ArrayList()
 
     var currentPage: PVPage = PVEntries.Overview.page
 
-    var animation = EaseInOut(700)
+    var animation = EaseInOut(300)
     var open = false
 
     inline val main: Color get() = currentTheme.main
@@ -35,6 +36,8 @@ object PVGui : Screen() {
     inline val c: String get() = currentTheme.fontCode
     inline val selected: Color get() = currentTheme.selected
     inline val button: Color get() = currentTheme.button
+    inline val roundness: Float get() = currentTheme.roundness * scale.toFloat()
+    inline val buttonRound: Float get() = currentTheme.buttons * scale.toFloat()
 
     var player: HypixelProfileData.PlayerInfo? = null
     var failed: String? = null
@@ -52,7 +55,12 @@ object PVGui : Screen() {
 
     //@Suppress("UNREACHABLE_CODE")
     override fun draw() {
+        GlStateManager.pushMatrix()
+        //translate(mc.displayWidth/4, mc.displayHeight/4)
+        //scale(animation.get(0f, 1f), animation.get(0f, 1f))
+        //translate(-mc.displayWidth/4, -mc.displayHeight/4)
         BackgroundDraw.draw()
+        GlStateManager.popMatrix()
     }
     override fun initGui() {
         init()

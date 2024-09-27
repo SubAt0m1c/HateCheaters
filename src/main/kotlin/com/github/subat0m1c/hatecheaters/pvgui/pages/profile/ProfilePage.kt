@@ -12,6 +12,7 @@ import com.github.subat0m1c.hatecheaters.utils.ApiUtils.getSkillCap
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.getSkillColor
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.getSkillLevel
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.getSlayerCap
+import com.github.subat0m1c.hatecheaters.utils.ApiUtils.getSlayerColor
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.getSlayerSkillLevel
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.skillAverage
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
@@ -64,7 +65,7 @@ object ProfilePage: PVGuiPage() {
 
             val rightHeight = (screen.mainHeight-usableY + screen.lineY)/rightList.size
             rightList.forEachIndexed { i, text ->
-                mcText(text.second, skillX, (usableY + (rightHeight * i) + rightHeight/2) - ((getMCTextHeight()*textScale)/2), textScale, font, center = false)
+                mcText(text.second, skillX, (usableY + (rightHeight * i) + rightHeight/2) - ((getMCTextHeight()*textScale)/2), textScale, getSlayerColor(text.first), center = false)
             }
 
             return

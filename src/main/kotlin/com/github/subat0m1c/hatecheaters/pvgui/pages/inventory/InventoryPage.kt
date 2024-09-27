@@ -6,6 +6,7 @@ import com.github.subat0m1c.hatecheaters.pvgui.PVGui.button
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.font
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.line
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.main
+import com.github.subat0m1c.hatecheaters.pvgui.PVGui.roundness
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.screen
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.selected
 import com.github.subat0m1c.hatecheaters.pvgui.pages.inventory.PageRendering.backPackClick
@@ -50,9 +51,9 @@ object InventoryPage: PVGuiPage() {
             inventoryList.forEachIndexed { i, entry ->
                 val y = screen.lineY
                 val x = lineY + ((pageWidth + screen.lineY) * i)
-                roundedRectangle(x - ot, y - ot, pageWidth + ot * 2, floor(pageHeight + ot * 2), accent, radius = 10f, edgeSoftness = 1f)
-                if (currentInventory == entry) roundedRectangle(x, y, pageWidth, pageHeight, selected, radius = 10f, edgeSoftness = 1f)
-                else roundedRectangle(x, y, pageWidth, floor(pageHeight), button, radius = 10f, edgeSoftness = 1f)
+                roundedRectangle(x - ot, y - ot, pageWidth + ot * 2, floor(pageHeight + ot * 2), accent, radius = roundness, edgeSoftness = 1f)
+                if (currentInventory == entry) roundedRectangle(x, y, pageWidth, pageHeight, selected, radius = roundness, edgeSoftness = 1f)
+                else roundedRectangle(x, y, pageWidth, floor(pageHeight), button, radius = roundness, edgeSoftness = 1f)
 
                 val textWidth = getMCTextWidth(entry)
                 val textScale = 3f * screen.scale

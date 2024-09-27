@@ -5,10 +5,13 @@ import com.github.subat0m1c.hatecheaters.pvgui.PVGui.c
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.font
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.line
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.main
+import com.github.subat0m1c.hatecheaters.pvgui.PVGui.roundness
 import com.github.subat0m1c.hatecheaters.pvgui.PVGuiPage
 import com.github.subat0m1c.hatecheaters.pvgui.pvutils.RenderUtils.drawPlayerOnScreen
 import com.github.subat0m1c.hatecheaters.pvgui.pvutils.RenderUtils.getDashedUUID
 import com.github.subat0m1c.hatecheaters.pvgui.ScreenObjects
+import com.github.subat0m1c.hatecheaters.pvgui.mouseX
+import com.github.subat0m1c.hatecheaters.pvgui.mouseY
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.cappedSkillAverage
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.cataLevel
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.colorName
@@ -61,39 +64,40 @@ object OverviewPage: PVGuiPage() {
 
         val playerBackWidth = screen.mainWidth/5
         val playerBackHeight = (screen.mainWidth/5)*2
-        val playerBackCenterX = screen.mainX + (playerBackWidth)/2
+        val playerBackCenterX = screen.mainX + screen.mainWidth - (playerBackWidth)/2
         val playerBackCenterY = usableY + (usableHeight/2)
-        roundedRectangle((playerBackCenterX - playerBackWidth/2)-screen.outlineThickness,  (playerBackCenterY - playerBackHeight/2)-screen.outlineThickness, playerBackWidth+screen.outlineThickness*2, playerBackHeight+screen.outlineThickness*2, accent, radius = 10f, edgeSoftness = 1f)
-        roundedRectangle(floor(playerBackCenterX - playerBackWidth/2),  playerBackCenterY - playerBackHeight/2, playerBackWidth, playerBackHeight, main, radius = 10f, edgeSoftness = 1f)
-
-        val usableCenterY = usableY + usableHeight/2
+        roundedRectangle(floor(playerBackCenterX - playerBackWidth/2) -screen.outlineThickness,  (playerBackCenterY - playerBackHeight/2)-screen.outlineThickness, playerBackWidth+screen.outlineThickness*2, playerBackHeight+screen.outlineThickness*2, accent, radius = roundness, edgeSoftness = 1f)
+        roundedRectangle(floor(playerBackCenterX - playerBackWidth/2),  playerBackCenterY - playerBackHeight/2, playerBackWidth, playerBackHeight, main, radius = roundness, edgeSoftness = 1f)
 
         val textScale = 3f * screen.scale
+        val textY = usableY + (getMCTextHeight()*3.5f*screen.scale) + screen.lineY
+        val textH = (usableHeight - (getMCTextHeight()*textScale) - screen.lineY) - (textY - usableY)
+
         player.profileData.profiles.find { it.selected }?.members?.get(player.uuid)?.let {
             val mmComps = (it.dungeons.dungeonTypes.mastermode.tierComps.toMutableMap().apply { this.remove("total") }).values.sum()
             val floorComps = (it.dungeons.dungeonTypes.catacombs.tierComps.toMutableMap().apply { this.remove("total") }).values.sum()
             val textList = listOf(
                 "Level§7: §a${(it.leveling.experience/100.0).floor().toInt().colorize(500)}",
                 "§4Cata Level§7: §$c${it.dungeons.dungeonTypes.cataLevel.round(2).colorize(50)}",
-                "§bSecrets§7: ${it.dungeons.secrets.commas.colorizeNumber(100000)} §7(${(it.dungeons.secrets.toDouble()/(mmComps + floorComps)).round(2).colorize(15.0)}§7)",
                 "§6Skill Average§7: §$c${it.playerData.cappedSkillAverage.round(2).colorize(55)} §7(${it.playerData.skillAverage.round(2)})",
-                "§$c${it.pets.pets.find { it.active }?.colorName ?: "None!"} ${it.pets.pets.find { it.active }?.petItem?.let { "§7(§${c}${it}§7)" } ?: ""}",
+                "§bSecrets§7: ${it.dungeons.secrets.commas.colorizeNumber(100000)} §7(${(it.dungeons.secrets.toDouble()/(mmComps + floorComps)).round(2).colorize(15.0)}§7)",
                 "Magical Power: ${it.magicalPower.colorize(1697)}",
+                "§$c${it.pets.pets.find { it.active }?.colorName ?: "None!"} ${it.pets.pets.find { it.active }?.petItem?.let { "§7(§${c}${it}§7)" } ?: ""}",
             )
 
-            val entryHeight = (screen.mainHeight-usableY + screen.lineY)/textList.size
+            val entryHeight = (textH)/textList.size
             textList.forEachIndexed { i, text ->
-                mcText(text, screen.mainCenterX, (usableY + (entryHeight * i) + entryHeight/2) - ((getMCTextHeight()*textScale)/2), textScale, font)
+                mcText(text, screen.mainX + screen.lineY + screen.outlineThickness, (textY + (entryHeight * i) + entryHeight/2) - ((getMCTextHeight()*textScale)/2), textScale, font, center = false)
             }
         }
 
         val skycryptText = "§cCached SkyCrypt Data only!"
-        if (player.skyCrypt) mcText(skycryptText, screenCenterX - (skycryptText.mcWidth*3f)/2, usableY + usableHeight - (getMCTextHeight()*textScale) - screen.lineY, 3f, font, center = false)
+        if (player.skyCrypt) mcText(skycryptText, screenCenterX - (skycryptText.mcWidth*3f)/2, usableY + usableHeight - (getMCTextHeight()*textScale), 3f, font, center = false)
 
         entityPlayer?.let {
             drawPlayerOnScreen(
                 playerBackCenterX,
-                ((playerBackCenterY + playerBackHeight/2) - screen.lineY), (200 * screen.scale).toInt(),  Mouse.getX(),  Mouse.getY(), it, screen)
+                ((playerBackCenterY + playerBackHeight/2) - screen.lineY), (200 * screen.scale).toInt(), (screen.mainCenterX + screen.mainWidth * 1.48).toInt(), (screen.mainCenterY + screen.mainHeight/3).toInt(), it, screen)
         }
     }
 

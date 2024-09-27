@@ -213,6 +213,18 @@ object ApiUtils {
         return (if (slayer != "vampire") getLevelWithProgress(exp, slayerLevels) else getLevelWithProgress(exp, vampireLevels)).coerceAtMost(getSlayerCap(slayer).toDouble())
     }
 
+    fun getSlayerColor(slayer: String): Color {
+        return when (slayer) {
+            "wolf" -> font
+            "zombie" -> Color.DARK_GREEN
+            "enderman" -> Color.MAGENTA
+            "vampire" -> Color.RED
+            "blaze" -> Color.ORANGE
+            "spider" -> Color.BLACK
+            else -> font
+        }
+    }
+
     private val slayerLevels: Array<Long> = arrayOf(
         5, 15, 200, 1000, 5000, 20000, 100000, 400000,
         1000000

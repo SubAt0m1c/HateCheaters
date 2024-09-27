@@ -2,7 +2,9 @@ package com.github.subat0m1c.hatecheaters.pvgui.pages.inventory
 
 import com.github.subat0m1c.hatecheaters.pvgui.*
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.accent
+import com.github.subat0m1c.hatecheaters.pvgui.PVGui.buttonRound
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.items
+import com.github.subat0m1c.hatecheaters.pvgui.PVGui.roundness
 import com.github.subat0m1c.hatecheaters.pvgui.pvutils.RenderUtils.isObjectHovered
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.itemStacks
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData
@@ -70,9 +72,9 @@ object InventoryRender {
                     val itemX = x + columnIndex * (itemWidth + padding)
                     val itemY = y + rowIndex * (itemHeight + padding)
 
-                    roundedRectangle(itemX-screen.outlineThickness, itemY-screen.outlineThickness, itemWidth+screen.outlineThickness*2, itemHeight+screen.outlineThickness*2, accent)
-                    if (!equipped) (roundedRectangle(itemX, itemY, itemWidth, itemHeight, items))
-                    else roundedRectangle(itemX, itemY, itemWidth, itemHeight, Color.BLUE)
+                    roundedRectangle(itemX-screen.outlineThickness, itemY-screen.outlineThickness, itemWidth+screen.outlineThickness*2, itemHeight+screen.outlineThickness*2, accent, radius = buttonRound, edgeSoftness = 1f)
+                    if (!equipped) roundedRectangle(itemX, itemY, itemWidth, itemHeight, items, radius = buttonRound, edgeSoftness = 1f)
+                    else roundedRectangle(itemX, itemY, itemWidth, itemHeight, Color.BLUE, radius = buttonRound, edgeSoftness = 1f)
 
                     itemStack?.let {
                         GlStateManager.pushMatrix()

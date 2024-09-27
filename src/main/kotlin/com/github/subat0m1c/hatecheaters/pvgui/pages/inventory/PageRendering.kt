@@ -6,6 +6,7 @@ import com.github.subat0m1c.hatecheaters.pvgui.PVGui.button
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.font
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.line
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.main
+import com.github.subat0m1c.hatecheaters.pvgui.PVGui.roundness
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.screen
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.selected
 import com.github.subat0m1c.hatecheaters.pvgui.pages.inventory.InventoryPage.BoxPosition
@@ -55,9 +56,9 @@ object PageRendering {
         player.inventory.backpackIcons.entries.forEachIndexed { i, entry ->
             val y = startY
             val x = lineY + ((height + screen.lineY) * (i))
-            roundedRectangle(x - ot, y - ot, height + ot * 2, floor(height + ot * 2), accent, radius = 10f, edgeSoftness = 1f)
-            if (currentBackpack == i) roundedRectangle(x, y, height, height, selected, radius = 10f, edgeSoftness = 1f)
-            else roundedRectangle(x, y, height, floor(height), button, radius = 10f, edgeSoftness = 1f)
+            roundedRectangle(x - ot, y - ot, height + ot * 2, floor(height + ot * 2), accent, radius = roundness, edgeSoftness = 1f)
+            if (currentBackpack == i) roundedRectangle(x, y, height, height, selected, radius = roundness, edgeSoftness = 1f)
+            else roundedRectangle(x, y, height, floor(height), button, radius = roundness, edgeSoftness = 1f)
 
             if (backpackBoxes.size <= i) backpackBoxes.add(BoxPosition(i.toString(), x, y, height, floor(height)))
             else backpackBoxes[i] = BoxPosition(i.toString(), x, y, height, floor(height))
@@ -100,9 +101,9 @@ object PageRendering {
         val ot = screen.outlineThickness
         (0..<ceil(inventory.size.toDouble()/36).toInt()).forEach {
             val x = screen.mainX + ((buttonWidth + screen.lineY) * (it))
-            roundedRectangle(x - ot, startY - ot, buttonWidth + ot * 2, floor(buttonHeight + ot * 2), accent, radius = 10f, edgeSoftness = 1f)
-            if (currentWardrobe == it) roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), selected, radius = 10f, edgeSoftness = 1f)
-            else roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), button, radius = 10f, edgeSoftness = 1f)
+            roundedRectangle(x - ot, startY - ot, buttonWidth + ot * 2, floor(buttonHeight + ot * 2), accent, radius = roundness, edgeSoftness = 1f)
+            if (currentWardrobe == it) roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), selected, radius = roundness, edgeSoftness = 1f)
+            else roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), button, radius = roundness, edgeSoftness = 1f)
 
             if (wardrobeButtons.size <= it) wardrobeButtons.add(BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight)))
             else wardrobeButtons[it] = BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight))
@@ -157,9 +158,9 @@ object PageRendering {
 
             (0..<pages).forEach {
                 val x = startX + ((buttonWidth + screen.lineY) * (it))
-                roundedRectangle(x - ot, startY - ot, buttonWidth + ot * 2, floor(buttonHeight + ot * 2), accent, radius = 10f, edgeSoftness = 1f)
-                if (currentTaliPage == it) roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), selected, radius = 10f, edgeSoftness = 1f)
-                else roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), button, radius = 10f, edgeSoftness = 1f)
+                roundedRectangle(x - ot, startY - ot, buttonWidth + ot * 2, floor(buttonHeight + ot * 2), accent, radius = roundness, edgeSoftness = 1f)
+                if (currentTaliPage == it) roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), selected, radius = roundness, edgeSoftness = 1f)
+                else roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), button, radius = roundness, edgeSoftness = 1f)
 
                 if (talismanButtons.size <= it) talismanButtons.add(BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight)))
                 else talismanButtons[it] = BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight))
@@ -217,9 +218,9 @@ object PageRendering {
         val ot = screen.outlineThickness
         (0..<pages).forEach {
             val x = screen.mainX + ((buttonWidth + screen.lineY) * (it))
-            roundedRectangle(x - ot, startY - ot, buttonWidth + ot * 2, floor(buttonHeight + ot * 2), accent, radius = 10f, edgeSoftness = 1f)
-            if (currentEnderChestPage == it) roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), selected, radius = 10f, edgeSoftness = 1f)
-            else roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), button, radius = 10f, edgeSoftness = 1f)
+            roundedRectangle(x - ot, startY - ot, buttonWidth + ot * 2, floor(buttonHeight + ot * 2), accent, radius = roundness, edgeSoftness = 1f)
+            if (currentEnderChestPage == it) roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), selected, radius = roundness, edgeSoftness = 1f)
+            else roundedRectangle(x, startY, buttonWidth, floor(buttonHeight), button, radius = roundness, edgeSoftness = 1f)
 
             if (enderChestButtons.size <= it) enderChestButtons.add(BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight)))
             else enderChestButtons[it] = BoxPosition(it.toString(), x, startY, buttonWidth, floor(buttonHeight))
