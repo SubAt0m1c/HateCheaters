@@ -30,8 +30,6 @@ import kotlinx.coroutines.withContext
 import me.odinmain.utils.render.*
 import me.odinmain.utils.skyblock.PlayerUtils.playLoudSound
 import me.odinmain.utils.skyblock.lore
-import me.odinmain.utils.skyblock.modMessage
-import net.minecraft.item.ItemStack
 import kotlin.math.ceil
 import kotlin.math.floor
 

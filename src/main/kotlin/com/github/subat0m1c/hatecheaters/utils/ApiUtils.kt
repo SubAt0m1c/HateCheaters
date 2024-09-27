@@ -78,8 +78,10 @@ object ApiUtils {
 
     /**
      * Taken and modified from [Skytils](https://github.com/Skytils/SkytilsMod) under [AGPL-3.0](https://github.com/Skytils/SkytilsMod/blob/1.x/LICENSE.md).
+     *
+     * Includes overflow formula from [SoopyV2](https://github.com/Soopyboo32/SoopyV2) under [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)
      */
-    fun getLevelWithProgress(experience: Double, values: Array<Long>): Double {
+    fun getLevelWithProgress(experience: Double, values: Array<Long>, slope: Long = 0): Double {
         var xp = experience
         var level = 0
         val maxLevelExperience = values.last()
@@ -97,10 +99,25 @@ object ApiUtils {
             level++
         }
 
-        if (xp > 0) {
+        if (xp > 0 && slope <= 0) {
             level += (xp / maxLevelExperience).toInt()
             val progress = xp % maxLevelExperience / maxLevelExperience
             return level+progress
+        } else {
+            var reqSlope = slope
+            var requiredXp = maxLevelExperience.toDouble() + reqSlope
+
+            while (xp > requiredXp) {
+                level++
+                xp -= requiredXp
+                requiredXp += reqSlope
+                if (level % 10 == 0) reqSlope *= 2
+            }
+
+            if (xp < requiredXp) {
+                val progress = xp / requiredXp
+                return level + progress
+            }
         }
 
         return level.toDouble()
@@ -141,7 +158,7 @@ object ApiUtils {
 
     fun getSkillLevel(exp: Double): Double {
         //modMessage(skillLevels.sum())
-        return getLevelWithProgress(exp, skillLevels)
+        return getLevelWithProgress(exp, skillLevels, 600000)
     }
 
     fun getSkillCap(skill: String): Int {
@@ -189,7 +206,7 @@ object ApiUtils {
         2500000, 2600000, 2750000, 2900000, 3100000,
         3400000, 3700000, 4000000, 4300000, 4600000,
         4900000, 5200000, 5500000, 5800000, 6100000,
-        6400000, 6700000, 7000000, 45000000
+        6400000, 6700000, 7000000
     )
 
     fun getSlayerSkillLevel(exp: Double, slayer: String): Double {
