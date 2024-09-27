@@ -1,9 +1,7 @@
 package com.github.subat0m1c.hatecheaters
 
 import com.github.subat0m1c.hatecheaters.HateCheatersObject.screen
-import com.github.subat0m1c.hatecheaters.commands.impl.DevCommand
-import com.github.subat0m1c.hatecheaters.commands.impl.ItemCommand
-import com.github.subat0m1c.hatecheaters.commands.impl.PVCommand
+import com.github.subat0m1c.hatecheaters.commands.impl.*
 import com.github.subat0m1c.hatecheaters.commands.registerCommands
 import com.github.subat0m1c.hatecheaters.modules.BetterPartyFinder
 import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
@@ -41,7 +39,7 @@ class HateCheaters {
             BetterPartyFinder, HateCheatersModule, ProfileViewer
         )
 
-        registerCommands(DevCommand, ItemCommand, PVCommand)
+        registerCommands(DevCommand, ItemCommand, PVCommand, StatsCommand, HCCommand)
 
         logger.info("Hate Cheaters Loaded!")
 

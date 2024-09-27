@@ -7,6 +7,7 @@ import com.github.subat0m1c.hatecheaters.utils.ApiUtils.classLevel
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.magicalPower
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.itemStacks
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.add
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.addClickTextWithHover
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.addHoverText
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
@@ -151,7 +152,7 @@ object BetterPartyFinder : Module(
 
     private val witherImpactRegex = Regex("(?:⦾ )?Ability: Wither Impact {2}RIGHT CLICK")
 
-    private suspend fun displayDungeonData(currentProfile: HypixelProfileData.MemberData, name: String): Unit = withContext(Dispatchers.Default) {
+    suspend fun displayDungeonData(currentProfile: HypixelProfileData.MemberData, name: String): Unit = withContext(Dispatchers.Default) {
         val catacombs = currentProfile.dungeons
 
         val profileKills = currentProfile.playerStats.kills
@@ -169,11 +170,9 @@ object BetterPartyFinder : Module(
         val floorComps = (catacombs.dungeonTypes.catacombs.tierComps.toMutableMap().apply { this.remove("total") }).values.sum()
 
         val chatComponent = ChatComponentText("")
-        chatComponent.add(
-            getChatBreak() +
-                "\n§3| §2Player: §b$name" +
-                "\n§3| §4Cata Level: §f${catacombs.dungeonTypes.cataLevel.round(2).colorize(50)} §8: "
-        )
+        chatComponent.add(getChatBreak())
+        chatComponent.addClickTextWithHover("\n§3| §2Player: §b$name", "Click to run /pv $name", "/pv $name")
+        chatComponent.add("\n§3| §4Cata Level: §f${catacombs.dungeonTypes.cataLevel.round(2).colorize(50)} §8: ")
         chatComponent.addHoverText("§dClass Avg: §6${catacombs.classAverage.round(2).colorize(50)}\n",
             catacombs.classes.entries.joinToString("\n") {
                 "§e${it.key.capitalizeFirst()} §7| ${it.value.classLevel.round(2).colorize(50)}"

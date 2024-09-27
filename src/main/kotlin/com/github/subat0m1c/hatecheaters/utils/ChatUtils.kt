@@ -1,12 +1,15 @@
 package com.github.subat0m1c.hatecheaters.utils
 
 import com.github.subat0m1c.hatecheaters.pvgui.PVGui.c
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.addHoverText
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
 import com.ibm.icu.text.DecimalFormat
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.render.getMCTextWidth
 import me.odinmain.utils.round
+import me.odinmain.utils.skyblock.createClickStyle
+import net.minecraft.event.ClickEvent
 import net.minecraft.event.HoverEvent
 import net.minecraft.util.ChatComponentText
 import net.minecraft.util.ChatStyle
@@ -61,6 +64,13 @@ object ChatUtils {
     fun ChatComponentText.addHoverText(text: String, hoverText: String) {
         val componentText = ChatComponentText(text)
         componentText.setChatStyle(createHoverStyle(HoverEvent.Action.SHOW_TEXT, hoverText))
+        this.appendSibling(componentText)
+    }
+
+    fun ChatComponentText.addClickTextWithHover(text: String, hoverText: String, command: String) {
+        val componentText = ChatComponentText(text)
+        componentText.setChatStyle(createHoverStyle(HoverEvent.Action.SHOW_TEXT, hoverText))
+        componentText.setChatStyle(createClickStyle(ClickEvent.Action.RUN_COMMAND, command))
         this.appendSibling(componentText)
     }
 
