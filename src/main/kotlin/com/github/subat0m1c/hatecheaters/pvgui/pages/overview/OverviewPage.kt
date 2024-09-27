@@ -92,7 +92,7 @@ object OverviewPage: PVGuiPage() {
         }
 
         val skycryptText = "§cCached SkyCrypt Data only!"
-        if (player.skyCrypt) mcText(skycryptText, screenCenterX - (skycryptText.mcWidth*3f)/2, usableY + usableHeight - (getMCTextHeight()*textScale), 3f, font, center = false)
+        if (player.skyCrypt) mcText(skycryptText, screenCenterX - (skycryptText.mcWidth*3f*screen.scale)/2, usableY + usableHeight - (getMCTextHeight()*textScale), 3f*screen.scale, font, center = false)
 
         entityPlayer?.let {
             drawPlayerOnScreen(
