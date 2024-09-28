@@ -35,8 +35,6 @@ object PetsPage: PVGuiPage() {
             val cataScale = 4f * screen.scale
             mcText(cataText, screen.mainCenterX-((cataText.mcWidth * cataScale)/2), lineY - screen.lineY - (tH*cataScale), cataScale, font, center = false)
 
-
-
             val pets = it.pets.pets.filter { it.type.lowercase().replace("_", " ").capitalizeWords() in petsList}.map { "${it.colorName} ${it.petItem?.let { "§7(§${c}${it}§7)" } ?: ""}" }
 
             val fontScale = 2.5f * screen.scale

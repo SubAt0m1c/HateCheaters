@@ -142,7 +142,7 @@ object BetterPartyFinder : Module(
                         return@withContext
                     }
 
-                    displayDungeonData(currentProfile, name)
+                    displayDungeonData(currentProfile, profiles.name)
                 }
             }
         }

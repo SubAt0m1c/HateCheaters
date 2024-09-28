@@ -482,7 +482,7 @@ object HypixelProfileData {
         @SerialName("emblem_unlocks")
         val emblemUnlocks: List<String> = emptyList(),
         @SerialName("task_sort")
-        val taskSort: String = "",
+        val taskSort: String? = null,
         @SerialName("selected_symbol")
         val selectedSymbol: String? = null,
     )
