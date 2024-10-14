@@ -1,7 +1,7 @@
 package com.github.subat0m1c.hatecheaters.utils
 
 import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
+import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.getSkyblockProfile
 import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.json
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +15,7 @@ import java.net.URL
 
 object WebUtils {
 
-    inline val apiServer: String get() = if (HateCheatersModule.server == "default") "http://subat0mic.duckdns.org/rawProfile?uuid=" else HateCheatersModule.server
+    val apiServer: String get() = if (HateCheatersModule.server == "default") "http://subat0mic.duckdns.org/get/" else HateCheatersModule.server
 
     private val queue = SuspendQueue()
 
@@ -31,11 +31,27 @@ object WebUtils {
         }
     }
 
-    suspend fun testQue(): Unit = withContext(Dispatchers.IO) { queue.queue { delay(1000); modMessage("Whats up world") } }
+    val players = listOf(
+        "SubAt0mic",
+        "15h",
+        "nurgl",
+        "grassbl0ck",
+        "moistcheecks",
+        "ensyl",
+        "deathstreeks",
+        "kasji",
+        "eatplastic",
+        "xmin_terminator"
+    )
+
+    suspend fun testQue(): Unit = withContext(Dispatchers.IO) {
+        getSkyblockProfile(players.random(), true)
+    }
 
     suspend fun getInputStream(data: String, url: String): InputStream? = withContext(Dispatchers.IO) { queue.queue { runInputStream(data, url) } }
 
     private suspend fun runInputStream(data: String, url: String): InputStream? = withContext(Dispatchers.IO) {
+        logger.info(url)
         return@withContext try {
             val connection = setupHTTPConnection(URL(url))
 
@@ -44,11 +60,11 @@ object WebUtils {
                     logger.info("Successfully fetched data for $data")
                 }
             } else {
-                logger.warn("Failed to fetch data for $data: ${connection.responseMessage}")
+                logger.warning("Failed to fetch data for $data: ${connection.responseMessage}")
                 null
             }
         } catch (e: Exception) {
-            logger.error("Error fetching data for $data: ${e.message}")
+            logger.severe("Error fetching data for $data: ${e.message}")
             null
         }
     }
@@ -71,10 +87,10 @@ object WebUtils {
                 val data: Map<String, String> = json.decodeFromString(connection.inputStream.bufferedReader().use {it.readText()})
                 return@withContext Pair(data["id"], data["name"])
             } else {
-                logger.error("Failed to get uuid for player $name")
+                logger.warning("Failed to get uuid for player $name")
             }
         } catch (e: Exception) {
-            logger.error("Error fetching uuid for player $name")
+            logger.severe("Error fetching uuid for player $name")
         }
 
         return@withContext null

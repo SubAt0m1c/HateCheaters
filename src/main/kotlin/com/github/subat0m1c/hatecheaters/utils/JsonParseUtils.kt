@@ -55,11 +55,11 @@ object JsonParseUtils {
             val profiles = parseHypixelData(inputStream, uuid, name)
             return@withContext profiles.also { addToCache(name, profiles) }
         } catch (e: FailedToGetHypixelException) {
-            logger.warn("Fetching data from SkyCrypt for $name... Error: ${e.message}")
+            logger.warning("Fetching data from SkyCrypt for $name... Error: ${e.message}")
             return@withContext getSkyCryptProfile(name, profileId, uuid)
         } catch (e: Exception) {
             modMessage("Error fetching player profile data for $name: ${e.message}. Report this and include latest log found in config/hatecheaters/logs")
-            logger.error(e.stackTraceToString())
+            logger.severe(e.stackTraceToString())
             null
         }
     }

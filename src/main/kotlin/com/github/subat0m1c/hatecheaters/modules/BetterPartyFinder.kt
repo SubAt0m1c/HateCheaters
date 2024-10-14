@@ -6,13 +6,10 @@ import com.github.subat0m1c.hatecheaters.utils.ApiUtils.classAverage
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.classLevel
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.magicalPower
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.itemStacks
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.add
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.addClickTextWithHover
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.addHoverText
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.chatConstructor
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.print
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.secondsToMinutes
 import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.getSkyblockProfile
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
@@ -28,6 +25,7 @@ import me.odinmain.utils.capitalizeFirst
 import me.odinmain.utils.noControlCodes
 import me.odinmain.utils.round
 import me.odinmain.utils.skyblock.*
+import net.minecraft.event.ClickEvent
 import net.minecraft.util.ChatComponentText
 
 object BetterPartyFinder : Module(
@@ -169,46 +167,60 @@ object BetterPartyFinder : Module(
         val mmComps = (catacombs.dungeonTypes.mastermode.tierComps.toMutableMap().apply { this.remove("total") }).values.sum()
         val floorComps = (catacombs.dungeonTypes.catacombs.tierComps.toMutableMap().apply { this.remove("total") }).values.sum()
 
-        val chatComponent = ChatComponentText("")
-        chatComponent.add(getChatBreak())
-        chatComponent.addClickTextWithHover("\n§3| §2Player: §b$name", "Click to run /pv $name", "/pv $name")
-        chatComponent.add("\n§3| §4Cata Level: §f${catacombs.dungeonTypes.cataLevel.round(2).colorize(50)} §8: ")
-        chatComponent.addHoverText("§dClass Avg: §6${catacombs.classAverage.round(2).colorize(50)}\n",
-            catacombs.classes.entries.joinToString("\n") {
-                "§e${it.key.capitalizeFirst()} §7| ${it.value.classLevel.round(2).colorize(50)}"
-            }
-        )
-        chatComponent.add("""
-            §3| §bSecrets: §f${catacombs.secrets.colorize(100000)} §8: §bAverage: §f${(catacombs.secrets.toDouble()/(mmComps + floorComps)).round(2).colorize(15.0)}
-            §3| §cBlood mobs: §f${(profileKills["watcher_summon_undead"] ?: 0) + (profileKills["master_watcher_summon_undead"] ?: 0)}
-            
-            §3| ${if (allItems.isNotEmpty()) "§eMagical power: ${currentProfile.magicalPower.colorize(1697)} §7(${currentProfile.accessoryBagStorage.selectedPower})" else "§o§4Inventory Api Disabled!"}
-            
-            §3| §5Wither Impact: ${if (allItems.any { it?.lore?.any { it.noControlCodes.matches(witherImpactRegex) } == true }) "§l§2Found!" else "§o§4Missing!"}
-            """.trimIndent())
-        chatComponent.add("\n")
-        armor.forEach { chatComponent.addHoverText("\n§3| ${it.displayName}", (listOf(it.displayName) + it.lore).joinToString("\n")) }
-        if (armor.isNotEmpty()) chatComponent.add("\n")
-        chatComponent.addHoverText("\n§3| §7Personal Bests  §e§lHOVER",
-            fpbs.joinToString("\n") {
-                "§aFloor ${it.first} §7| §2${it.second?.let { secondsToMinutes(it * 0.001) } ?: "§o§4None!"}"
-            }
-        )
-        chatComponent.addHoverText("\n§3| §4§lMM §8Personal Bests  §e§lHOVER",
-            mmpbs.joinToString("\n") {
-                "§cFloor ${it.first} §7| §2${it.second?.let { secondsToMinutes(it * 0.001) } ?: "§o§4None!"}"
-            }
-        )
-        if (importantItems.isNotEmpty() && allItems.isNotEmpty()) chatComponent.addHoverText("\n\n§3| §5Important Items  §e§lHOVER",
-            items.joinToString("\n") {
-                "§b${it.first.capitalizeWords()} §7-> ${if (it.second) "§a✔" else "§4§l✖"}"
-            }
-        )
-        chatComponent.add("""
-            ${getChatBreak()}
-        """.trimIndent())
+        chatConstructor {
+            displayText(getChatBreak())
 
-        chatComponent.print()
+            clickText(
+                "\n§3| §2Player: §b$name",
+                "/pv $name",
+                listOf("§e§lCLICK §r§ato open profile viewer for §b$name")
+            )
+
+            displayText("\n§3| §4Cata Level: §f${catacombs.dungeonTypes.cataLevel.round(2).colorize(50)} §8: ")
+
+            hoverText(
+                "§dClass Avg: §6${catacombs.classAverage.round(2).colorize(50)}\n",
+                catacombs.classes.entries.map { "§e${it.key.capitalizeFirst()} §7| ${it.value.classLevel.round(2).colorize(50)}" }
+            )
+
+            displayText("""
+                §3| §bSecrets: §f${catacombs.secrets.colorize(100000)} §8: §bAverage: §f${(catacombs.secrets.toDouble()/(mmComps + floorComps)).round(2).colorize(15.0)}
+                §3| §cBlood mobs: §f${(profileKills["watcher_summon_undead"] ?: 0) + (profileKills["master_watcher_summon_undead"] ?: 0)}
+            
+                §3| ${if (allItems.isNotEmpty()) "§eMagical power: ${currentProfile.magicalPower.colorize(1697)} §7(${currentProfile.accessoryBagStorage.selectedPower})" else "§o§4Inventory Api Disabled!"}
+            
+                §3| §5Wither Impact: ${if (allItems.any { it?.lore?.any { it.noControlCodes.matches(witherImpactRegex) } == true }) "§l§2Found!" else "§o§4Missing!"}
+                """.trimIndent()
+            )
+
+            displayText()
+
+            armor.forEach {
+                hoverText(
+                    "\n§3| ${it.displayName}",
+                    (listOf(it.displayName) + it.lore)
+                )
+            }
+
+            if (armor.isNotEmpty()) displayText()
+
+            hoverText(
+                "\n§3| §7Personal Bests  §e§lHOVER",
+                fpbs.map { "§aFloor ${it.first} §7| §2${it.second?.let { secondsToMinutes(it * 0.001) } ?: "§o§4None!"}" }
+            )
+
+            hoverText(
+                "\n§3| §4§lMM §8Personal Bests  §e§lHOVER",
+                mmpbs.map { "§cFloor ${it.first} §7| §2${it.second?.let { secondsToMinutes(it * 0.001) } ?: "§o§4None!"}" }
+            )
+
+            if (importantItems.isNotEmpty() && allItems.isNotEmpty()) hoverText(
+                "\n\n§3| §5Important Items  §e§lHOVER",
+                items.map { "§b${it.first.capitalizeWords()} §7-> ${if (it.second) "§a✔" else "§4§l✖"}" }
+            )
+
+            displayText(getChatBreak())
+        }.print()
     }
 
 }

@@ -24,6 +24,12 @@ object SkyCryptProfileData {
         )
     }
 
+    val dummyPlayer = HypixelProfileData.PlayerInfo(
+        uuid = "BAH",
+        name = "???",
+        profileData = HypixelProfileData.ProfilesData()
+    )
+
     @Serializable
     data class SkyCryptProfiles(
         @SerialName("profiles")

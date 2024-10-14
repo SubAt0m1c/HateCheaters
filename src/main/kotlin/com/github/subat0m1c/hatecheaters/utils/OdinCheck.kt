@@ -1,6 +1,7 @@
 package com.github.subat0m1c.hatecheaters.utils
 
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
+import me.odinmain.OdinMain.mc
 import net.minecraft.client.Minecraft
 import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.Loader
@@ -32,6 +33,9 @@ object OdinCheck {
         try {
             val currentOdin = Loader.instance().activeModList.find { it.modId == "od" || it.modId == "odclient" }?.version ?: ""
             if (compareVersions(currentOdin) == -1) odinWarning("Odin is outdated!", currentOdin)
+            if (mc.session.playerID in listOf(
+                "2632ef60-111c-487b-92b8-4b6532c0ed16", "7355a23c-2009-48c5-910d-3b5d6e922c9d"
+            )) odinWarning("YOU SUCK")
         } catch (e: Throwable) {
             odinWarning("An unknown error occurred trying to determine Odin version!")
             return
@@ -114,7 +118,7 @@ object OdinCheck {
         FMLCommonHandler.instance().expectServerStopped()
     }
 
-    private val versionRegex = Regex("(\\d)\\.(\\d)\\.(\\d)(?:\\.(\\d))?(?:\\.beta(\\d))?")
+    private val versionRegex = Regex("(\\d)\\.(\\d)\\.(\\d)(?:\\.(\\d))?(?:\\.beta(\\d+))?")
 
     /**
      * @return -1 if version1 is older, 1 if version1 is newer, 0 if they're the same.

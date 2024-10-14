@@ -1,6 +1,6 @@
 package com.github.subat0m1c.hatecheaters.utils
 
-import com.github.subat0m1c.hatecheaters.pvgui.PVGui.font
+import com.github.subat0m1c.hatecheaters.modules.ProfileViewer
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.DungeonsData
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.DungeonTypes
@@ -10,21 +10,31 @@ import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.Me
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.PlayerData
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.Pet
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.getMagicalPower
+import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.Profiles
+import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.PlayerInfo
 import me.odinmain.utils.render.Color
 import me.odinmain.utils.skyblock.*
-import net.minecraft.init.Items
-import net.minecraft.item.Item
-import net.minecraft.item.ItemSkull
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompressedStreamTools
-import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.nbt.NBTTagList
 import net.minecraftforge.common.util.Constants
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.math.floor
 
 object ApiUtils {
+
+    fun PlayerInfo.profileOrSelected(profileName: String? = null): Profiles? {
+        return this.profileData.profiles.find { it.cuteName.lowercase() == profileName?.lowercase() } ?: this.profileData.profiles.find { it.selected }
+    }
+
+    val PlayerInfo.profileList: List<Pair<String, String>> get() = this.profileData.profiles.map { it.cuteName to it.gameMode }
+
+    fun PlayerInfo.iterateProfiles(profile: String?, index: Int): String? {
+        val currentIndex = this.profileList.map { it.first }.indexOf(profile)
+        if (currentIndex == -1) return null
+        val i = (currentIndex + index).mod(this.profileList.size)
+        return this.profileList[i].first
+    }
 
     /**
      * Taken and modified from [Skytils](https://github.com/Skytils/SkytilsMod) under [AGPL-3.0](https://github.com/Skytils/SkytilsMod/blob/1.x/LICENSE.md).
@@ -180,7 +190,7 @@ object ApiUtils {
 
     fun getSkillColor(skill: String): Color {
         return when (skill) {
-            "taming" -> font
+            "taming" -> ProfileViewer.currentTheme.font
             "mining" -> Color.GRAY
             "foraging" -> Color.DARK_GREEN
             "enchanting" -> Color.MAGENTA
@@ -191,7 +201,7 @@ object ApiUtils {
             "alchemy" -> Color.YELLOW
             "runecrafting" -> Color.PURPLE
             "social" -> Color.GREEN
-            else -> font
+            else -> ProfileViewer.currentTheme.font
         }
     }
 
@@ -215,23 +225,23 @@ object ApiUtils {
 
     fun getSlayerColor(slayer: String): Color {
         return when (slayer) {
-            "wolf" -> font
+            "wolf" -> ProfileViewer.currentTheme.font
             "zombie" -> Color.DARK_GREEN
             "enderman" -> Color.MAGENTA
             "vampire" -> Color.RED
             "blaze" -> Color.ORANGE
             "spider" -> Color.BLACK
-            else -> font
+            else -> ProfileViewer.currentTheme.font
         }
     }
 
     private val slayerLevels: Array<Long> = arrayOf(
-        5, 15, 200, 1000, 5000, 20000, 100000, 400000,
-        1000000
+        5, 10, 185, 800, 4000, 15000, 85000, 300000,
+        600000
     )
 
     private val vampireLevels: Array<Long> = arrayOf(
-        20, 75, 240, 840, 2400
+        20, 55, 165, 640, 1560
     )
 
     fun getSlayerCap(slayer: String): Int {

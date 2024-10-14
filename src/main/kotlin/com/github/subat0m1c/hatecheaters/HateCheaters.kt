@@ -31,7 +31,7 @@ class HateCheaters {
 
     @Mod.EventHandler
     fun init(event: FMLInitializationEvent) {
-        LogHandler.init()
+        LogHandler
 
         checkIfOdinIsLoaded()
 

@@ -1,18 +1,15 @@
 package com.github.subat0m1c.hatecheaters.utils
 
-import com.github.subat0m1c.hatecheaters.pvgui.PVGui.c
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.addHoverText
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
+import com.github.subat0m1c.hatecheaters.modules.ProfileViewer
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
-import com.ibm.icu.text.DecimalFormat
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.render.getMCTextWidth
-import me.odinmain.utils.round
 import me.odinmain.utils.skyblock.createClickStyle
 import net.minecraft.event.ClickEvent
 import net.minecraft.event.HoverEvent
 import net.minecraft.util.ChatComponentText
 import net.minecraft.util.ChatStyle
+import net.minecraft.util.IChatComponent
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.floor
@@ -33,9 +30,45 @@ object ChatUtils {
         chatStyle?.let { chatComponent.setChatStyle(it) } // Set chat style using setChatStyle method
         logger.info("Messaged >> $message")
         try { mc.thePlayer?.addChatMessage(chatComponent) }
-        catch (e: Exception) { logger.warn("Error sending message: ${e.message}")
+        catch (e: Exception) { logger.warning("Error sending message: ${e.message}")
         }
     }
+
+
+    fun chatConstructor(chat: ChatDSL.() -> Unit): ChatDSL = ChatDSL().apply(chat)
+
+    class ChatDSL {
+        private val chat = ChatComponentText("")
+
+        fun hoverText(text: String, hoverText: List<String>) {
+            chat.appendSibling(ChatComponentText(text).apply { this.setChatStyle(createHoverStyle(HoverEvent.Action.SHOW_TEXT, hoverText.joinToString("\n"))) })
+        }
+
+        fun clickText(text: String, command: String, hoverText: List<String> = emptyList(), chatStyle: ClickEvent.Action = ClickEvent.Action.RUN_COMMAND) {
+            chat.appendSibling(
+                ChatComponentText(text).apply { this.setChatStyle(createClickStyle(chatStyle, command).setHover(hoverText)) }
+            )
+        }
+
+        fun displayText(text: String = "\n", chatStyle: ChatStyle? = null) {
+            chat.appendSibling(ChatComponentText(text).apply { this.setChatStyle(chatStyle) })
+        }
+
+        val message get() = chat
+
+        fun print() =
+            try {
+                mc.thePlayer.addChatMessage(this.chat)
+            } catch (e: Exception) {
+                logger.warning("Error sending chat message: ${e.message}")
+            }
+    }
+
+    fun ChatStyle.setHover(text: List<String>): ChatStyle =
+        this.setChatHoverEvent(HoverEvent(HoverEvent.Action.SHOW_TEXT,  ChatComponentText(text.joinToString("\n"))))
+
+    fun ChatStyle.setClick(value: String, clickAction: ClickEvent.Action = ClickEvent.Action.RUN_COMMAND): ChatStyle =
+        this.setChatClickEvent(ClickEvent(clickAction,  value))
 
     fun createHoverStyle(action: HoverEvent.Action, text: String): ChatStyle {
         return ChatStyle().apply {
@@ -55,39 +88,12 @@ object ChatUtils {
         return String.format("%1d:%02d", minutes, seconds)
     }
 
-    fun ChatComponentText.add(text: String, event: ChatStyle? = null) {
-        val componentText = ChatComponentText(text)
-        event?.let { componentText.setChatStyle(it) }
-        this.appendSibling(componentText)
-    }
-
-    fun ChatComponentText.addHoverText(text: String, hoverText: String) {
-        val componentText = ChatComponentText(text)
-        componentText.setChatStyle(createHoverStyle(HoverEvent.Action.SHOW_TEXT, hoverText))
-        this.appendSibling(componentText)
-    }
-
-    fun ChatComponentText.addClickTextWithHover(text: String, hoverText: String, command: String) {
-        val componentText = ChatComponentText(text)
-        componentText.setChatStyle(createHoverStyle(HoverEvent.Action.SHOW_TEXT, hoverText))
-        componentText.setChatStyle(createClickStyle(ClickEvent.Action.RUN_COMMAND, command))
-        this.appendSibling(componentText)
-    }
-
     fun getCurrentDateTimeString(): String {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss")
         val currentDateTime = LocalDateTime.now()
         return currentDateTime.format(formatter)
     }
 
-
-    fun ChatComponentText.print() {
-        try {
-            mc.thePlayer.addChatMessage(this)
-        } catch (e: Exception) {
-            logger.error("Error sending chat message: ${e.message}")
-        }
-    }
 
     fun String.colorizeNumber(max: Number): String {
         val number = this.replace(",", "").toDouble()
@@ -143,7 +149,7 @@ object ChatUtils {
     val String.colorStat: String get() = when (this.lowercase().replace(" ", "_")) {
         "health" -> "§c$this"
         "defense" -> "§a$this"
-        "walk_speed" -> "§${c}$this"
+        "walk_speed" -> "§${ProfileViewer.currentTheme.fontCode}$this"
         "strength" -> "§c$this"
         "critical_chance" -> "§9$this"
         "critical_damage" -> "§9$this"
