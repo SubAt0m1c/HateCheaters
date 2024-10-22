@@ -11,7 +11,6 @@ import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.Pl
 import kotlinx.coroutines.launch
 import me.odinmain.utils.render.scale
 import me.odinmain.utils.render.translate
-import me.odinmain.utils.skyblock.modMessage
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.util.MovementInputFromOptions
@@ -22,7 +21,6 @@ object PVGui : GuiScreen() {
     var profileName: String? = null
         set(value) {
             field = value
-            modMessage(value)
             ProfileLazy.resetAll()
         }
 

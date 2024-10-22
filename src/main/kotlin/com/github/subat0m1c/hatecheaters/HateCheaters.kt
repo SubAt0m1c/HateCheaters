@@ -6,6 +6,7 @@ import com.github.subat0m1c.hatecheaters.commands.registerCommands
 import com.github.subat0m1c.hatecheaters.modules.BetterPartyFinder
 import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
 import com.github.subat0m1c.hatecheaters.modules.ProfileViewer
+import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.pvCommand
 import com.github.subat0m1c.hatecheaters.utils.LogHandler
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
 import com.github.subat0m1c.hatecheaters.utils.OdinCheck.checkIfOdinIsLoaded
@@ -39,7 +40,7 @@ class HateCheaters {
             BetterPartyFinder, HateCheatersModule, ProfileViewer
         )
 
-        registerCommands(DevCommand, ItemCommand, PVCommand, StatsCommand, HCCommand)
+        registerCommands(DevCommand, ItemCommand, HCPVCommand, StatsCommand, HCCommand)
 
         logger.info("Hate Cheaters Loaded!")
 
