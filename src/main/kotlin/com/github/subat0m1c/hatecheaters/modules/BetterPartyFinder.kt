@@ -162,7 +162,7 @@ object BetterPartyFinder : Module(
 
         val armor = currentProfile.inventory.invArmor.itemStacks.filterNotNull().reversed()
 
-        val items = importantItems.toSet().map { Pair(it, it.replace(" ", "_").uppercase() in allItems.map { it.itemID } ) }
+        val items = importantItems.toSet().map { Pair(it, it.replace(" ", "_").uppercase() in allItems.map { it.skyblockID } ) }
 
         val mmComps = (catacombs.dungeonTypes.mastermode.tierComps.toMutableMap().apply { this.remove("total") }).values.sum()
         val floorComps = (catacombs.dungeonTypes.catacombs.tierComps.toMutableMap().apply { this.remove("total") }).values.sum()

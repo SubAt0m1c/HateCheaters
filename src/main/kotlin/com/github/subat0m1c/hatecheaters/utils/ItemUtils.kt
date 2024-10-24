@@ -8,7 +8,7 @@ object ItemUtils {
 
     val ItemStack?.getMagicalPower: Int get() {
         var baseMp = mpMap[getRarity(this?.lore ?: emptyList())] ?: 0
-        if (this.itemID == "HEGEMONY_ARTIFACT") baseMp *= 2
+        if (this.skyblockID == "HEGEMONY_ARTIFACT") baseMp *= 2
         return baseMp
     }
 

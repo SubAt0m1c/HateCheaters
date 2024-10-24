@@ -54,8 +54,8 @@ object ApiUtils {
             ?.filterNot { it.lore.any { it.matches(Regex("§7§4☠ §cRequires §5.+§c.")) }}
             ?.map {
                 var mp = it.getMagicalPower
-                if (it.itemID == "ABICASE") mp += floor(crimsonIsle.abiphone.activeContacts.size/2.0).toInt()
-                val itemId = it.itemID.takeUnless { it.startsWith("PARTY_HAT") || it.startsWith("BALLOON_HAT") } ?: "PARTY_HAT"
+                if (it.skyblockID == "ABICASE") mp += floor(crimsonIsle.abiphone.activeContacts.size/2.0).toInt()
+                val itemId = it.skyblockID.takeUnless { it.startsWith("PARTY_HAT") || it.startsWith("BALLOON_HAT") } ?: "PARTY_HAT"
                 itemId to mp
             }?.groupBy { it.first }?.mapValues { entry ->
                 entry.value.maxBy { it.second }
