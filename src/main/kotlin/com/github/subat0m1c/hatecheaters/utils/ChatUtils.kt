@@ -54,18 +54,6 @@ object ChatUtils {
             chat.appendSibling(ChatComponentText(text).apply { this.setChatStyle(chatStyle) })
         }
 
-        fun String.displayText(chatStyle: ChatStyle? = null) {
-            displayText(this, chatStyle)
-        }
-
-        fun String.clickText(command: String, hoverText: List<String> = emptyList(), chatStyle: ClickEvent.Action = ClickEvent.Action.RUN_COMMAND) {
-            clickText(this, command, hoverText, chatStyle)
-        }
-
-        fun String.hoverText(hoverText: List<String>) {
-            hoverText(this, hoverText)
-        }
-
         val message get() = chat
 
         fun print() =
