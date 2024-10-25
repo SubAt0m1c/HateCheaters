@@ -13,6 +13,8 @@
     "credits": "Odin, SkyHanni",
     "logoFile": "",
     "screenshots": [],
-    "dependencies": []
+    "dependencies": [
+      "od", "odclient"
+    ]
   }
 ]

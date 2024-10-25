@@ -90,7 +90,7 @@ object Dungeons: Pages.PVPage("Dungeons") {
 
 fun HypixelProfileData.DungeonTypeData.floorStats(floor: String): String {
     val start = if (floor == "0") "Entrance" else "Floor $floor"
-    val string = "$start: §$${ct.fontCode}${this.tierComps[floor]?.commas} " +
+    val string = "$start: §${ct.fontCode}${this.tierComps[floor]?.commas} " +
             "§7| §${ct.fontCode}${this.fastestTimes[floor]?.let { secondsToMinutes(it*0.001) } ?: "§cDNF"} " +
             "§7| §${ct.fontCode}${this.fastestTimeS[floor]?.let { secondsToMinutes(it*0.001) } ?: "§cDNF"} " +
             "§7| §a${this.fastestTimeSPlus[floor]?.let { secondsToMinutes(it*0.001) } ?: "§cDNF"}"

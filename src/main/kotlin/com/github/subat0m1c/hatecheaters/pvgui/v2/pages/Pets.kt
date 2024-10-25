@@ -28,10 +28,12 @@ object Pets: Pages.PVPage("Pets") {
     }
 
     private val pets: List<String> by profileLazy {
-        profile.pets.pets.map { "${it.colorName} ${it.petItem?.let { "§7(§${ct.fontCode}${it}§7)" }}" }
+        profile.pets.pets.map { "${it.colorName} ${it.petItem?.let { "§7(§${ct.fontCode}${it}§7)" } ?: ""}" }
     }
 
-    private val entryHeight: Double by profileLazy { (mainHeight - (mainLineY + buttonHeight + lineY*2))/(pets.size/2) }
+    private val entryHeight: Double by profileLazy {
+        (mainHeight - (mainLineY + buttonHeight + lineY * 2)) / ceil(pets.size.coerceIn(1, 20) / 2.0)
+    }
 
     override fun draw() {
         roundedRectangle(mainX, mainLineY, mainWidth, ot, ct.line)
@@ -42,12 +44,13 @@ object Pets: Pages.PVPage("Pets") {
         val currentPets = getSubset(pets, buttons.getSelected-1, 20)
 
         currentPets.forEachIndexed { i, pet ->
-            val x = when (i % 2) {
-                0 -> mainWidth * 1/3
-                1 -> mainWidth * 2/3
-                else -> mainCenterX
+            val x: Double = when (i % 2) {
+                0 -> mainWidth * 0.28
+                1 -> mainWidth * 0.72
+                else -> mainCenterX.toDouble()
             }
-            centeredText(pet, mainX + x, ((mainLineY + buttonHeight + lineY*2) + (entryHeight * floor(i.toDouble()/2)) + entryHeight/2), 2.5)
+            val y = (mainLineY + buttonHeight + lineY * 2) + (entryHeight * floor(i.toDouble() / 2)) + entryHeight / 2
+            centeredText(pet, mainX + x, y, 2)
         }
     }
 

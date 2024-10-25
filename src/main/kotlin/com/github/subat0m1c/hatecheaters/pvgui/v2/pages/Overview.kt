@@ -148,10 +148,9 @@ fun setPlayer(player: PlayerInfo) {
             override fun getSkinType(): String {
                 return playerSkinType ?: DefaultPlayerSkin.getSkinType(this.uniqueID)
             }
-        }
 
-        playerE.alwaysRenderNameTag = false
-        playerE.customNameTag = ""
+            override fun getAlwaysRenderNameTagForRender(): Boolean = false
+        }
 
         playerEntity = playerE
     }
