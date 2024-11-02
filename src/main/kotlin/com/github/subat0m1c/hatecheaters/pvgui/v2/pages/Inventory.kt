@@ -2,6 +2,7 @@ package com.github.subat0m1c.hatecheaters.pvgui.v2.pages
 
 import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.maxRows
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages
+import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.centeredText
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.playClickSound
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.ButtonDSL
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.ItemStackGrid.renderItemStackGrid
@@ -37,6 +38,8 @@ object Inventory: Pages.PVPage("Inventory") {
 
     val inventoryPageHeight = ((totalHeight-lineY * (2 + 6-1))*0.9)/ 6
 
+    val inventoryAPI: Boolean by profileLazy { profile.inventory.eChestContents.itemStacks.isNotEmpty() }
+
     private val buttons: ButtonDSL<String> by profileLazy {
         buttons(
             Box(mainX, lineY, mainWidth, inventoryPageHeight), lineY, ot, default = "Basic",
@@ -46,6 +49,7 @@ object Inventory: Pages.PVPage("Inventory") {
     }
 
     override fun draw() {
+        if (!inventoryAPI) return centeredText("Inventory API disabled!", mainCenterX, mainHeight/2, 4f, Color.RED, true)
         roundedRectangle(mainX, separatorLineY, mainWidth, ot, ct.line)
 
         buttons.draw()

@@ -2,6 +2,12 @@ package com.github.subat0m1c.hatecheaters.pvgui.v2.utils
 
 import kotlin.reflect.KProperty
 
+/**
+ * Used so you can lazily define values in the class and reset them when the profile is loaded.
+ * Reset when profile type is updated
+ *
+ * All values using player values at any point MUST use this.
+ */
 fun <T> profileLazy(initializer: () -> T) = ProfileLazy.create(initializer)
 
 class ProfileLazy<out T>(private val initializer: () -> T) {
@@ -20,8 +26,6 @@ class ProfileLazy<out T>(private val initializer: () -> T) {
             return lazy
         }
 
-        fun resetAll() {
-            allLazies.forEach { it.reset() }
-        }
+        fun resetAll() = allLazies.forEach { it.reset() }
     }
 }

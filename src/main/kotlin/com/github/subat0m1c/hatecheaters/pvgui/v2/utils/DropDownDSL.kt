@@ -2,6 +2,7 @@ package com.github.subat0m1c.hatecheaters.pvgui.v2.utils
 
 
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.isObjectHovered
+import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
 import me.odinmain.utils.div
 import me.odinmain.utils.minus
 import me.odinmain.utils.plus
@@ -32,12 +33,12 @@ class DropDownDSL <T> (
     private val radius: Float = 0f,
     private val edgeSoftness: Float = 0f,
 ) {
-    val with = this
-
     private var scaledBox: Box? = null
 
     private var onExtend: () -> Unit = {}
     private var onSelect: (T) -> Unit = {}
+    private var displayText: (T) -> String = { it.toString() }
+    private var selectedText: (T) -> String = displayText
 
     private var extended: Boolean = false
     private var selected = default
@@ -45,30 +46,29 @@ class DropDownDSL <T> (
 
     val getSelected: T get() = selected
 
-    infix fun scaledBox(box: Box) {
-        scaledBox = box
-    }
+    infix fun scaledBox(box: Box) { scaledBox = box }
 
-    fun onSelect(init: (T) -> Unit) {
-        onSelect = init
-    }
+    fun onSelect(init: (T) -> Unit) { onSelect = init }
 
-    fun onExtend(init: () -> Unit) {
-        onExtend = init
-    }
+    fun onExtend(init: () -> Unit) { onExtend = init }
+
+    fun displayText(init: (T) -> String) { displayText = init }
+
+    fun selectedText(init: (T) -> String) { selectedText = init }
 
     fun draw() {
         roundedRectangle(box.x, box.y, box.w, box.h, color, radius, edgeSoftness)
-        mcText(selected.toString(), (box.x + box.w/2), (box.y + (box.h/2))-(getMCTextHeight() *textScale)/2, textScale.toFloat(), Color.WHITE)
-        if (extended) {
-            trueOptions.forEachIndexed { i, entry ->
-                val y = box.y + ((box.h+box.h/8) * (i+1)) + (box.h/8)
-                roundedRectangle(box.x, y, box.w, box.h, color, radius, edgeSoftness)
-                mcText(entry.toString(), (box.x + box.w/2), (y + (box.h/2))-(getMCTextHeight() *textScale)/2, textScale.toFloat(), Color.WHITE)
-            }
+        mcText(selectedText(selected), (box.x + box.w/2), (box.y + (box.h/2))-(getMCTextHeight() *textScale)/2, textScale.toFloat(), Color.WHITE)
+        trueOptions.takeIf { extended }?.forEachIndexed { i, entry ->
+            val y = box.y + ((box.h+box.h/8) * (i+1)) + (box.h/8)
+            roundedRectangle(box.x, y, box.w, box.h, color, radius, edgeSoftness)
+            mcText(displayText(entry), (box.x + box.w/2), (y + (box.h/2))-(getMCTextHeight() *textScale)/2, textScale.toFloat(), Color.WHITE)
         }
     }
 
+    /**
+     * @return true if clicked, false if it isn't.
+     */
     fun click(mouseX: Int, mouseY: Int, button: Int): Boolean {
         val box = scaledBox ?: box
         if (isObjectHovered(box, mouseX, mouseY)) {
@@ -76,12 +76,12 @@ class DropDownDSL <T> (
             onExtend()
             return true
         } else if (extended) {
-            trueOptions.filterIndexed { i, entry ->
+            trueOptions.withIndex().find { (i, _) ->
                 val y = box.y + ((box.h+(box.h/8)) * (i+1)) + (box.h/8)
                 isObjectHovered(Box(box.x, y, box.w, box.h), mouseX, mouseY)
-            }.firstOrNull()?.let {
-                selected = it
-                onSelect(it)
+            }?.let { (_, entry) ->
+                selected = entry
+                onSelect(entry)
                 extended = false
                 return true
             }
@@ -90,6 +90,3 @@ class DropDownDSL <T> (
         return false
     }
 }
-
-fun <T> List<T>.without(vararg items: T): List<T> = this.filter { !items.contains(it) }
-fun <K, V> Map<K, V>.without(vararg items: K): Map<K, V> = this.filter { !items.contains(it.key) }

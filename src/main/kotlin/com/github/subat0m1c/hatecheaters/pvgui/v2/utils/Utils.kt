@@ -40,8 +40,18 @@ object Utils {
         return list.toList()
     }
 
-    fun <T> List<T>.without(vararg items: T): List<T> = this.filter { !items.contains(it) }
-    fun <K, V> Map<K, V>.without(vararg items: K): Map<K, V> = this.filter { !items.contains(it.key) }
+    //faster than filter i think probably maybe idk if it matters though
+
+    fun <T> List<T>.without(vararg items: T): List<T> = with(this.toMutableList()) {
+        items.forEach { this.remove(it) }
+        return@with this
+    }
+
+
+    fun <K, V> Map<K, V>.without(vararg items: K): Map<K, V> = with(this.toMutableMap()) {
+        items.forEach { this.remove(it) }
+        return@with this
+    }
 
     fun isObjectHovered(box: Box, mouseX: Number, mouseY: Number): Boolean =
         (mouseX.toDouble() in box.x.toDouble()..box.x.toDouble()+box.w.toDouble() && mouseY.toDouble() in box.y.toDouble()..box.y.toDouble()+box.h.toDouble())

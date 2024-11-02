@@ -58,13 +58,12 @@ class ButtonDSL<T>(
     }
 
     fun click(mouseX: Int, mouseY: Int, button: Int) {
-        options.indices.firstOrNull {
-            val x = box.x + (buttonWidth + lineY)*it
+        options.withIndex().find { (i, _) ->
+            val x = box.x + (buttonWidth + lineY)*i
             isObjectHovered(Box(x, box.y, buttonWidth, box.h), mouseX, mouseY)
-        }?.let {
-            val option = options[it]
-            selected = option
-            onSelect(option)
+        }?.let { (_, entry) ->
+            selected = entry
+            onSelect(entry)
         }
     }
 }

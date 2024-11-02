@@ -43,7 +43,7 @@ object ItemStackGrid {
                 wardrobe + (9 * index) to itemStack
             }
 
-            insertItemsAtIndexes(itemStacks, itemsMap)//.also { modMessage(it.indexOf(itemsMap.unzip().second.first())) }
+            insertItemsAtIndexes(itemStacks, itemsMap)
         } else itemStacks
 
         val height = getProperHeight(width, rows, columns, padding)

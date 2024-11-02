@@ -18,14 +18,12 @@ val StatsCommand = commodore("hcs", "ds", "hcstats") {
             profiles?.profileData?.profiles
                 ?.find { it.selected }?.members?.get(profiles.uuid)
                 ?.let { displayDungeonData(it, profiles.name) }
-                ?: run {
-                    modMessage("""
-                            ${getChatBreak()}
-                            Could not find info for player $ign 
-                            ${getChatBreak()}
-                            """.trimIndent(), false
-                    )
-                }
+                ?: return@launch modMessage("""
+                    ${getChatBreak()}
+                    Could not find info for player $ign 
+                    ${getChatBreak()}
+                    """.trimIndent(), false
+                )
         }
     }
 }

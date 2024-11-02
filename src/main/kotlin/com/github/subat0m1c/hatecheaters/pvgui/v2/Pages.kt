@@ -20,8 +20,6 @@ import me.odinmain.utils.skyblock.PlayerUtils.playLoudSound
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
 
-//todo move getMouseX/Y to utils.Utils
-
 object Pages {
 
     var currentPage = PageEntries.Overview
@@ -60,7 +58,8 @@ object Pages {
 
         val mainCenterX = lineX + ot + lineY + mainWidth/2
 
-        val mouseX get() = ((getMouseX * ScaledResolution(mc).scaleFactor - mc.displayWidth/2) * 1f / scale) - sx // maybe overcomplicated but it works :)
+        // maybe overcomplicated but it works :)
+        val mouseX get() = ((getMouseX * ScaledResolution(mc).scaleFactor - mc.displayWidth/2) * 1f / scale) - sx
         val mouseY get() = ((getMouseY * ScaledResolution(mc).scaleFactor - mc.displayHeight/2) * 1f / scale) - sy
 
 
@@ -112,6 +111,9 @@ object Pages {
     fun push() = GlStateManager.pushMatrix()
     fun pop() = GlStateManager.popMatrix()
 
+    /**
+     * The "Centered" parameter in [mcText()] does not center vertically, thus this should be used instead.
+     */
     fun centeredText(text: String, x: Number, y: Number, scale: Number = 1f, color: Color = Color.WHITE, shadow: Boolean = true) {
         mcText(text, x - (text.mcWidth.toDouble()*scale.toDouble()/2.0), y - (getMCTextHeight().toDouble()*scale.toDouble())/2.0, scale, color, shadow, false)
     }

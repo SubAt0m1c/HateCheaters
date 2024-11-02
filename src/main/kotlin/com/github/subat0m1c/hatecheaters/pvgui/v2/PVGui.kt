@@ -56,12 +56,7 @@ object PVGui : GuiScreen() {
         profileName = null
     }
 
-    fun updateProfile(profile: String?) {
-        playerData?.let {
-            val profileData = it.profileOrSelected(profile)
-            profileName = profileData?.cuteName
-        }
-    }
+    fun updateProfile(profile: String?) = playerData?.profileOrSelected(profile)?.cuteName?.let { profileName = it }
 
     fun loadPlayer(name: String?, profileName: String? = null) {
         scope.launch {
