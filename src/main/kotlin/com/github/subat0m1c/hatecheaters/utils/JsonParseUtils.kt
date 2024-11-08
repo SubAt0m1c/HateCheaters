@@ -25,8 +25,8 @@ object JsonParseUtils {
         logger.info("Fetching data for $name... (UUID: $uuid)")
         val profile = if (!forceSkyCrypt) getHypixelProfile(name, uuid, profileId).fold(
             onSuccess = { Result.success(it) },
-            onFailure = { getSkyCryptProfile(name, profileId, uuid) }
-        ) else getSkyCryptProfile(name, profileId, uuid)
+            onFailure = { getSkyCryptProfile(name, uuid, profileId) }
+        ) else getSkyCryptProfile(name, uuid, profileId)
         return@withContext profile.onSuccess { if (cache) addToCache(it) }
     }
 
@@ -46,7 +46,7 @@ object JsonParseUtils {
         }
     }
 
-    private suspend fun getSkyCryptProfile(name: String, profileId: String?, uuid: String): Result<PlayerInfo> = withContext(Dispatchers.IO) {
+    private suspend fun getSkyCryptProfile(name: String, uuid: String, profileId: String?): Result<PlayerInfo> = withContext(Dispatchers.IO) {
         return@withContext try {
             val inputStream = getInputStream(name, "https://sky.shiiyu.moe/api/v2/profile/${name}") ?: return@withContext Result.failure(FailedToGetSkyCryptException("Could not get SkyCrypt input stream. ($name may not have joined hypixel!)"))
             val jsonString = inputStream.bufferedReader().use { it.readText() }
