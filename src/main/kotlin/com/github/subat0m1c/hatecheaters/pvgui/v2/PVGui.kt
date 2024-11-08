@@ -1,6 +1,5 @@
 package com.github.subat0m1c.hatecheaters.pvgui.v2
 
-import com.github.subat0m1c.hatecheaters.HateCheatersObject.scope
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.scope
 import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.scale
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.currentPage
