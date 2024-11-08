@@ -4,11 +4,14 @@ import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
 import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.getSkyblockProfile
 import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.json
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
+import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -79,20 +82,26 @@ object WebUtils {
         return connection
     }
 
-    suspend fun getUUIDbyName(name: String): Result<Pair<String?, String?>> = withContext(Dispatchers.IO) {
+    suspend fun getUUIDbyName(name: String): Result<MojangData> = withContext(Dispatchers.IO) {
         return@withContext try {
             val connection = setupHTTPConnection(URL("https://api.mojang.com/users/profiles/minecraft/$name"))
 
             if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-                val data: Map<String, String> = json.decodeFromString(connection.inputStream.bufferedReader().use {it.readText()})
-                Result.success(Pair(data["id"], data["name"]))
+                Result.success(json.decodeFromString(connection.inputStream.bufferedReader().use {it.readText()}))
             } else {
                 logger.warning("Failed to get uuid for player $name")
-                Result.failure<Pair<String?, String?>>(FailedToGetUUIDException("Failed to get uuid. ($name may not exist!)"))
+                Result.failure<MojangData>(FailedToGetUUIDException("Failed to get uuid. ($name may not exist!)"))
             }
         } catch (e: Exception) {
             logger.severe("Error fetching uuid for player $name")
-            Result.failure<Pair<String?, String?>>(FailedToGetUUIDException("Error fetching uuid for player $name"))
+            Result.failure<MojangData>(FailedToGetUUIDException("Error fetching uuid for player $name"))
         }
     }
+
+    @Serializable
+    data class MojangData(
+        val name: String,
+        @SerialName("id")
+        val uuid: String
+    )
 }
