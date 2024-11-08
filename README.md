@@ -3,5 +3,5 @@
 
 Requires any version of odin 1.2.5.beta8 or newer.
 
-This mod does not have an official discord. You should use the issues page on github to report issues.
+This mod does not have an official discord. You should use the issues page on github to report issues/make suggestions.
 If its a security issue or something unable to be publicised, you can contact me on discord at @subat0mic
