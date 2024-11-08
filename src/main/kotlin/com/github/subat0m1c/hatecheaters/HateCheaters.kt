@@ -1,12 +1,10 @@
 package com.github.subat0m1c.hatecheaters
 
-import com.github.subat0m1c.hatecheaters.HateCheatersObject.screen
 import com.github.subat0m1c.hatecheaters.commands.impl.*
 import com.github.subat0m1c.hatecheaters.commands.registerCommands
 import com.github.subat0m1c.hatecheaters.modules.BetterPartyFinder
 import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
 import com.github.subat0m1c.hatecheaters.modules.ProfileViewer
-import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.pvCommand
 import com.github.subat0m1c.hatecheaters.utils.LogHandler
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
 import com.github.subat0m1c.hatecheaters.utils.OdinCheck.checkIfOdinIsLoaded
@@ -19,13 +17,7 @@ import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent
-
-object HateCheatersObject {
-    val version = "@MODVERSION@"
-
-    var screen: GuiScreen? = null
-    val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-}
+import kotlin.coroutines.CoroutineContext
 
 @Mod(modid = "hatecheaters", useMetadata = true)
 class HateCheaters {
@@ -55,5 +47,14 @@ class HateCheaters {
         logger.info("Displaying screen $screen")
         mc.displayGuiScreen(screen)
         screen = null
+    }
+
+    companion object {
+        val version = "@MODVERSION@"
+
+        var screen: GuiScreen? = null
+        val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+
+        fun scope(context: CoroutineContext = Dispatchers.IO, func: suspend CoroutineScope.() -> Unit) = scope.launch(context) { func(this) }
     }
 }

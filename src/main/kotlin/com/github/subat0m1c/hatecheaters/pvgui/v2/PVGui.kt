@@ -1,6 +1,7 @@
 package com.github.subat0m1c.hatecheaters.pvgui.v2
 
 import com.github.subat0m1c.hatecheaters.HateCheatersObject.scope
+import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.scope
 import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.scale
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.currentPage
 import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.setPlayer
@@ -11,6 +12,7 @@ import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.Pl
 import kotlinx.coroutines.launch
 import me.odinmain.utils.render.scale
 import me.odinmain.utils.render.translate
+import me.odinmain.utils.skyblock.modMessage
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.util.MovementInputFromOptions
@@ -50,7 +52,6 @@ object PVGui : GuiScreen() {
     }
 
     override fun onGuiClosed() {
-        mc.thePlayer.movementInput = MovementInputFromOptions(mc.gameSettings)
         loadText = "Loading..."
         playerData = null
         profileName = null
@@ -58,15 +59,20 @@ object PVGui : GuiScreen() {
 
     fun updateProfile(profile: String?) = playerData?.profileOrSelected(profile)?.cuteName?.let { profileName = it }
 
-    fun loadPlayer(name: String?, profileName: String? = null) {
-        scope.launch {
-            getSkyblockProfile(name ?: mc.thePlayer.name, false)?.let { data ->
-                playerData = data
-                setPlayer(data)
+    fun loadPlayer(name: String?, profileName: String? = null) = scope {
+        getSkyblockProfile(name ?: mc.thePlayer.name).fold(
+            onSuccess = {
+                playerData = it
+                setPlayer(it)
                 updateProfile(profileName)
-            } ?: run { loadText = "Failed to grab profile data." }
-        }
+            }, onFailure = {
+                modMessage(it.message)
+                failed()
+            }
+        )
     }
+
+    private fun failed() { loadText = "Failed to grab profile data." }
 
     override fun doesGuiPauseGame(): Boolean = false
 }

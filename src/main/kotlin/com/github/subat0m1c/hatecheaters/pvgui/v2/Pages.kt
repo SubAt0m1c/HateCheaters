@@ -34,7 +34,7 @@ object Pages {
 
 
     abstract class PVPage(val name: String) {
-        inline val player: PlayerInfo get() = playerData ?: dummyPlayer
+        inline val player: PlayerInfo get() = playerData ?: dummyPlayer // these should never be rendered when null, however making them not nullable without asserting is good.
         inline val profile: MemberData get() = player.profileOrSelected(profileName)?.members?.get(player.uuid) ?: MemberData(playerId = "")
         inline val ct get() = ProfileViewer.currentTheme
 
@@ -62,9 +62,9 @@ object Pages {
         val mouseX get() = ((getMouseX * ScaledResolution(mc).scaleFactor - mc.displayWidth/2) * 1f / scale) - sx
         val mouseY get() = ((getMouseY * ScaledResolution(mc).scaleFactor - mc.displayHeight/2) * 1f / scale) - sy
 
-
+        // todo make vertical button dsl for this
         fun preDraw() {
-            push()
+            GlStateManager.pushMatrix()
             translate(sx, sy, 0)
             roundedRectangle(0, 0, totalWidth, totalHeight, ct.main, ct.roundness, 1f)
 
@@ -86,7 +86,7 @@ object Pages {
             val betaText = if (currentPage != PageEntries.Overview) player.name else "HCPV Beta 2"
             centeredText(betaText, pageCenter, lastY + lastHeight/2, color = ct.font, scale = if (betaText.length >= 8) 3 else 3.5)
             if (playerData != null) draw() else centeredText(loadText, mainCenterX, totalHeight/2, 7f)
-            pop()
+            GlStateManager.popMatrix()
         }
 
         fun handleClick(x: Int, y: Int, button: Int) {
@@ -108,15 +108,11 @@ object Pages {
         open fun init() { }
     }
 
-    fun push() = GlStateManager.pushMatrix()
-    fun pop() = GlStateManager.popMatrix()
-
     /**
      * The "Centered" parameter in [mcText()] does not center vertically, thus this should be used instead.
      */
-    fun centeredText(text: String, x: Number, y: Number, scale: Number = 1f, color: Color = Color.WHITE, shadow: Boolean = true) {
+    fun centeredText(text: String, x: Number, y: Number, scale: Number = 1f, color: Color = Color.WHITE, shadow: Boolean = true) =
         mcText(text, x - (text.mcWidth.toDouble()*scale.toDouble()/2.0), y - (getMCTextHeight().toDouble()*scale.toDouble())/2.0, scale, color, shadow, false)
-    }
 
     fun playClickSound() = playLoudSound("gui.button.press", 0.5f, 1.1f)
 }

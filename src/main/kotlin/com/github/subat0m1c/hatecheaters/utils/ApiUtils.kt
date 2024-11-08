@@ -1,6 +1,7 @@
 package com.github.subat0m1c.hatecheaters.utils
 
 import com.github.subat0m1c.hatecheaters.modules.ProfileViewer
+import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.DungeonsData
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.DungeonTypes
@@ -23,18 +24,10 @@ import kotlin.math.floor
 
 object ApiUtils {
 
-    fun PlayerInfo.profileOrSelected(profileName: String? = null): Profiles? {
-        return this.profileData.profiles.find { it.cuteName.lowercase() == profileName?.lowercase() } ?: this.profileData.profiles.find { it.selected }
-    }
+    fun PlayerInfo.profileOrSelected(profileName: String? = null): Profiles? =
+        this.profileData.profiles.find { it.cuteName.lowercase() == profileName?.lowercase() } ?: this.profileData.profiles.find { it.selected }
 
     val PlayerInfo.profileList: List<Pair<String, String>> get() = this.profileData.profiles.map { it.cuteName to it.gameMode }
-
-    fun PlayerInfo.iterateProfiles(profile: String?, index: Int): String? {
-        val currentIndex = this.profileList.map { it.first }.indexOf(profile)
-        if (currentIndex == -1) return null
-        val i = (currentIndex + index).mod(this.profileList.size)
-        return this.profileList[i].first
-    }
 
     /**
      * Taken and modified from [Skytils](https://github.com/Skytils/SkytilsMod) under [AGPL-3.0](https://github.com/Skytils/SkytilsMod/blob/1.x/LICENSE.md).
@@ -65,14 +58,10 @@ object ApiUtils {
 
     private val petItemRegex = Regex("(?:PET_ITEM_)?([A-Z_]+?)(?:_(COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC))?")
 
-    val Pet.petItem: String? get() {
-        val (heldItem, rarity) = petItemRegex.matchEntire(heldItem ?: return null)?.destructured ?: return null
-        return "${getRarityColor(rarity)}${heldItem.lowercase().replace("_", " ").capitalizeWords()}"
-    }
+    val Pet.petItem: String? get() =
+        heldItem?.let { petItemRegex.matchEntire(it)?.destructured?.let { (heldItem, rarity) -> "${getRarityColor(rarity)}${heldItem.lowercase().replace("_", " ").capitalizeWords()}" } }
 
-    val Pet.colorName: String get() {
-        return (getRarityColor(this.tier) + this.type.replace("_", " ").lowercase().capitalizeWords())
-    }
+    val Pet.colorName: String get() = (getRarityColor(this.tier) + this.type.replace("_", " ").lowercase().capitalizeWords())
 
     fun getRarityColor(rarity: String): String {
         return when (rarity) {
@@ -151,25 +140,13 @@ object ApiUtils {
         75000000, 93000000, 116250000, 200000000
     )
 
-    val PlayerData.skillAverage: Double get() {
-        val nonCosmeticSkills = experience.toMutableMap().apply {
-            this.remove("SKILL_SOCIAL")
-            this.remove("SKILL_RUNECRAFTING")
-        }
-        return nonCosmeticSkills.values.sumOf { getSkillLevel(it) }/nonCosmeticSkills.size
-    }
-    val PlayerData.cappedSkillAverage: Double get() {
-        val nonCosmeticSkills = experience.toMutableMap().apply {
-            this.remove("SKILL_SOCIAL")
-            this.remove("SKILL_RUNECRAFTING")
-        }
-        return nonCosmeticSkills.entries.sumOf { getSkillLevel(it.value).coerceAtMost(getSkillCap(it.key.lowercase().substringAfter("skill_")).toDouble()) }/nonCosmeticSkills.size
-    }
+    val PlayerData.skillAverage: Double get() =
+        experience.without("SKILL_SOCIAL", "SKILL_SOCIAL", "SKILL_DUNGEONEERING").let { skills -> skills.values.sumOf { getSkillLevel(it) }/skills.size }
 
-    fun getSkillLevel(exp: Double): Double {
-        //modMessage(skillLevels.sum())
-        return getLevelWithProgress(exp, skillLevels, 600000)
-    }
+    val PlayerData.cappedSkillAverage: Double get() =
+        experience.without("SKILL_SOCIAL", "SKILL_SOCIAL", "SKILL_DUNGEONEERING").let { skills -> skills.entries.sumOf { getSkillLevel(it.value).coerceAtMost(getSkillCap(it.key.lowercase().substringAfter("skill_")).toDouble()) }/skills.size }
+
+    fun getSkillLevel(exp: Double): Double = getLevelWithProgress(exp, skillLevels, 600000)
 
     fun getSkillCap(skill: String): Int {
         return when (skill) {
@@ -219,9 +196,8 @@ object ApiUtils {
         6400000, 6700000, 7000000
     )
 
-    fun getSlayerSkillLevel(exp: Double, slayer: String): Double {
-        return (if (slayer != "vampire") getLevelWithProgress(exp, slayerLevels) else getLevelWithProgress(exp, vampireLevels)).coerceAtMost(getSlayerCap(slayer).toDouble())
-    }
+    fun getSlayerSkillLevel(exp: Double, slayer: String): Double =
+        (if (slayer != "vampire") getLevelWithProgress(exp, slayerLevels) else getLevelWithProgress(exp, vampireLevels)).coerceAtMost(getSlayerCap(slayer).toDouble())
 
     fun getSlayerColor(slayer: String): Color {
         return when (slayer) {
@@ -244,11 +220,10 @@ object ApiUtils {
         20, 55, 165, 640, 1560
     )
 
-    fun getSlayerCap(slayer: String): Int {
-        return when (slayer) {
+    fun getSlayerCap(slayer: String): Int =
+        when (slayer) {
             "blaze" -> 7
             "vampire" -> 5
             else -> 9
         }
-    }
 }

@@ -1,6 +1,6 @@
 package com.github.subat0m1c.hatecheaters.commands.impl
 
-import com.github.subat0m1c.hatecheaters.HateCheatersObject.scope
+import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.scope
 import com.github.subat0m1c.hatecheaters.commands.commodore
 import com.github.subat0m1c.hatecheaters.modules.BetterPartyFinder.displayDungeonData
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
@@ -13,16 +13,18 @@ import me.odinmain.utils.skyblock.getChatBreak
 val StatsCommand = commodore("hcs", "ds", "hcstats") {
     runs { name: String? ->
         val ign = name ?: mc.thePlayer.name
-        scope.launch(Dispatchers.IO) {
-            val profiles = getSkyblockProfile(ign, false)
-            profiles?.profileData?.profiles
-                ?.find { it.selected }?.members?.get(profiles.uuid)
+        scope {
+            val profiles = getSkyblockProfile(ign).fold(
+                onSuccess = { it }, onFailure = { return@scope modMessage(it.message) }
+            )
+            profiles.profileData.profiles
+                .find { it.selected }?.members?.get(profiles.uuid)
                 ?.let { displayDungeonData(it, profiles.name) }
-                ?: return@launch modMessage("""
+                ?: return@scope modMessage("""
                     ${getChatBreak()}
                     Could not find info for player $ign 
                     ${getChatBreak()}
-                    """.trimIndent(), false
+                    """.trimIndent(), ""
                 )
         }
     }

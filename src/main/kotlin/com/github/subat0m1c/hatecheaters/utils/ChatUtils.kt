@@ -4,6 +4,7 @@ import com.github.subat0m1c.hatecheaters.modules.ProfileViewer
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.render.getMCTextWidth
+import me.odinmain.utils.runOnMCThread
 import me.odinmain.utils.skyblock.createClickStyle
 import net.minecraft.event.ClickEvent
 import net.minecraft.event.HoverEvent
@@ -25,15 +26,12 @@ object ChatUtils {
      * @param prefix If `true`, adds a prefix to the message.
      * @param chatStyle Optional chat style to be applied to the message.
      */
-    fun modMessage(message: Any?, prefix: Boolean = true, chatStyle: ChatStyle? = null) {
-        val chatComponent = ChatComponentText(if (prefix) "§bH§3C §8»§r $message" else message.toString())
+    fun modMessage(message: Any?, prefix: String = "§bH§3C §8»§r ", chatStyle: ChatStyle? = null) {
+        val chatComponent = ChatComponentText("$prefix$message")
         chatStyle?.let { chatComponent.setChatStyle(it) } // Set chat style using setChatStyle method
+        runOnMCThread { mc.thePlayer?.addChatMessage(chatComponent) }
         logger.info("Messaged >> $message")
-        try { mc.thePlayer?.addChatMessage(chatComponent) }
-        catch (e: Exception) { logger.warning("Error sending message: ${e.message}")
-        }
     }
-
 
     fun chatConstructor(chat: ChatDSL.() -> Unit): ChatDSL = ChatDSL().apply(chat)
 
@@ -56,12 +54,7 @@ object ChatUtils {
 
         val message get() = chat
 
-        fun print() =
-            try {
-                mc.thePlayer.addChatMessage(this.chat)
-            } catch (e: Exception) {
-                logger.warning("Error sending chat message: ${e.message}")
-            }
+        fun print() = runOnMCThread { mc.thePlayer.addChatMessage(chat) }
     }
 
     fun ChatStyle.setHover(text: List<String>): ChatStyle =

@@ -13,9 +13,10 @@ fun <T> profileLazy(initializer: () -> T) = ProfileLazy.create(initializer)
 class ProfileLazy<out T>(private val initializer: () -> T) {
     private var _value: T? = null
 
-    operator fun getValue(thisRef: Any?, property: KProperty<*>): T = _value?.let { return it } ?: initializer().also { _value = it }
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): T = _value ?: initializer().also { _value = it }
 
     fun reset() { _value = null }
+    fun noInit() = _value
 
     companion object {
         private val allLazies = mutableListOf<ProfileLazy<*>>()

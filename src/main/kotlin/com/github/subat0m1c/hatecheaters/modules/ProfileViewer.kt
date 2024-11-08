@@ -1,6 +1,6 @@
 package com.github.subat0m1c.hatecheaters.modules
 
-import com.github.subat0m1c.hatecheaters.HateCheatersObject.screen
+import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.screen
 import com.github.subat0m1c.hatecheaters.commands.impl.PVCommand
 import com.github.subat0m1c.hatecheaters.commands.registerCommands
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui
@@ -32,7 +32,7 @@ object ProfileViewer : Module(
     val line: Color by ColorSetting("Line", default = Color.BLACK, true, description = "Line Color (primarily separators).").withDependency { themes == themesList.lastIndex }
     val code: String by StringSetting("Code", default = "f", 1, description = "White Text Color Code (so white on white isn't bad).").withDependency { themes == themesList.lastIndex }
     val selected: Color by ColorSetting("Selected", default = Color.CYAN.withAlpha(0.8f), true, description = "Color for selected buttons.").withDependency { themes == themesList.lastIndex }
-    val button: Color by ColorSetting("Button", default = Color("A9A9A9FF"), description = "Color for buttons").withDependency { themes == themesList.lastIndex }
+    val button: Color by ColorSetting("Button", default = Color("A9A9A9FF"), true, description = "Color for buttons").withDependency { themes == themesList.lastIndex }
     val roundness: Float by NumberSetting("Roundness", default = 10f, increment = 0.5, min = 0, max = 20f, description = "Roundness for the whole gui.").withDependency { themes == themesList.lastIndex }
     val inventoryRound: Float by NumberSetting("Inventory Roundness", default = 0f, increment = 0.5, min = 0, max = 20f, description =  "Roundness for inventory item backgrounds.").withDependency { themes == themesList.lastIndex }
     val rarityBackgrounds: Boolean by BooleanSetting("Rarity Background", default = false, description = "Renders a background according to the rarity of the item in front of it.")
@@ -53,37 +53,37 @@ object ProfileViewer : Module(
         ),
         Theme(
             "Midnight",
-            Color("151345FF"), // main
-            Color.TRANSPARENT, // accent
-            Color.WHITE, //font
-            Color("1c1d54FF"), // items
-            Color("040622FF"), //line
+            Color("151345FF"),  // main
+            Color.TRANSPARENT,       // accent <- useless
+            Color.WHITE,             // font
+            Color("1c1d54FF"),  // items
+            Color("040622FF"),  // line
             "f",
-            Color("26236bFF"), // selected
-            Color("040622FF"), // button
+            Color("26236bFF"),  // selected
+            Color("040622FF"),  // button
             10f,
             0f,
         ),
         Theme(
             "Light",
-            Color.WHITE,
-            Color.DARK_GRAY,
-            Color.BLACK,
-            Color.DARK_GRAY,
-            Color.BLACK,
+            Color.WHITE,        // main
+            Color.DARK_GRAY,    // accent <- useless
+            Color.BLACK,        // font
+            Color.DARK_GRAY,    // items
+            Color.DARK_GRAY,    // line
             "0",
-            Color.BLUE,
-            Color.WHITE,
+            Color.GRAY,         // selected
+            Color.DARK_GRAY,    // button
             10f,
             0f,
         ),
         Theme(
             "Sunrise",
             Color("fDf1CDFF"), // main
-            Color.TRANSPARENT, // accent
-            Color("805690FF"), //font
+            Color.TRANSPARENT,      // accent <- useless
+            Color("805690FF"), // font
             Color("f9dc90FF"), // items
-            Color("805690FF"), //line
+            Color("805690FF"), // line
             "b",
             Color("f89e9dFF"), // selected
             Color("d46f93FF"), // button
@@ -107,11 +107,11 @@ object ProfileViewer : Module(
     )
 
     override fun onKeybind() {
-        mc.thePlayer?.name?.let { launchPV(it) }
+        launchPV()
     }
 
     override fun onEnable() {
-        mc.thePlayer?.name?.let { launchPV(it) }
+        launchPV()
         super.onEnable()
         toggle()
     }
@@ -128,8 +128,8 @@ object ProfileViewer : Module(
 
 }
 
-fun launchPV(name: String) {
-    loadPlayer(name)
+fun launchPV(name: String? = null, profile: String? = null) {
+    loadPlayer(name, profile)
     screen = PVGui
     logger.info("Trying to display pvgui")
 }

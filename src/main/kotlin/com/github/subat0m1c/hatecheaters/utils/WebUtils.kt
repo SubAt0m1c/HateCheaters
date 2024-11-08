@@ -45,7 +45,7 @@ object WebUtils {
     )
 
     suspend fun testQue(): Unit = withContext(Dispatchers.IO) {
-        getSkyblockProfile(players.random(), true)
+        getSkyblockProfile(players.random())
     }
 
     suspend fun getInputStream(data: String, url: String): InputStream? = withContext(Dispatchers.IO) { queue.queue { runInputStream(data, url) } }
@@ -79,20 +79,20 @@ object WebUtils {
         return connection
     }
 
-    suspend fun getUUIDbyName(name: String): Pair<String?, String?>? = withContext(Dispatchers.IO) {
-        try {
+    suspend fun getUUIDbyName(name: String): Result<Pair<String?, String?>> = withContext(Dispatchers.IO) {
+        return@withContext try {
             val connection = setupHTTPConnection(URL("https://api.mojang.com/users/profiles/minecraft/$name"))
 
             if (connection.responseCode == HttpURLConnection.HTTP_OK) {
                 val data: Map<String, String> = json.decodeFromString(connection.inputStream.bufferedReader().use {it.readText()})
-                return@withContext Pair(data["id"], data["name"])
+                Result.success(Pair(data["id"], data["name"]))
             } else {
                 logger.warning("Failed to get uuid for player $name")
+                Result.failure<Pair<String?, String?>>(FailedToGetUUIDException("Failed to get uuid. ($name may not exist!)"))
             }
         } catch (e: Exception) {
             logger.severe("Error fetching uuid for player $name")
+            Result.failure<Pair<String?, String?>>(FailedToGetUUIDException("Error fetching uuid for player $name"))
         }
-
-        return@withContext null
     }
 }

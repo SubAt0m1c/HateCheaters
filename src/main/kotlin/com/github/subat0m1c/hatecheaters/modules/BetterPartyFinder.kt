@@ -1,6 +1,6 @@
 package com.github.subat0m1c.hatecheaters.modules
 
-import com.github.subat0m1c.hatecheaters.HateCheatersObject.scope
+import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.scope
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.cataLevel
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.classAverage
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.classLevel
@@ -15,7 +15,6 @@ import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.getSkyblockProfile
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.odinmain.features.Category
 import me.odinmain.features.Module
@@ -25,8 +24,6 @@ import me.odinmain.utils.capitalizeFirst
 import me.odinmain.utils.noControlCodes
 import me.odinmain.utils.round
 import me.odinmain.utils.skyblock.*
-import net.minecraft.event.ClickEvent
-import net.minecraft.util.ChatComponentText
 
 object BetterPartyFinder : Module(
     name = "Better Party Finder",
@@ -65,19 +62,19 @@ object BetterPartyFinder : Module(
             val name = pfRegex.find(it)?.groupValues?.get(1).toString()
             if (name == mc.session.username) return@onMessage
 
-            scope.launch(Dispatchers.IO) {
-                val profiles = getSkyblockProfile(name, false)
-                profiles?.profileData?.profiles
-                    ?.find { it.selected }?.members?.get(profiles.uuid)
+            scope {
+                val profiles = getSkyblockProfile(name).fold(
+                    onSuccess = { it }, onFailure = { return@scope modMessage(it.message) }
+                )
+                profiles.profileData.profiles
+                    .find { it.selected }?.members?.get(profiles.uuid)
                     ?.let { displayDungeonData(it, profiles.name) }
-                    ?: run {
-                        modMessage("""
+                    ?: return@scope modMessage("""
                             ${getChatBreak()}
                             Could not find info for player $name
                             ${getChatBreak()}
-                            """.trimIndent(), false
-                        )
-                    }
+                            """.trimIndent(), ""
+                    )
             }
         }
 
@@ -94,54 +91,53 @@ object BetterPartyFinder : Module(
                 return@onMessage
             }
 
-            scope.launch(Dispatchers.IO) {
-                withContext(Dispatchers.IO) {
-                    val kickedReasons = mutableListOf<String>()
+            scope {
+                val kickedReasons = mutableListOf<String>()
 
-                    val profiles = getSkyblockProfile(name, false)
-                    val currentProfile = profiles?.profileData?.profiles?.find { it.selected }?.members?.get(profiles.uuid) ?: run {
-                        modMessage("""
+                val profiles = getSkyblockProfile(name).fold(
+                    onSuccess = { it }, onFailure = { return@scope modMessage(it.message) }
+                )
+                val currentProfile = profiles.profileData.profiles.find { it.selected }?.members?.get(profiles.uuid) ?: run {
+                    return@scope modMessage("""
                             ${getChatBreak()}
                             Could not find info for player $name
                             ${getChatBreak()}
-                        """.trimIndent(), false
-                        )
-                        return@withContext
-                    }
-
-                    val dungeon = if (!mmToggle) currentProfile.dungeons.dungeonTypes.catacombs else currentProfile.dungeons.dungeonTypes.mastermode
-                    dungeon.fastestTimeSPlus["$floor"]?.times(0.001)?.let {
-                        if (!timeKick) return@let
-                        if (it > (timereq)) {
-                            kickedReasons.add("Did not meet time req: ${secondsToMinutes(it)}/${secondsToMinutes(it)}")
-                        }
-                    } ?: kickedReasons.add("Couldn't confirm completion status!")
-
-                    val secretCount = currentProfile.dungeons.secrets
-                    secretCount.let {
-                        if (!secretKick) return@let
-                        if (it < (secretsreq * 1000)) {
-                            kickedReasons.add("Did not meet secret req: ${it}/${secretsreq}")
-                        }
-                    }
-
-                    val mmComps = (currentProfile.dungeons.dungeonTypes.mastermode.tierComps.entries.sumOf { entry ->  entry.value.takeUnless { entry.key == "total" } ?: 0 })
-                    val floorComps = (currentProfile.dungeons.dungeonTypes.catacombs.tierComps.entries.sumOf { entry ->  entry.value.takeUnless { entry.key == "total" } ?: 0 })
-                    ((secretCount.toDouble()/(mmComps + floorComps).toDouble()).toFloat()).let {
-                        if (!savgKick) return@let
-                        if (it < savgreq) {
-                            kickedReasons.add("Did not meet savg req: $it/${savgreq}")
-                        }
-                    }
-
-                    if (kickedReasons.isNotEmpty()) {
-                        sendCommand("party kick $name")
-                        modMessage("Kicked $name for:\n${kickedReasons.joinToString("\n")}")
-                        return@withContext
-                    }
-
-                    displayDungeonData(currentProfile, profiles.name)
+                        """.trimIndent(), ""
+                    )
                 }
+
+                val dungeon = if (!mmToggle) currentProfile.dungeons.dungeonTypes.catacombs else currentProfile.dungeons.dungeonTypes.mastermode
+                dungeon.fastestTimeSPlus["$floor"]?.times(0.001)?.let {
+                    if (!timeKick) return@let
+                    if (it > (timereq)) {
+                        kickedReasons.add("Did not meet time req: ${secondsToMinutes(it)}/${secondsToMinutes(it)}")
+                    }
+                } ?: kickedReasons.add("Couldn't confirm completion status!")
+
+                val secretCount = currentProfile.dungeons.secrets
+                secretCount.let {
+                    if (!secretKick) return@let
+                    if (it < (secretsreq * 1000)) {
+                        kickedReasons.add("Did not meet secret req: ${it}/${secretsreq}")
+                    }
+                }
+
+                val mmComps = (currentProfile.dungeons.dungeonTypes.mastermode.tierComps.entries.sumOf { entry ->  entry.value.takeUnless { entry.key == "total" } ?: 0 })
+                val floorComps = (currentProfile.dungeons.dungeonTypes.catacombs.tierComps.entries.sumOf { entry ->  entry.value.takeUnless { entry.key == "total" } ?: 0 })
+                ((secretCount.toDouble()/(mmComps + floorComps).toDouble()).toFloat()).let {
+                    if (!savgKick) return@let
+                    if (it < savgreq) {
+                        kickedReasons.add("Did not meet savg req: $it/${savgreq}")
+                    }
+                }
+
+                if (kickedReasons.isNotEmpty()) {
+                    sendCommand("party kick $name")
+                    modMessage("Kicked $name for:\n${kickedReasons.joinToString("\n")}")
+                    return@scope
+                }
+
+                displayDungeonData(currentProfile, profiles.name)
             }
         }
 

@@ -1,8 +1,9 @@
 package com.github.subat0m1c.hatecheaters.utils
 
-import com.github.subat0m1c.hatecheaters.HateCheatersObject.scope
+import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.scope
 import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.getCurrentDateTimeString
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileInputStream
@@ -14,6 +15,7 @@ import java.util.logging.FileHandler
 import java.util.logging.Logger
 import java.util.logging.SimpleFormatter
 import java.util.zip.GZIPOutputStream
+import kotlin.coroutines.CoroutineContext
 
 /**
  * im pretty sure this is bad but i could not figure out making log4j actually log to the right folder
@@ -27,7 +29,7 @@ object LogHandler {
     }
 
     private fun compressOldLogs() {
-        scope.launch {
+        scope(Dispatchers.Default) {
             val logDir = File("config/hatecheaters/mod_logs")
             if (logDir.exists() && logDir.isDirectory) {
                 val logFiles = logDir.listFiles { file -> file.isFile && file.name.endsWith(".log") }

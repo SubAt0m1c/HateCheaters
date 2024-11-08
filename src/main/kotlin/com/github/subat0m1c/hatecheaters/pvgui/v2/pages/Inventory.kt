@@ -36,9 +36,9 @@ object Inventory: Pages.PVPage("Inventory") {
 
     val separatorLineY: Double by lazy { lineY + pageHeight }
 
-    val inventoryPageHeight = ((totalHeight-lineY * (2 + 6-1))*0.9)/ 6
+    private val inventoryPageHeight = ((totalHeight-lineY * (2 + 6-1))*0.9)/ 6
 
-    val inventoryAPI: Boolean by profileLazy { profile.inventory.eChestContents.itemStacks.isNotEmpty() }
+    private val inventoryAPI: Boolean by profileLazy { profile.inventory.eChestContents.itemStacks.isNotEmpty() }
 
     private val buttons: ButtonDSL<String> by profileLazy {
         buttons(
@@ -109,20 +109,20 @@ object Inventory: Pages.PVPage("Inventory") {
     }
 
     object Talismans: InventoryPage() {
-        val talis: List<ItemStack> by profileLazy { profile.inventory.bagContents["talisman_bag"]?.itemStacks?.filterNotNull()?.sortedByDescending { it.getMagicalPower } ?: emptyList() }
-        val magicPower: Int by profileLazy { profile.magicalPower }
-        val mp: String by profileLazy { "§aSelected Power: §6${profile.accessoryBagStorage.selectedPower?.capitalizeWords() ?: "§cNone!"}" }
-        val tunings: List<String> by profileLazy { profile.accessoryBagStorage.tuning.currentTunings.map { "${it.key.replace("_", " ").capitalizeWords().colorStat}§7: ${it.value.colorize(ceil(magicPower/10.0))}" } }
-        val abiPhone: String by profileLazy { "§5Abicase: ${floor(profile.crimsonIsle.abiphone.activeContacts.size/2.0).toInt()}" }
-        //val riftPrism: Boolean by profileLazy { profile.rift.access.consumedPrism } //todo implement
+        private val talis: List<ItemStack> by profileLazy { profile.inventory.bagContents["talisman_bag"]?.itemStacks?.filterNotNull()?.sortedByDescending { it.getMagicalPower } ?: emptyList() }
+        private val magicPower: Int by profileLazy { profile.magicalPower }
+        private val mp: String by profileLazy { "§aSelected Power: §6${profile.accessoryBagStorage.selectedPower?.capitalizeWords() ?: "§cNone!"}" }
+        private val tunings: List<String> by profileLazy { profile.accessoryBagStorage.tuning.currentTunings.map { "${it.key.replace("_", " ").capitalizeWords().colorStat}§7: ${it.value.colorize(ceil(magicPower/10.0))}" } }
+        private val abiPhone: String by profileLazy { "§5Abicase: ${floor(profile.crimsonIsle.abiphone.activeContacts.size/2.0).toInt()}" }
+        private val riftPrism: String by profileLazy { "§dRift Prism: ${ if (profile.rift.access.consumedPrism) "§aObtained" else "§cMissing"}" }
 
-        val textList: List<String> by profileLazy { listOf("Magical Power: ${magicPower.colorize(1697)}", mp, abiPhone) + tunings }
+        private val textList: List<String> by profileLazy { listOf("Magical Power: ${magicPower.colorize(1697)}", mp, abiPhone, riftPrism) + tunings }
 
-        val pages: Int by profileLazy { ceil(talis.size.toDouble()/(maxRows*9)).toInt() }
+        private val pages: Int by profileLazy { ceil(talis.size.toDouble()/(maxRows*9)).toInt() }
 
-        val separatorX = (mainX + mainWidth * 0.38).floor().toInt()
+        private val separatorX = (mainX + mainWidth * 0.38).floor().toInt()
 
-        val width = mainWidth - ((separatorX - mainX)) -lineY
+        private val width = mainWidth - ((separatorX - mainX)) -lineY
 
         private val buttons: ButtonDSL<Int> by profileLazy {
             buttons(
@@ -177,8 +177,8 @@ object Inventory: Pages.PVPage("Inventory") {
 
     object EnderChest: InventoryPage() {
 
-        val items: List<ItemStack?> by profileLazy { profile.inventory.eChestContents.itemStacks }
-        val pages: Int by profileLazy { ceil(items.size/45.0).toInt() }
+        private val items: List<ItemStack?> by profileLazy { profile.inventory.eChestContents.itemStacks }
+        private val pages: Int by profileLazy { ceil(items.size/45.0).toInt() }
 
         private val buttons: ButtonDSL<Int> by profileLazy {
             buttons(

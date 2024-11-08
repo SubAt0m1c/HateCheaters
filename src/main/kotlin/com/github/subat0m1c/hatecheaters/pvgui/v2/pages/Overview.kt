@@ -1,5 +1,6 @@
 package com.github.subat0m1c.hatecheaters.pvgui.v2.pages
 
+import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.scope
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui.profileName
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui.updateProfile
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages
@@ -9,7 +10,6 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Overview.playerEntity
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.DropDownDSL
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.drawPlayerOnScreen
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getDashedUUID
-import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getMouseX
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.dropDownMenu
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.profileLazy
@@ -110,7 +110,7 @@ object Overview: Pages.PVPage("Overview") {
 }
 
 fun setPlayer(player: PlayerInfo) {
-    scope.launch {
+    scope {
         val gameProfile = mc.sessionService.fillProfileProperties(GameProfile(getDashedUUID(player.uuid), player.name), true)
 
         var playerLocationCape: ResourceLocation? = null

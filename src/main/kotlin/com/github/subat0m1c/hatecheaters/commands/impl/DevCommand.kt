@@ -1,6 +1,6 @@
 package com.github.subat0m1c.hatecheaters.commands.impl
 
-import com.github.subat0m1c.hatecheaters.HateCheatersObject.scope
+import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.scope
 import com.github.subat0m1c.hatecheaters.commands.commodore
 import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
@@ -19,19 +19,19 @@ val DevCommand = commodore("hcdev") {
 
     literal("apitest") {
         runs { name: String, skipCache: Boolean?, forceSkycrypt: Boolean? ->
-            scope.launch(Dispatchers.IO) {
-                withContext(Dispatchers.IO) {
-                    val profiles = getSkyblockProfile(name, skipCache ?: false, forceSkyCrypt = forceSkycrypt ?: false) ?: return@withContext modMessage("Player does not exist!")
+            scope {
+                val profiles = getSkyblockProfile(name, null, skipCache ?: false, forceSkycrypt ?: false).fold(
+                    onSuccess = { it }, onFailure = { return@scope modMessage(it.message) }
+                )
 
-                    val profile = profiles.profileData.profiles.find { it.selected }?.members?.get(profiles.uuid)
-                        ?: return@withContext modMessage("Could not find player data.")
-                    modMessage("Succeeded!")
-                }
+                profiles.profileData.profiles.find { it.selected }?.members?.get(profiles.uuid)
+                    ?: return@scope modMessage("Could not find player data.")
+                modMessage("Succeeded!")
             }
         }
 
         literal("que").runs {
-            scope.launch {
+            scope {
                 modMessage("testing que...")
                 testQue()
             }
