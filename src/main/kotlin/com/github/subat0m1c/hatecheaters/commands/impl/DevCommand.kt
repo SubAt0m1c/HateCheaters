@@ -20,10 +20,8 @@ val DevCommand = commodore("hcdev") {
     literal("apitest") {
         runs { name: String, skipCache: Boolean?, forceSkycrypt: Boolean? ->
             scope {
-                val profiles = getSkyblockProfile(name, null, skipCache ?: false, forceSkycrypt ?: false).fold(
-                    onSuccess = { it }, onFailure = { return@scope modMessage(it.message) }
-                )
-
+                val profiles = getSkyblockProfile(name, null, skipCache ?: false, forceSkycrypt ?: false)
+                    .getOrElse { return@scope modMessage(it.message) }
                 profiles.profileData.profiles.find { it.selected }?.members?.get(profiles.uuid)
                     ?: return@scope modMessage("Could not find player data.")
                 modMessage("Succeeded!")

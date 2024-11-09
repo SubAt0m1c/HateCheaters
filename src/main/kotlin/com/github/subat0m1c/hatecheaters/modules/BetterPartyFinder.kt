@@ -63,9 +63,7 @@ object BetterPartyFinder : Module(
             if (name == mc.session.username) return@onMessage
 
             scope {
-                val profiles = getSkyblockProfile(name).fold(
-                    onSuccess = { it }, onFailure = { return@scope modMessage(it.message) }
-                )
+                val profiles = getSkyblockProfile(name).getOrElse { return@scope modMessage(it.message) }
                 profiles.profileData.profiles
                     .find { it.selected }?.members?.get(profiles.uuid)
                     ?.let { displayDungeonData(it, profiles.name) }
@@ -94,17 +92,14 @@ object BetterPartyFinder : Module(
             scope {
                 val kickedReasons = mutableListOf<String>()
 
-                val profiles = getSkyblockProfile(name).fold(
-                    onSuccess = { it }, onFailure = { return@scope modMessage(it.message) }
-                )
-                val currentProfile = profiles.profileData.profiles.find { it.selected }?.members?.get(profiles.uuid) ?: run {
-                    return@scope modMessage("""
-                            ${getChatBreak()}
-                            Could not find info for player $name
-                            ${getChatBreak()}
+                val profiles = getSkyblockProfile(name).getOrElse { return@scope modMessage(it.message) }
+                val currentProfile = profiles.profileData.profiles.find { it.selected }?.members?.get(profiles.uuid)
+                    ?: return@scope modMessage("""
+                        ${getChatBreak()}
+                        Could not find info for player $name
+                        ${getChatBreak()}
                         """.trimIndent(), ""
                     )
-                }
 
                 val dungeon = if (!mmToggle) currentProfile.dungeons.dungeonTypes.catacombs else currentProfile.dungeons.dungeonTypes.mastermode
                 dungeon.fastestTimeSPlus["$floor"]?.times(0.001)?.let {

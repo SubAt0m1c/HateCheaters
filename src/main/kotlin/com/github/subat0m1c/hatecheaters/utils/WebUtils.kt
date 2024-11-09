@@ -82,19 +82,14 @@ object WebUtils {
         return connection
     }
 
-    suspend fun getUUIDbyName(name: String): Result<MojangData> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            val connection = setupHTTPConnection(URL("https://api.mojang.com/users/profiles/minecraft/$name"))
+    fun getUUIDbyName(name: String): Result<MojangData> = runCatching {
+        val connection = setupHTTPConnection(URL("https://api.mojang.com/users/profiles/minecraft/$name"))
 
-            if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-                Result.success(json.decodeFromString(connection.inputStream.bufferedReader().use {it.readText()}))
-            } else {
-                logger.warning("Failed to get uuid for player $name")
-                Result.failure<MojangData>(FailedToGetUUIDException("Failed to get uuid. ($name may not exist!)"))
-            }
-        } catch (e: Exception) {
-            logger.severe("Error fetching uuid for player $name")
-            Result.failure<MojangData>(FailedToGetUUIDException("Error fetching uuid for player $name"))
+        if (connection.responseCode == HttpURLConnection.HTTP_OK) {
+            json.decodeFromString(connection.inputStream.bufferedReader().use {it.readText()})
+        } else {
+            logger.warning("Failed to get uuid for player $name")
+            return Result.failure(FailedToGetUUIDException("Failed to get uuid. ($name may not exist!)"))
         }
     }
 

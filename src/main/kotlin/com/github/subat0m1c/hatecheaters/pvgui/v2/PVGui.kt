@@ -8,7 +8,6 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.ProfileLazy
 import com.github.subat0m1c.hatecheaters.utils.ApiUtils.profileOrSelected
 import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.getSkyblockProfile
 import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.PlayerInfo
-import kotlinx.coroutines.launch
 import me.odinmain.utils.render.scale
 import me.odinmain.utils.render.translate
 import me.odinmain.utils.skyblock.modMessage
