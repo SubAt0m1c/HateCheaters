@@ -1,7 +1,7 @@
 package com.github.subat0m1c.hatecheaters.commands.impl
 
-import com.github.subat0m1c.hatecheaters.commands.commodore
 import com.github.stivais.commodore.utils.GreedyString
+import com.github.subat0m1c.hatecheaters.commands.commodore
 import com.github.subat0m1c.hatecheaters.modules.BetterPartyFinder.importantItems
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage

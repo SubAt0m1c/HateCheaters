@@ -1,10 +1,11 @@
-package com.github.subat0m1c.hatecheaters.utils.jsonobjects
+package com.github.subat0m1c.hatecheaters.utils.apiutils
 
-import kotlinx.serialization.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 
 //todo all the missing data. right now its about enough for what i currently need
-object HypixelProfileData {
+object HypixelData {
 
     data class PlayerInfo(
         val profileData: ProfilesData,

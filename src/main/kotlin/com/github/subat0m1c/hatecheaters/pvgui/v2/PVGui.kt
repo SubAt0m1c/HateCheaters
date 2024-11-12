@@ -1,13 +1,15 @@
 package com.github.subat0m1c.hatecheaters.pvgui.v2
 
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.scope
+import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
 import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.scale
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.currentPage
 import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.setPlayer
+import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Overview.setPlayer
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.ProfileLazy
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.profileOrSelected
-import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.getSkyblockProfile
-import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.PlayerInfo
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.profileOrSelected
+import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerInfo
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSkyblockProfile
 import me.odinmain.utils.render.scale
 import me.odinmain.utils.render.translate
 import me.odinmain.utils.skyblock.modMessage
@@ -57,7 +59,7 @@ object PVGui : GuiScreen() {
 
     fun updateProfile(profile: String?) = playerData?.profileOrSelected(profile)?.cuteName?.let { profileName = it }
 
-    fun loadPlayer(name: String?, profileName: String? = null) = scope {
+    fun loadPlayer(name: String?, profileName: String? = null) = launch {
         getSkyblockProfile(name ?: mc.thePlayer.name).fold(
             onSuccess = {
                 playerData = it

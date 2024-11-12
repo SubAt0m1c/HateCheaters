@@ -1,21 +1,20 @@
 package com.github.subat0m1c.hatecheaters.modules
 
-import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.scope
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.cataLevel
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.classAverage
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.classLevel
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.magicalPower
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.itemStacks
+import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.chatConstructor
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.secondsToMinutes
-import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.getSkyblockProfile
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
-import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.itemStacks
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.magicalPower
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.memberData
+import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData
+import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.cataLevel
+import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.classAverage
+import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.classLevel
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSkyblockProfile
 import me.odinmain.features.Category
 import me.odinmain.features.Module
 import me.odinmain.features.settings.Setting.Companion.withDependency
@@ -23,7 +22,10 @@ import me.odinmain.features.settings.impl.*
 import me.odinmain.utils.capitalizeFirst
 import me.odinmain.utils.noControlCodes
 import me.odinmain.utils.round
-import me.odinmain.utils.skyblock.*
+import me.odinmain.utils.skyblock.getChatBreak
+import me.odinmain.utils.skyblock.lore
+import me.odinmain.utils.skyblock.sendCommand
+import me.odinmain.utils.skyblock.skyblockID
 
 object BetterPartyFinder : Module(
     name = "Better Party Finder",
@@ -62,12 +64,12 @@ object BetterPartyFinder : Module(
             val name = pfRegex.find(it)?.groupValues?.get(1).toString()
             if (name == mc.session.username) return@onMessage
 
-            scope {
-                val profiles = getSkyblockProfile(name).getOrElse { return@scope modMessage(it.message) }
+            launch {
+                val profiles = getSkyblockProfile(name).getOrElse { return@launch modMessage(it.message) }
                 profiles.profileData.profiles
                     .find { it.selected }?.members?.get(profiles.uuid)
                     ?.let { displayDungeonData(it, profiles.name) }
-                    ?: return@scope modMessage("""
+                    ?: return@launch modMessage("""
                             ${getChatBreak()}
                             Could not find info for player $name
                             ${getChatBreak()}
@@ -89,12 +91,12 @@ object BetterPartyFinder : Module(
                 return@onMessage
             }
 
-            scope {
+            launch {
                 val kickedReasons = mutableListOf<String>()
 
-                val profiles = getSkyblockProfile(name).getOrElse { return@scope modMessage(it.message) }
-                val currentProfile = profiles.profileData.profiles.find { it.selected }?.members?.get(profiles.uuid)
-                    ?: return@scope modMessage("""
+                val profiles = getSkyblockProfile(name).getOrElse { return@launch modMessage(it.message) }
+                val currentProfile = profiles.memberData
+                    ?: return@launch modMessage("""
                         ${getChatBreak()}
                         Could not find info for player $name
                         ${getChatBreak()}
@@ -129,7 +131,7 @@ object BetterPartyFinder : Module(
                 if (kickedReasons.isNotEmpty()) {
                     sendCommand("party kick $name")
                     modMessage("Kicked $name for:\n${kickedReasons.joinToString("\n")}")
-                    return@scope
+                    return@launch
                 }
 
                 displayDungeonData(currentProfile, profiles.name)
@@ -141,7 +143,7 @@ object BetterPartyFinder : Module(
 
     private val witherImpactRegex = Regex("(?:⦾ )?Ability: Wither Impact {2}RIGHT CLICK")
 
-    suspend fun displayDungeonData(currentProfile: HypixelProfileData.MemberData, name: String): Unit = withContext(Dispatchers.Default) {
+    fun displayDungeonData(currentProfile: HypixelData.MemberData, name: String) {
         val catacombs = currentProfile.dungeons
 
         val profileKills = currentProfile.playerStats.kills

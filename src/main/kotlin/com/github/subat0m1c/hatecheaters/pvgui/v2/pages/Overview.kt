@@ -1,36 +1,32 @@
 package com.github.subat0m1c.hatecheaters.pvgui.v2.pages
 
-import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.scope
+import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui.profileName
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui.updateProfile
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.centeredText
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.playClickSound
-import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Overview.playerEntity
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.DropDownDSL
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.drawPlayerOnScreen
-import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getDashedUUID
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.dropDownMenu
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.profileLazy
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.cappedSkillAverage
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.cataLevel
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.colorName
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.magicalPower
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.petItem
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.profileList
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.profileOrSelected
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.skillAverage
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorizeNumber
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.commas
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.mcWidth
-import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.PlayerInfo
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.colorName
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.magicalPower
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.petItem
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.profileList
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.profileOrSelected
+import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerInfo
+import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.cappedSkillAverage
+import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.cataLevel
+import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.skillAverage
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.minecraft.MinecraftProfileTexture
-import kotlinx.coroutines.launch
 import me.odinmain.OdinMain.mc
-import me.odinmain.OdinMain.scope
 import me.odinmain.utils.floor
 import me.odinmain.utils.render.Box
 import me.odinmain.utils.render.Color
@@ -43,6 +39,7 @@ import net.minecraft.client.resources.DefaultPlayerSkin
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.input.Mouse
+import java.util.*
 import kotlin.math.floor
 
 object Overview: Pages.PVPage("Overview") {
@@ -64,7 +61,7 @@ object Overview: Pages.PVPage("Overview") {
         }
     }
 
-    private val skycryptText: String? by profileLazy { "Skycrypt cache only!".takeIf { player.skyCrypt } }
+    private const val SKYCRYPT_TEXT: String = "Skycrypt cache only!"
     private val skycryptPosition = lineY + mainHeight - (getMCTextHeight()*2.5)/2
 
     private val data: List<String> by profileLazy {
@@ -100,17 +97,15 @@ object Overview: Pages.PVPage("Overview") {
 
         playerEntity?.let { drawPlayerOnScreen(playerX.toDouble(), lineY + mainHeight/2.0 + 175, 175, Mouse.getX() + 325, Mouse.getY() - 225, it) }
 
-        skycryptText?.let { centeredText(it, mainCenterX, skycryptPosition, 2.5, Color.RED) }
+        if (player.skyCrypt) centeredText(SKYCRYPT_TEXT, mainCenterX, skycryptPosition, 2.5, Color.RED)
         dropDown.draw()
     }
 
     override fun mouseClick(x: Int, y: Int, button: Int) {
         dropDown.click(mouseX.toInt(), mouseY.toInt(), button)
     }
-}
 
-fun setPlayer(player: PlayerInfo) {
-    scope {
+    fun setPlayer(player: PlayerInfo) = launch {
         val gameProfile = mc.sessionService.fillProfileProperties(GameProfile(getDashedUUID(player.uuid), player.name), true)
 
         var playerLocationCape: ResourceLocation? = null
@@ -139,19 +134,29 @@ fun setPlayer(player: PlayerInfo) {
 
         val playerE = object : EntityOtherPlayerMP(Minecraft.getMinecraft().theWorld, gameProfile) {
             override fun getLocationSkin(): ResourceLocation {
-                return playerLocationSkin?: DefaultPlayerSkin.getDefaultSkin(this.uniqueID)
+                return playerLocationSkin?: DefaultPlayerSkin.getDefaultSkin(uniqueID)
             }
             override fun getLocationCape(): ResourceLocation {
                 return playerLocationCape ?: super.getLocationCape()
             }
 
             override fun getSkinType(): String {
-                return playerSkinType ?: DefaultPlayerSkin.getSkinType(this.uniqueID)
+                return playerSkinType ?: DefaultPlayerSkin.getSkinType(uniqueID)
             }
 
             override fun getAlwaysRenderNameTagForRender(): Boolean = false
         }
 
         playerEntity = playerE
+    }
+
+    private fun getDashedUUID(uuidStr: String): UUID {
+        val formattedUUID = uuidStr.substring(0, 8) + "-" +
+                uuidStr.substring(8, 12) + "-" +
+                uuidStr.substring(12, 16) + "-" +
+                uuidStr.substring(16, 20) + "-" +
+                uuidStr.substring(20, 32);
+
+        return UUID.fromString(formattedUUID)
     }
 }

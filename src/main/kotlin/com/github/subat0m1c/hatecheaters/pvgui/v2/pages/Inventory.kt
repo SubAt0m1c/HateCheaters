@@ -10,12 +10,12 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.fixFirstNine
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getSubset
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.buttons
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.profileLazy
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.itemStacks
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.magicalPower
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorStat
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.getMagicalPower
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.itemStacks
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.magicalPower
 import me.odinmain.utils.floor
 import me.odinmain.utils.render.*
 import me.odinmain.utils.skyblock.lore
@@ -176,7 +176,6 @@ object Inventory: Pages.PVPage("Inventory") {
     }
 
     object EnderChest: InventoryPage() {
-
         private val items: List<ItemStack?> by profileLazy { profile.inventory.eChestContents.itemStacks }
         private val pages: Int by profileLazy { ceil(items.size/45.0).toInt() }
 
@@ -199,6 +198,5 @@ object Inventory: Pages.PVPage("Inventory") {
         override fun mouseClick(x: Int, y: Int, button: Int) {
             buttons.click(mouseX.toInt(), mouseY.toInt(), button)
         }
-
     }
 }

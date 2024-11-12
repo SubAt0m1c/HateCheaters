@@ -6,7 +6,9 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.isObjectHovered
 import me.odinmain.utils.div
 import me.odinmain.utils.minus
 import me.odinmain.utils.plus
-import me.odinmain.utils.render.*
+import me.odinmain.utils.render.Box
+import me.odinmain.utils.render.Color
+import me.odinmain.utils.render.roundedRectangle
 import me.odinmain.utils.times
 
 fun <T> buttons(

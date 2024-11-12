@@ -10,7 +10,6 @@ import net.minecraft.event.ClickEvent
 import net.minecraft.event.HoverEvent
 import net.minecraft.util.ChatComponentText
 import net.minecraft.util.ChatStyle
-import net.minecraft.util.IChatComponent
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.floor
@@ -131,13 +130,11 @@ object ChatUtils {
         else -> this
     }
 
-    val Number.commas: String get() {
-        return toString()
-            .reversed()
-            .chunked(3)
-            .joinToString(",")
-            .reversed()
-    }
+    val Number.commas: String get() = this.toString()
+        .reversed()
+        .chunked(3)
+        .joinToString(",")
+        .reversed()
 
     val String.colorStat: String get() = when (this.lowercase().replace(" ", "_")) {
         "health" -> "§c$this"

@@ -8,11 +8,11 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui.profileName
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getMouseX
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getMouseY
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.isObjectHovered
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.profileOrSelected
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.mcWidth
-import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.PlayerInfo
-import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData.MemberData
-import com.github.subat0m1c.hatecheaters.utils.jsonobjects.SkyCryptProfileData.dummyPlayer
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.profileOrSelected
+import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.MemberData
+import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerInfo
+import com.github.subat0m1c.hatecheaters.utils.apiutils.SkyCryptData.dummyPlayer
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.minus
 import me.odinmain.utils.render.*

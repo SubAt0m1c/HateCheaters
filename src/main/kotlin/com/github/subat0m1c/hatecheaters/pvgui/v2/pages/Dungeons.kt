@@ -5,15 +5,15 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.centeredText
 import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Dungeons.ct
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.profileLazy
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.cataLevel
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.classAverage
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.classLevel
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorClass
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorizeNumber
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.commas
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.secondsToMinutes
-import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData
+import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData
+import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.cataLevel
+import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.classAverage
+import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.classLevel
 import me.odinmain.utils.capitalizeFirst
 import me.odinmain.utils.render.getMCTextHeight
 import me.odinmain.utils.render.mcText
@@ -88,11 +88,8 @@ object Dungeons: Pages.PVPage("Dungeons") {
     }
 }
 
-fun HypixelProfileData.DungeonTypeData.floorStats(floor: String): String {
-    val start = if (floor == "0") "Entrance" else "Floor $floor"
-    val string = "$start: §${ct.fontCode}${this.tierComps[floor]?.commas} " +
-            "§7| §${ct.fontCode}${this.fastestTimes[floor]?.let { secondsToMinutes(it*0.001) } ?: "§cDNF"} " +
-            "§7| §${ct.fontCode}${this.fastestTimeS[floor]?.let { secondsToMinutes(it*0.001) } ?: "§cDNF"} " +
-            "§7| §a${this.fastestTimeSPlus[floor]?.let { secondsToMinutes(it*0.001) } ?: "§cDNF"}"
-    return string
-}
+fun HypixelData.DungeonTypeData.floorStats(floor: String): String =
+    "${if (floor == "0") "Entrance" else "Floor $floor"}: §${ct.fontCode}${this.tierComps[floor]?.commas} " +
+        "§7| §${ct.fontCode}${this.fastestTimes[floor]?.let { secondsToMinutes(it*0.001) } ?: "§cDNF"} " +
+        "§7| §${ct.fontCode}${this.fastestTimeS[floor]?.let { secondsToMinutes(it*0.001) } ?: "§cDNF"} " +
+        "§7| §a${this.fastestTimeSPlus[floor]?.let { secondsToMinutes(it*0.001) } ?: "§cDNF"}"

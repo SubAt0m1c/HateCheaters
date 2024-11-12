@@ -21,11 +21,7 @@ class ProfileLazy<out T>(private val initializer: () -> T) {
     companion object {
         private val allLazies = mutableListOf<ProfileLazy<*>>()
 
-        fun <T> create(initializer: () -> T): ProfileLazy<T> {
-            val lazy = ProfileLazy(initializer)
-            allLazies.add(lazy)
-            return lazy
-        }
+        fun <T> create(initializer: () -> T): ProfileLazy<T> = ProfileLazy(initializer).also { allLazies.add(it) }
 
         fun resetAll() = allLazies.forEach { it.reset() }
     }

@@ -9,7 +9,6 @@ import net.minecraft.client.gui.inventory.GuiInventory.drawEntityOnScreen
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.EntityLivingBase
 import org.lwjgl.input.Mouse
-import java.util.*
 
 object Utils {
     /**
@@ -65,22 +64,10 @@ object Utils {
      *
      * use height and swap rows and columns to get the width given height.
      */
-    fun getProperHeight(width: Int, rows: Int, columns: Int, padding: Int): Int {
-        val itemWidth = (width - (columns - 1) * padding) / columns
-        return rows * itemWidth + (rows - 1) * padding
-    }
+    fun getProperHeight(width: Int, rows: Int, columns: Int, padding: Int): Int =
+        rows * ((width - (columns - 1) * padding) / columns) + (rows - 1) * padding
 
     fun getBoxHeight(size: Int, lineY: Number, length: Int) = (length - (size - 1) * lineY.toInt()) / size
-
-    fun getDashedUUID(uuidStr: String): UUID {
-        val formattedUUID = uuidStr.substring(0, 8) + "-" +
-                uuidStr.substring(8, 12) + "-" +
-                uuidStr.substring(12, 16) + "-" +
-                uuidStr.substring(16, 20) + "-" +
-                uuidStr.substring(20, 32);
-
-        return UUID.fromString(formattedUUID)
-    }
 
     fun drawPlayerOnScreen(x: Double, y: Double, scale: Int, mouseX: Int, mouseY: Int, renderPlayer: EntityLivingBase) {
         GlStateManager.pushMatrix()

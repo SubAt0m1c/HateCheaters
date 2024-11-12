@@ -7,8 +7,8 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.ButtonDSL
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getSubset
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.buttons
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.profileLazy
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.colorName
-import com.github.subat0m1c.hatecheaters.utils.ApiUtils.petItem
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.colorName
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.petItem
 import me.odinmain.utils.render.Box
 import me.odinmain.utils.render.roundedRectangle
 import kotlin.math.ceil

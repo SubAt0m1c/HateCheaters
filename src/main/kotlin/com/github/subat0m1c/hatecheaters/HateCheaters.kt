@@ -55,6 +55,6 @@ class HateCheaters {
         var screen: GuiScreen? = null
         val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-        fun scope(context: CoroutineContext = Dispatchers.IO, func: suspend CoroutineScope.() -> Unit) = scope.launch(context) { func(this) }
+        fun launch(context: CoroutineContext = Dispatchers.IO, func: suspend CoroutineScope.() -> Unit) = scope.launch(context) { func(this) }
     }
 }

@@ -1,7 +1,9 @@
 package com.github.subat0m1c.hatecheaters.utils
 
-import me.odinmain.utils.render.Color
-import me.odinmain.utils.skyblock.*
+import me.odinmain.utils.skyblock.ItemRarity
+import me.odinmain.utils.skyblock.getRarity
+import me.odinmain.utils.skyblock.lore
+import me.odinmain.utils.skyblock.skyblockID
 import net.minecraft.item.ItemStack
 
 object ItemUtils {

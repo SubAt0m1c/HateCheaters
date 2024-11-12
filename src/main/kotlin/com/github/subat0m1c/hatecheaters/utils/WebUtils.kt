@@ -1,10 +1,8 @@
 package com.github.subat0m1c.hatecheaters.utils
 
-import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
-import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.getSkyblockProfile
-import com.github.subat0m1c.hatecheaters.utils.JsonParseUtils.json
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
-import com.github.subat0m1c.hatecheaters.utils.jsonobjects.HypixelProfileData
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSkyblockProfile
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
@@ -17,20 +15,13 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 object WebUtils {
-
-    val apiServer: String get() = if (HateCheatersModule.server == "default") "http://subat0mic.duckdns.org/get/" else HateCheatersModule.server
-
-    private val queue = SuspendQueue()
-
-    class SuspendQueue {
+    private val queue = object {
         private val mutex = Mutex()
 
-        suspend fun <T> queue(block: suspend () -> T): T {
-            mutex.withLock {
-                val result = block()
-                delay(100)
-                return result
-            }
+        suspend fun <T> queue(block: suspend () -> T): T = mutex.withLock {
+            val result = block()
+            delay(100)
+            return result
         }
     }
 
@@ -51,35 +42,31 @@ object WebUtils {
         getSkyblockProfile(players.random())
     }
 
-    suspend fun getInputStream(data: String, url: String): InputStream? = withContext(Dispatchers.IO) { queue.queue { runInputStream(data, url) } }
+    suspend fun getInputStream(url: String): Result<InputStream> = withContext(Dispatchers.IO) { queue.queue { runInputStream(url) } }
 
-    private suspend fun runInputStream(data: String, url: String): InputStream? = withContext(Dispatchers.IO) {
+    private fun runInputStream(url: String): Result<InputStream> = runCatching {
         logger.info(url)
-        return@withContext try {
-            val connection = setupHTTPConnection(URL(url))
+        val connection = setupHTTPConnection(URL(url))
 
-            if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-                connection.inputStream.also {
-                    logger.info("Successfully fetched data for $data")
-                }
-            } else {
-                logger.warning("Failed to fetch data for $data: ${connection.responseMessage}")
-                null
+        if (connection.responseCode == HttpURLConnection.HTTP_OK) {
+            connection.inputStream.also {
+                logger.info("Successfully fetched data for $url")
             }
-        } catch (e: Exception) {
-            logger.severe("Error fetching data for $data: ${e.message}")
-            null
+        } else {
+            val response = connection.responseMessage
+            logger.warning("Failed to fetch data for $url: $response")
+            return Result.failure(InputStreamException("Failed to establish input stream for $url: $response"))
         }
     }
 
-    private fun setupHTTPConnection(url: URL): HttpURLConnection {
-        val connection = url.openConnection() as HttpURLConnection
-        connection.requestMethod = "GET"
-        connection.connectTimeout = 5000
-        connection.readTimeout = 10000
-        connection.setRequestProperty("Accept", "application/json")
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36")
-        return connection
+    private const val USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+
+    private fun setupHTTPConnection(url: URL) = (url.openConnection() as HttpURLConnection).apply {
+        requestMethod = "GET"
+        readTimeout = 10000
+        connectTimeout = 5000
+        setRequestProperty("Accept", "application/json")
+        setRequestProperty("User-Agent", USER_AGENT)
     }
 
     fun getUUIDbyName(name: String): Result<MojangData> = runCatching {
@@ -89,7 +76,7 @@ object WebUtils {
             json.decodeFromString(connection.inputStream.bufferedReader().use {it.readText()})
         } else {
             logger.warning("Failed to get uuid for player $name")
-            return Result.failure(FailedToGetUUIDException("Failed to get uuid. ($name may not exist!)"))
+            return Result.failure(FailedToGetUUIDException("Failed to get uuid. ($name may not exist!) Error: ${connection.responseMessage}"))
         }
     }
 
@@ -99,4 +86,7 @@ object WebUtils {
         @SerialName("id")
         val uuid: String
     )
+
+    class FailedToGetUUIDException(message: String) : Exception(message)
+    class InputStreamException(message: String) : Exception(message)
 }
