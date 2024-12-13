@@ -6,7 +6,7 @@ import com.github.subat0m1c.hatecheaters.utils.ChatUtils.chatConstructor
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.secondsToMinutes
-import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
+import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.itemStacks
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.magicalPower
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.memberData
@@ -83,7 +83,7 @@ object BetterPartyFinder : Module(
             val name = pfRegex.find(it)?.groupValues?.get(1).toString()
             if (name == mc.session.username) return@onMessage
 
-            logger.info("$name is being searched")
+            Logger.info("$name is being searched")
 
             if (kickedList.contains(name) && kickCache) {
                 sendCommand("party kick $name")

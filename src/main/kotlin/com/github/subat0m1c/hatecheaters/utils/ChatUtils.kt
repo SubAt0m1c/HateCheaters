@@ -1,7 +1,7 @@
 package com.github.subat0m1c.hatecheaters.utils
 
 import com.github.subat0m1c.hatecheaters.modules.ProfileViewer
-import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
+import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.render.getMCTextWidth
 import me.odinmain.utils.runOnMCThread
@@ -29,7 +29,7 @@ object ChatUtils {
         val chatComponent = ChatComponentText("$prefix$message")
         chatStyle?.let { chatComponent.setChatStyle(it) } // Set chat style using setChatStyle method
         runOnMCThread { mc.thePlayer?.addChatMessage(chatComponent) }
-        logger.info("Messaged >> $message")
+        Logger.info("Messaged >> $message")
     }
 
     fun chatConstructor(chat: ChatDSL.() -> Unit): ChatDSL = ChatDSL().apply(chat)
