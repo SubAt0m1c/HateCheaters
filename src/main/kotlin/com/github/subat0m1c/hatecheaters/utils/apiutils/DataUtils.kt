@@ -35,6 +35,8 @@ object ApiUtils {
         (0).rangeUntil(itemNBTList.tagCount()).map { itemNBTList.getCompoundTagAt(it).takeUnless { it.hasNoTags() }?.let { ItemStack.loadItemStackFromNBT(it) } }
     }
 
+    val MemberData.assumedMagicalPower: Int get() = magicalPower.takeUnless { it == 0 } ?: (accessoryBagStorage.tuning.currentTunings.values.sum() * 10)
+
     /**
      * Taken and modified from [Skytils](https://github.com/Skytils/SkytilsMod) under [AGPL-3.0](https://github.com/Skytils/SkytilsMod/blob/1.x/LICENSE.md).
      */
@@ -47,7 +49,7 @@ object ApiUtils {
         entry.value.maxBy { it.second }
     }?.values?.fold(0) { acc, pair ->
         acc + pair.second
-    }?.apply { (this+11).takeIf { rift.access.consumedPrism } } ?: 0
+    }?.let { it + if (rift.access.consumedPrism) 11 else 0 } ?: 0
 
     private val petItemRegex = Regex("(?:PET_ITEM_)?([A-Z_]+?)(?:_(COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC))?")
 

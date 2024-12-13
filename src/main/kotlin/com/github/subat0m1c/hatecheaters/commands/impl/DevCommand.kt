@@ -4,6 +4,7 @@ import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
 import com.github.subat0m1c.hatecheaters.commands.commodore
 import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
+import com.github.subat0m1c.hatecheaters.utils.WebUtils
 import com.github.subat0m1c.hatecheaters.utils.WebUtils.testQue
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.memberData
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSkyblockProfile
@@ -41,7 +42,8 @@ val DevCommand = commodore("hcdev") {
             modMessage("""
             Are you sure you want to change the api server to $serverInput? 
             Changing it as an end user violates Hypixel's API terms of service.
-            The expected server uses a custom endpoint, which means the input server must be complete until the uuid, for example: "http://servernamehere/v2/skyblock/profiles?uuid="
+            The expected server uses custom endpoints, which means the input server must be complete until a <${WebUtils.Server.EndPoints.entries.joinToString(" | ")}>/<uuid>.
+            For example: "http://servernamehere/v2/skyblock/" will run as http://servernamehere/v2/skyblock/get/<uuid>.
             Run /hcserver default to set the server to the default.
             Run /hcdev confirm to confirm.
             """.trimIndent())

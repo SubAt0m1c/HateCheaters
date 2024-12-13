@@ -31,7 +31,7 @@ blossom {
 }
 
 tasks.register("downloadOdin") {
-    val downloadUrl = "https://github.com/SubAt0m1c/Odin/releases/download/${requiredOdinVersion}/${requiredOdin}"
+    val downloadUrl = "https://github.com/odtheking/Odin/releases/download/${requiredOdinVersion}/${requiredOdin}"
     val targetFile = file("build/resources/Odin")
 
     doLast {

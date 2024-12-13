@@ -711,11 +711,7 @@ object HypixelData {
         val startedMs: Long,
         @SerialName("started_by")
         val startedBy: String,
-        @SerialName("claimed_ms")
-        val claimedMs: Long,
         @SerialName("claimed_by")
         val claimedBy: String,
-        @SerialName("fasttracked")
-        val fasttracked: Boolean,
     )
 }

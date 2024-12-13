@@ -5,7 +5,7 @@ import com.github.subat0m1c.hatecheaters.commands.impl.PVCommand
 import com.github.subat0m1c.hatecheaters.commands.registerCommands
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui.loadPlayer
-import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
+import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import me.odinmain.features.Category
 import me.odinmain.features.Module
 import me.odinmain.features.settings.AlwaysActive
@@ -132,7 +132,7 @@ object ProfileViewer : Module(
 fun launchPV(name: String? = null, profile: String? = null) {
     loadPlayer(name, profile)
     screen = PVGui
-    logger.info("Trying to display pvgui")
+    Logger.info("Trying to display pvgui")
 }
 
 data class Theme(

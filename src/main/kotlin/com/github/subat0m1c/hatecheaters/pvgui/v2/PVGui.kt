@@ -1,10 +1,8 @@
 package com.github.subat0m1c.hatecheaters.pvgui.v2
 
-import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.scope
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
 import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.scale
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.currentPage
-import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.setPlayer
 import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Overview.setPlayer
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.ProfileLazy
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.profileOrSelected

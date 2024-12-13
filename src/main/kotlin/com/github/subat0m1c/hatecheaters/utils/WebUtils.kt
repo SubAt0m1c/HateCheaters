@@ -1,6 +1,7 @@
 package com.github.subat0m1c.hatecheaters.utils
 
-import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
+import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSkyblockProfile
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.json
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +16,16 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 object WebUtils {
-    private val queue = object {
+
+    class Server(private val server: String) {
+        fun getServer(endpoint: EndPoints, uuid: String): String = server + endpoint.append + uuid
+        enum class EndPoints(val append: String) {
+            SECRETS("secrets/"),
+            PROFILE("get/"),
+        }
+    }
+
+    object Queue {
         private val mutex = Mutex()
 
         suspend fun <T> queue(block: suspend () -> T): T = mutex.withLock {
@@ -25,7 +35,7 @@ object WebUtils {
         }
     }
 
-    val players = listOf(
+    private val players = listOf(
         "SubAt0mic",
         "15h",
         "nurgl",
@@ -39,22 +49,23 @@ object WebUtils {
     )
 
     suspend fun testQue(): Unit = withContext(Dispatchers.IO) {
-        getSkyblockProfile(players.random())
+        getSkyblockProfile(players.random()).fold(
+            onSuccess = { modMessage("Successfully got data for ${it.name}") },
+            onFailure = { modMessage(it.message) }
+        )
     }
 
-    suspend fun getInputStream(url: String): Result<InputStream> = withContext(Dispatchers.IO) { queue.queue { runInputStream(url) } }
+    suspend fun getInputStream(url: String): Result<InputStream> = withContext(Dispatchers.IO) { Queue.queue { runInputStream(url) } }
 
     private fun runInputStream(url: String): Result<InputStream> = runCatching {
-        logger.info(url)
+        Logger.info(url)
         val connection = setupHTTPConnection(URL(url))
 
         if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-            connection.inputStream.also {
-                logger.info("Successfully fetched data for $url")
-            }
+            return@runCatching connection.inputStream.also { Logger.info("Successfully fetched data for $url") }
         } else {
             val response = connection.responseMessage
-            logger.warning("Failed to fetch data for $url: $response")
+            Logger.warning("Failed to fetch data for $url: $response")
             return Result.failure(InputStreamException("Failed to establish input stream for $url: $response"))
         }
     }
@@ -75,7 +86,7 @@ object WebUtils {
         if (connection.responseCode == HttpURLConnection.HTTP_OK) {
             json.decodeFromString(connection.inputStream.bufferedReader().use {it.readText()})
         } else {
-            logger.warning("Failed to get uuid for player $name")
+            Logger.warning("Failed to get uuid for player $name")
             return Result.failure(FailedToGetUUIDException("Failed to get uuid. ($name may not exist!) Error: ${connection.responseMessage}"))
         }
     }

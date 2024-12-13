@@ -15,8 +15,8 @@ import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorizeNumber
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.commas
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.mcWidth
+import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.assumedMagicalPower
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.colorName
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.magicalPower
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.petItem
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.profileList
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.profileOrSelected
@@ -72,7 +72,7 @@ object Overview: Pages.PVPage("Overview") {
             "§4Cata Level§7: §${ct.fontCode}${profile.dungeons.dungeonTypes.cataLevel.round(2).colorize(50)}",
             "§6Skill Average§7: §${ct.fontCode}${profile.playerData.cappedSkillAverage.round(2).colorize(55)} §7(${profile.playerData.skillAverage.round(2)})",
             "§bSecrets§7: ${profile.dungeons.secrets.commas.colorizeNumber(100000)} §7(${(profile.dungeons.secrets.toDouble()/(mmComps + floorComps)).round(2).colorize(15.0)}§7)",
-            "Magical Power: ${profile.magicalPower.colorize(1697)}",
+            "Magical Power: ${profile.assumedMagicalPower.colorize(1709)}",
             "§${ct.fontCode}${profile.pets.pets.find { it.active }?.colorName ?: "None!"} ${profile.pets.pets.find { it.active }?.petItem?.let { "§7(§${ct.fontCode}${it}§7)" } ?: ""}",
         )
     }

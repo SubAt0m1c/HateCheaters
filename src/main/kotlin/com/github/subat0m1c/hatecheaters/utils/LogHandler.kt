@@ -9,7 +9,7 @@ import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.logging.FileHandler
-import java.util.logging.Logger
+import java.util.logging.Logger as javaLogger
 import java.util.logging.SimpleFormatter
 import java.util.zip.GZIPOutputStream
 
@@ -17,7 +17,19 @@ import java.util.zip.GZIPOutputStream
  * im pretty sure this is bad but i could not figure out making log4j actually log to the right folder
  */
 object LogHandler {
-    val logger: Logger = Logger.getLogger("HateCheatersLogger")
+    object Logger {
+        val log = javaLogger.getLogger("HateCheatersLogger")
+
+        fun info(message: String?) = log.info(message)
+
+        fun warning(message: String?) = log.warning(message)
+
+        fun severe(message: String?) = log.warning(message)
+
+        fun fine(message: String?) = log.fine(message)
+
+        fun message(message: String, data: Any? = null) = log.info("Recieved message: $message." + (data?.let { " With data: $it" } ?: ""))
+    }
 
     init {
         compressOldLogs()
@@ -61,8 +73,8 @@ object LogHandler {
 
         val fileHandler = FileHandler(logFileName, true)
         fileHandler.formatter = SimpleFormatter()
-        logger.addHandler(fileHandler)
-        logger.useParentHandlers = false
+        Logger.log.addHandler(fileHandler)
+        Logger.log.useParentHandlers = false
     }.onFailure { it.printStackTrace() }
 
     fun logJsonToFile(jsonString: String, name: String = "unknown", type: String = "unknown", dir: String = "hypixel_logs") {

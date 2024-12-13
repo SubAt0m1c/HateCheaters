@@ -7,6 +7,7 @@ import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.memberData
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSkyblockProfile
 import me.odinmain.OdinMain.mc
+import me.odinmain.utils.containsOneOf
 import me.odinmain.utils.skyblock.getChatBreak
 
 val StatsCommand = commodore("hcs", "ds", "hcstats") {
@@ -22,5 +23,7 @@ val StatsCommand = commodore("hcs", "ds", "hcstats") {
                     """.trimIndent(), ""
                 )
         }
+    } suggests {
+        mc.netHandler.playerInfoMap.mapNotNull { it.gameProfile.name.lowercase().takeUnless { it.containsOneOf("!", " ") } }
     }
 }

@@ -53,7 +53,12 @@ object Pages {
         val mainHeight = totalHeight-lineY*2
 
         val pageHeight: Double by lazy { (mainHeight*0.9 - (lineY * (2 + PageEntries.entries.size-1)))/PageEntries.entries.size }
-        val pageWidth = lineX - lineY*2
+
+        private val lastY: Double by lazy { lineY + ((pageHeight + lineY) * PageEntries.entries.size) }
+        private val lastHeight: Double by lazy { totalHeight - lastY - lineY }
+
+        private val pageWidth = lineX - lineY*2
+        private val pageCenter = lineY+pageWidth/2
         val mainX = (lineX+ot) + (lineY)
 
         val mainCenterX = lineX + ot + lineY + mainWidth/2
@@ -70,8 +75,6 @@ object Pages {
 
             roundedRectangle(lineX, lineY, ot, totalHeight-lineY*2, ct.line)
 
-            val pageCenter = lineY+pageWidth/2
-
             PageEntries.entries.forEachIndexed { i, page ->
                 val pageY = lineY + ((pageHeight + lineY) * i)
                 if (currentPage == page) roundedRectangle(lineY, pageY, pageWidth, pageHeight, ct.selected, radius = ct.roundness, edgeSoftness = 1f)
@@ -80,8 +83,6 @@ object Pages {
                 centeredText(page.name, pageCenter, centerY, color = ct.font, scale = 3.5)
             }
 
-            val lastY = lineY + ((pageHeight + lineY) * PageEntries.entries.size)
-            val lastHeight = totalHeight - lastY - lineY
             roundedRectangle(lineY, lastY, pageWidth, lastHeight, ct.button, radius = ct.roundness, edgeSoftness = 1f)
             val betaText = if (currentPage != PageEntries.Overview) player.name else "HCPV Beta 2"
             centeredText(betaText, pageCenter, lastY + lastHeight/2, color = ct.font, scale = if (betaText.length >= 8) 3 else 3.5)

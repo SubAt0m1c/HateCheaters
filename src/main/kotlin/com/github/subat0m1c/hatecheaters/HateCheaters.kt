@@ -3,10 +3,11 @@ package com.github.subat0m1c.hatecheaters
 import com.github.subat0m1c.hatecheaters.commands.impl.*
 import com.github.subat0m1c.hatecheaters.commands.registerCommands
 import com.github.subat0m1c.hatecheaters.modules.BetterPartyFinder
+import com.github.subat0m1c.hatecheaters.modules.ClearSecrets
 import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
 import com.github.subat0m1c.hatecheaters.modules.ProfileViewer
 import com.github.subat0m1c.hatecheaters.utils.LogHandler
-import com.github.subat0m1c.hatecheaters.utils.LogHandler.logger
+import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import com.github.subat0m1c.hatecheaters.utils.OdinCheck.checkIfOdinIsLoaded
 import kotlinx.coroutines.*
 import me.odinmain.OdinMain.mc
@@ -29,12 +30,12 @@ class HateCheaters {
         checkIfOdinIsLoaded()
 
         ModuleManager.addModules(
-            BetterPartyFinder, HateCheatersModule, ProfileViewer
+            BetterPartyFinder, HateCheatersModule, ProfileViewer, ClearSecrets
         )
 
         registerCommands(DevCommand, ItemCommand, HCPVCommand, StatsCommand, HCCommand)
 
-        logger.info("Hate Cheaters Loaded!")
+        Logger.info("Hate Cheaters Loaded!")
 
         listOf(
            this
@@ -44,7 +45,7 @@ class HateCheaters {
     @SubscribeEvent
     fun onTick(event: ClientTickEvent){
         if (screen == null) return
-        logger.info("Displaying screen $screen")
+        Logger.info("Displaying screen $screen")
         mc.displayGuiScreen(screen)
         screen = null
     }

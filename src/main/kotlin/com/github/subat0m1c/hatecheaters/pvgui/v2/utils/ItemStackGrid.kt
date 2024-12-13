@@ -48,7 +48,7 @@ object ItemStackGrid {
 
         val height = getProperHeight(width, rows, columns, padding)
 
-        val y = yVal-height/2
+        val y = yVal - height / 2
 
         val itemWidth = (width - (columns - 1) * padding) / columns.coerceAtLeast(1)
         val itemHeight = (height - (rows - 1) * padding) / rows.coerceAtLeast(1)
