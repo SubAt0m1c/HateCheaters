@@ -1,5 +1,6 @@
 package com.github.subat0m1c.hatecheaters.commands.impl
 
+import com.github.stivais.commodore.utils.GreedyString
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
 import com.github.subat0m1c.hatecheaters.commands.commodore
 import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
@@ -9,6 +10,7 @@ import com.github.subat0m1c.hatecheaters.utils.WebUtils.testQue
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.memberData
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSkyblockProfile
 import me.odinmain.config.Config
+import net.minecraft.client.gui.GuiScreen
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -61,5 +63,10 @@ val DevCommand = commodore("hcdev") {
             Config.save()
             modMessage(HateCheatersModule.server)
         } ?: modMessage("Server not set! Run /hcdev server to set one.")
+    }
+
+    literal("writetoclipboard").runs { text: GreedyString ->
+        GuiScreen.setClipboardString(text.string)
+        modMessage("Copied \"${text.string}\"!")
     }
 }

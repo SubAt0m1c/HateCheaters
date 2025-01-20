@@ -20,7 +20,6 @@ import javax.swing.UIManager
  */
 object OdinCheck {
 
-    @JvmStatic
     fun checkIfOdinIsLoaded() {
         try {
             Class.forName("me.odinmain.OdinMain")
@@ -118,6 +117,8 @@ object OdinCheck {
 
     /**
      * @return -1 if version1 is older, 1 if version1 is newer, 0 if they're the same.
+     *
+     * I think this code is bad but i cant be bothered fixing it. also can return lower than -1.
      */
     private fun compareVersions(version1: String): Int {
         val v1 = versionRegex.find(version1)?.groupValues?.drop(1)?.map { it.toIntOrNull() } ?: return -2

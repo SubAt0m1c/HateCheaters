@@ -57,5 +57,13 @@ class HateCheaters {
         val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
         fun launch(context: CoroutineContext = Dispatchers.IO, func: suspend CoroutineScope.() -> Unit) = scope.launch(context) { func(this) }
+
+        fun <R> launchDeferred(fn: suspend () -> R): Deferred<R> {
+            val job = CompletableDeferred<R>()
+            launch {
+                job.complete(fn())
+            }
+            return job
+        }
     }
 }

@@ -20,11 +20,11 @@ object ParseUtils {
     val json: Json = Json { ignoreUnknownKeys = true }
 
     suspend fun getSecrets(playerName: String, uuid: String? = null): Result<Long> = withContext(Dispatchers.IO) {
-        getFromCache(playerName, 60000)?.memberData?.dungeons?.secrets?.let { return@withContext Result.success(it) }
+        getFromCache(playerName, 60000)?.memberData?.dungeons?.secrets?.let { return@withContext Result.success(it).apply { Logger.info("Recieved data ${it} from cache.") } }
 
         val (_, UUID) = uuid?.let { WebUtils.MojangData(playerName, it) } ?: getUUIDbyName(playerName).getOrElse { return@withContext Result.failure(it) }
 
-        getSecretData(UUID)
+        getSecretData(UUID).onSuccess { Logger.info("Recieved data $it.") }
     }
 
     suspend fun getSkyblockProfile(playerName: String, cache: Boolean = true, forceSkyCrypt: Boolean = false): Result<PlayerInfo> = withContext(Dispatchers.IO) {

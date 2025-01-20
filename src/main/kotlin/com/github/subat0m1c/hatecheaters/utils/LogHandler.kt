@@ -2,7 +2,9 @@ package com.github.subat0m1c.hatecheaters.utils
 
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
 import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.debug
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.getCurrentDateTimeString
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -20,15 +22,15 @@ object LogHandler {
     object Logger {
         val log = javaLogger.getLogger("HateCheatersLogger")
 
-        fun info(message: String?) = log.info(message)
+        fun info(message: String?) = log.info(message).also { debug(message) }
 
-        fun warning(message: String?) = log.warning(message)
+        fun warning(message: String?) = log.warning(message).also { debug(message) }
 
-        fun severe(message: String?) = log.warning(message)
+        fun severe(message: String?) = log.warning(message).also { debug(message) }
 
-        fun fine(message: String?) = log.fine(message)
+        fun fine(message: String?) = log.fine(message).also { debug(message) }
 
-        fun message(message: String, data: Any? = null) = log.info("Recieved message: $message." + (data?.let { " With data: $it" } ?: ""))
+        fun message(message: String, data: Any? = null) = log.info("Recieved message: $message." + (data?.let { " With data: $it" } ?: "")).also { debug("$message." + (data?.let { " With data: $it" } ?: "")) }
     }
 
     init {
