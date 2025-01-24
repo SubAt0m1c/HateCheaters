@@ -1,9 +1,9 @@
 package com.github.subat0m1c.hatecheaters.commands.impl
 
-import com.github.subat0m1c.hatecheaters.commands.commodore
+import com.github.stivais.commodore.Commodore
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 
-val HCCommand = commodore("hc", "hatecheaters") {
+val HCCommand = Commodore("hc", "hatecheaters") {
     runs {
         modMessage("""
             Commands List:

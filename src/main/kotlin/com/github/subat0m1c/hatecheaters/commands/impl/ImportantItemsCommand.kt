@@ -1,13 +1,13 @@
 package com.github.subat0m1c.hatecheaters.commands.impl
 
+import com.github.stivais.commodore.Commodore
 import com.github.stivais.commodore.utils.GreedyString
-import com.github.subat0m1c.hatecheaters.commands.commodore
 import com.github.subat0m1c.hatecheaters.modules.BetterPartyFinder.importantItems
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import me.odinmain.config.Config
 
-val ItemCommand = commodore("hcitems") {
+val ItemCommand = Commodore("hcitems") {
     literal("add").runs { item: GreedyString ->
         val name = item.string.lowercase().replace("_", " ").capitalizeWords()
         if (name in importantItems) return@runs modMessage("$name is already in the list!")

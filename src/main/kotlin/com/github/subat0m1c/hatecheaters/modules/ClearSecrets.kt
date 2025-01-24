@@ -48,7 +48,7 @@ object ClearSecrets : Module(
                         }.also { new -> secretMap[k] = new }.await()
                         val old = v.await()
 
-                        val dif = (new - old).takeUnless { (-1L).equalsOneOf(old, new) }
+                        val dif = (new - old).takeUnless { (-1L).equalsOneOf(old, new) }?.also { if (it !in 0..30) modMessage("Assuming something went wrong. Data: $old -> $new") }
                         "\n§bH§3C §7|| §d${k.name} §7-> §fSecrets: §6${dif ?: "§c§l???§r"}§7, §fDeaths: §c${k.dungeonPlayer.deaths}"
                     }.let {
                         chatConstructor {

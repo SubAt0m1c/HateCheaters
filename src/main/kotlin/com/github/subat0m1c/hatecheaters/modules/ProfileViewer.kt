@@ -1,8 +1,6 @@
 package com.github.subat0m1c.hatecheaters.modules
 
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.screen
-import com.github.subat0m1c.hatecheaters.commands.impl.PVCommand
-import com.github.subat0m1c.hatecheaters.commands.registerCommands
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui.loadPlayer
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
@@ -115,16 +113,6 @@ object ProfileViewer : Module(
         launchPV()
         super.onEnable()
         toggle()
-    }
-
-    private var registeredCommand = false
-
-    init {
-        onWorldLoad {
-            if (!pvCommand && !registeredCommand) return@onWorldLoad
-            registerCommands(PVCommand)
-            registeredCommand = false
-        }
     }
 
 }

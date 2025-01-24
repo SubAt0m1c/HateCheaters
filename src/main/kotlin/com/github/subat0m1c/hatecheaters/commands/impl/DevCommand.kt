@@ -1,8 +1,8 @@
 package com.github.subat0m1c.hatecheaters.commands.impl
 
+import com.github.stivais.commodore.Commodore
 import com.github.stivais.commodore.utils.GreedyString
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
-import com.github.subat0m1c.hatecheaters.commands.commodore
 import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.WebUtils
@@ -14,7 +14,7 @@ import net.minecraft.client.gui.GuiScreen
 import java.util.*
 import kotlin.concurrent.schedule
 
-val DevCommand = commodore("hcdev") {
+val DevCommand = Commodore("hcdev") {
 
     var server: String? = null
 
