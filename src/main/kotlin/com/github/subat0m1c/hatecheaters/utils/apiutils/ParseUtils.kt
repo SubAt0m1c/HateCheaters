@@ -3,7 +3,6 @@ package com.github.subat0m1c.hatecheaters.utils.apiutils
 import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logJsonToFile
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
-import com.github.subat0m1c.hatecheaters.utils.WebUtils
 import com.github.subat0m1c.hatecheaters.utils.WebUtils.Server
 import com.github.subat0m1c.hatecheaters.utils.WebUtils.getInputStream
 import com.github.subat0m1c.hatecheaters.utils.WebUtils.getUUIDbyName
@@ -15,16 +14,16 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
 object ParseUtils {
-    private val apiServer: Server get() = if (HateCheatersModule.server == "default") Server("http://subat0mic.duckdns.org/") else Server(HateCheatersModule.server)
+    private val apiServer: Server get() = if (HateCheatersModule.server == "default") Server("https://subat0mic.click/") else Server(HateCheatersModule.server)
     private val cachedPlayerData: MutableMap<String, Pair<PlayerInfo, Long>> = mutableMapOf()
     val json: Json = Json { ignoreUnknownKeys = true }
 
     suspend fun getSecrets(playerName: String, uuid: String? = null): Result<Long> = withContext(Dispatchers.IO) {
         getFromCache(playerName, 60000)?.memberData?.dungeons?.secrets?.let { return@withContext Result.success(it).apply { Logger.info("Recieved data ${it} from cache.") } }
 
-        val (_, UUID) = uuid?.let { WebUtils.MojangData(playerName, it) } ?: getUUIDbyName(playerName).getOrElse { return@withContext Result.failure(it) }
-
-        getSecretData(UUID).onSuccess { Logger.info("Recieved data $it.") }
+        getSecretData(
+            uuid ?: getUUIDbyName(playerName).getOrElse { return@withContext Result.failure(it) }.uuid
+        ).onSuccess { Logger.info("Recieved data $it.") }
     }
 
     suspend fun getSkyblockProfile(playerName: String, cache: Boolean = true, forceSkyCrypt: Boolean = false): Result<PlayerInfo> = withContext(Dispatchers.IO) {

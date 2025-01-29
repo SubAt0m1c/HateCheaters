@@ -44,7 +44,7 @@ class HateCheaters {
     }
 
     @Mod.EventHandler
-    fun postInit(event: FMLLoadCompleteEvent) {
+    fun load(event: FMLLoadCompleteEvent) {
         ModuleManager.addModules(
             BetterPartyFinder, HateCheatersModule, ProfileViewer, ClearSecrets
         )

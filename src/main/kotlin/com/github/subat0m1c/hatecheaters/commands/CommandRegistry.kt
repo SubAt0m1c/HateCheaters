@@ -19,7 +19,7 @@ import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
  */
 object CommandRegistry {
 
-    val commands: ArrayList<Commodore> = arrayListOf(
+    private val commands: ArrayList<Commodore> = arrayListOf(
         DevCommand, ItemCommand, HCPVCommand,
         StatsCommand, HCCommand
     )

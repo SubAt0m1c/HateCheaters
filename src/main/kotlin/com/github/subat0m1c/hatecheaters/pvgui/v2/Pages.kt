@@ -29,7 +29,8 @@ object Pages {
         Profile(page = com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Profile),
         Dungeons(page = com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Dungeons),
         Inventory(page = com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Inventory),
-        Pets(page = com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Pets)
+        Pets(page = com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Pets),
+        //Test(page = com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Test)
     }
 
 

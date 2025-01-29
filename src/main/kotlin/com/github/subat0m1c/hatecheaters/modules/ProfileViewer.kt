@@ -35,7 +35,6 @@ object ProfileViewer : Module(
     val inventoryRound: Float by NumberSetting("Inventory Roundness", default = 0f, increment = 0.5, min = 0, max = 20f, description =  "Roundness for inventory item backgrounds.").withDependency { themes == themesList.lastIndex }
     val rarityBackgrounds: Boolean by BooleanSetting("Rarity Background", default = false, description = "Renders a background according to the rarity of the item in front of it.")
 
-    //ignore the comments
     val themeEntries = listOf(
         Theme(
             "Classic",

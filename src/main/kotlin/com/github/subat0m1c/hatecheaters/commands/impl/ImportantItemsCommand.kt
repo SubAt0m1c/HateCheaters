@@ -16,11 +16,17 @@ val ItemCommand = Commodore("hcitems") {
         Config.save()
     }
 
-    literal("remove").runs { item: GreedyString ->
-        val name = item.string.lowercase().replace("_", " ").capitalizeWords()
-        if (importantItems.remove(name)) modMessage("$name has been removed from the list!")
-        else modMessage("$name is not in the list!")
-        Config.save()
+    literal("remove").executable {
+        param("item") {
+            suggests { importantItems }
+        }
+
+        runs { item: GreedyString ->
+            val name = item.string.lowercase().replace("_", " ").capitalizeWords()
+            if (importantItems.remove(name)) modMessage("$name has been removed from the list!")
+            else modMessage("$name is not in the list!")
+            Config.save()
+        }
     }
 
     literal("list").runs {

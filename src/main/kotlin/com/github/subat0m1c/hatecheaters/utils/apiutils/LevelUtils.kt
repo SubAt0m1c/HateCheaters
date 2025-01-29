@@ -150,9 +150,5 @@ object LevelUtils {
         20, 55, 165, 640, 1560
     )
 
-    fun getSlayerCap(slayer: String): Int = when (slayer) {
-        "blaze" -> 7
-        "vampire" -> 5
-        else -> 9
-    }
+    fun getSlayerCap(slayer: String): Int = if (slayer == "vampire") 5 else 9
 }
