@@ -4,13 +4,9 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.isObjectHovered
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.render.*
 import me.odinmain.utils.skyblock.lore
-import me.odinmain.utils.skyblock.modMessage
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.RenderHelper
-import net.minecraft.init.Items
-import net.minecraft.item.Item
-import net.minecraft.item.ItemSkull
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.client.config.GuiUtils
 import org.lwjgl.opengl.GL11
@@ -18,21 +14,21 @@ import kotlin.math.ceil
 
 fun itemGrid(
     items: List<GridItems>,
-    color: Color,
     radius: Float = 0f,
     edgeSoftness: Float = 0f,
     padding: Float = 0f,
     itemGrid: ItemGridDSL.() -> Unit
-) = ItemGridDSL(items, color, radius, edgeSoftness, padding).apply(itemGrid)
+) = ItemGridDSL(items, radius, edgeSoftness, padding).apply(itemGrid)
 
 class ItemGridDSL(
-    private val items: List<GridItems>,
-    private val color: Color,
+    private var items: List<GridItems>,
     private val radius: Float,
     private val edgeSoftness: Float,
     private val padding: Float,
 ) {
+    private var tooltipHandler: (ItemStack) -> List<String> = { listOf(it.displayName) + it.lore }
     private var colorHandler: (index: Int, ItemStack?) -> Color = { _, _ -> Color.WHITE }
+
     private val fontRenderer: FontRenderer = mc.fontRendererObj
     private var hoveredItem: ItemStack? = null
 
@@ -46,7 +42,6 @@ class ItemGridDSL(
 
         items.forEach { gridItems ->
             val itemWidth = (gridItems.width - (gridItems.columns - 1) * padding) / gridItems.columns.coerceAtLeast(1)
-            //val itemHeight = (gridItems.items.size / gridItems.columns) * (itemWidth + padding)
 
             gridItems.items.forEachIndexed { index, itemStack ->
                 val x = gridItems.x + (index % gridItems.columns) * (itemWidth + padding)
@@ -58,7 +53,7 @@ class ItemGridDSL(
                 if (itemStack != null) {
                     GlStateManager.pushMatrix()
                     GlStateManager.translate(x, y.toFloat(), 0f)
-                    GlStateManager.scale(itemWidth.toFloat() / 16f, itemWidth.toFloat() / 16f, 1f)
+                    GlStateManager.scale(itemWidth / 16f, itemWidth / 16f, 1f)
                     mc.renderItem.renderItemIntoGUI(itemStack, 0, 0)
                     mc.renderItem.renderItemOverlayIntoGUI(fontRenderer, itemStack, 0, 0, null)
                     GlStateManager.popMatrix()
@@ -72,10 +67,9 @@ class ItemGridDSL(
 
         hoveredItem?.let {
             GlStateManager.pushMatrix()
-            val tooltip = listOf(it.displayName) + it.lore
             translate(mouseX, mouseY, 0)
             scale(2f, 2f, 1f)
-            GuiUtils.drawHoveringText(tooltip, 0, 0, mc.displayWidth, mc.displayHeight, -1, fontRenderer)
+            GuiUtils.drawHoveringText(tooltipHandler(it), 0, 0, mc.displayWidth, mc.displayHeight, -1, fontRenderer)
             GlStateManager.popMatrix()
         }
 
@@ -87,7 +81,11 @@ class ItemGridDSL(
         GlStateManager.popMatrix()
     }
 
+    fun tooltipHandler(init: (ItemStack) -> List<String>) { tooltipHandler = init }
+
     fun colorHandler(init: (Index: Int, ItemStack?) -> Color) { colorHandler = init }
+
+    fun updateItems(newItems: List<GridItems>) { items = newItems }
 }
 
 data class GridItems(val items: List<ItemStack?>, val x: Int, val centerY: Int, val width: Int, val columns: Int)

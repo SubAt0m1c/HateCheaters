@@ -1,5 +1,6 @@
 package com.github.subat0m1c.hatecheaters.pvgui.v2.utils
 
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.render.Box
 import me.odinmain.utils.render.Color
@@ -11,6 +12,10 @@ import net.minecraft.entity.EntityLivingBase
 import org.lwjgl.input.Mouse
 
 object Utils {
+
+    val String.formatted get() =
+        this.replace("_", " ").lowercase().capitalizeWords()
+
     /**
      * Takes the first 9 items in a list and moves them to the end.
      *

@@ -1,5 +1,6 @@
 package com.github.subat0m1c.hatecheaters.utils.apiutils
 
+import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.formatted
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.getMagicalPower
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.InventoryContents
@@ -56,7 +57,7 @@ object ApiUtils {
     val Pet.petItem: String? get() =
         heldItem?.let { petItemRegex.matchEntire(it)?.destructured?.let { (heldItem, rarity) -> "${getRarityColor(rarity)}${heldItem.lowercase().replace("_", " ").capitalizeWords()}" } }
 
-    val Pet.colorName: String get() = (getRarityColor(this.tier) + this.type.replace("_", " ").lowercase().capitalizeWords())
+    val Pet.colorName: String get() = (getRarityColor(this.tier) + this.type.formatted)
 
     fun getRarityColor(rarity: String): String {
         return when (rarity) {

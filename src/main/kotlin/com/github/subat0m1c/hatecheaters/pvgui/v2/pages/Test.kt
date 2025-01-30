@@ -23,7 +23,6 @@ object Test : Pages.PVPage("Test") {
     private val test by profileLazy {
         itemGrid(
             listOf(inventory),
-            Color.WHITE,
             ProfileViewer.currentTheme.roundness,
             1f,
             lineY.toFloat(),

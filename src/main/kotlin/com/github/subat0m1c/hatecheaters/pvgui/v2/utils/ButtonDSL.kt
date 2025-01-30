@@ -64,6 +64,7 @@ class ButtonDSL<T>(
             val x = box.x + (buttonWidth + lineY)*i
             isObjectHovered(Box(x, box.y, buttonWidth, box.h), mouseX, mouseY)
         }?.let { (_, entry) ->
+            if (entry == selected) return@let
             selected = entry
             onSelect(entry)
         }
