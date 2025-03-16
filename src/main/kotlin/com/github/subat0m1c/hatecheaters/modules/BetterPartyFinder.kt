@@ -25,6 +25,7 @@ import me.odinmain.utils.capitalizeFirst
 import me.odinmain.utils.noControlCodes
 import me.odinmain.utils.round
 import me.odinmain.utils.skyblock.*
+import kotlin.collections.HashSet
 
 object BetterPartyFinder : Module(
     name = "Better Party Finder",
@@ -119,7 +120,7 @@ object BetterPartyFinder : Module(
                 dungeon.fastestTimeSPlus["$floor"]?.times(0.001)?.let {
                     if (!timeKick) return@let
                     if (it > (timereq)) {
-                        kickedReasons.add("Did not meet time req: ${secondsToMinutes(it)}/${secondsToMinutes(it)}")
+                        kickedReasons.add("Did not meet time req: ${secondsToMinutes(it)}/${secondsToMinutes(timereq)}")
                     }
                 } ?: kickedReasons.add("Couldn't confirm completion status")
 
@@ -136,7 +137,7 @@ object BetterPartyFinder : Module(
                 ((secretCount.toDouble()/(mmComps + floorComps).toDouble()).toFloat()).let {
                     if (!savgKick) return@let
                     if (it < savgreq) {
-                        kickedReasons.add("Did not meet savg req: $it/${savgreq}")
+                        kickedReasons.add("Did not meet savg req: ${it.round(2)}/${savgreq}")
                     }
                 }
 
@@ -217,7 +218,7 @@ object BetterPartyFinder : Module(
                 §3| §bSecrets: §f${catacombs.secrets.colorize(100000)} §8: §bAverage: §f${(catacombs.secrets.toDouble()/(mmComps + floorComps)).round(2).colorize(15.0)}
                 §3| §cBlood mobs: §f${(profileKills["watcher_summon_undead"] ?: 0) + (profileKills["master_watcher_summon_undead"] ?: 0)}
             
-                §3| ${if (allItems.isNotEmpty()) "§eMagical power: ${currentProfile.magicalPower.colorize(1697)} §7(${currentProfile.accessoryBagStorage.selectedPower})" else "§o§4Inventory Api Disabled!"}
+                §3| ${if (allItems.isNotEmpty()) "§eMagical power: ${currentProfile.magicalPower.colorize(1730)} §7(${currentProfile.accessoryBagStorage.selectedPower})" else "§o§4Inventory Api Disabled!"}
             
                 §3| §5Wither Impact: ${if (allItems.any { it?.lore?.any { it.noControlCodes.matches(witherImpactRegex) } == true }) "§l§2Found!" else "§o§4Missing!"}
                 """.trimIndent()

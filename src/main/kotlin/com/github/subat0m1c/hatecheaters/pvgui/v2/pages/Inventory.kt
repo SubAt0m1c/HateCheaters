@@ -15,7 +15,6 @@ import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.getMagicalPower
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.itemStacks
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.magicalPower
-import me.odinmain.utils.floor
 import me.odinmain.utils.render.*
 import me.odinmain.utils.skyblock.getRarity
 import me.odinmain.utils.skyblock.lore
@@ -129,7 +128,7 @@ object Inventory: Pages.PVPage("Inventory") {
                 ct.button, ct.selected, ct.roundness, 1f,
             ) {
                 onSelect {
-                    itemGrid.updateItems(gridItems)
+                    itemGrid.updateItems(getSubset(inventoryWithArmor, selectedButtonIndex))
                     playClickSound()
                 }
             }
@@ -154,7 +153,7 @@ object Inventory: Pages.PVPage("Inventory") {
         private val textList: List<String> by profileLazy { listOf("Magical Power: ${magicPower.colorize(1697)}", mp, abiPhone, riftPrism) + tunings }
         private val pages: Int by profileLazy { ceil(talis.size.toDouble()/(maxRows*9)).toInt() }
 
-        private val separatorX = (mainX + mainWidth * 0.38).floor().toInt()
+        private val separatorX = floor(mainX + mainWidth * 0.38).toInt()
         private val width = mainWidth - ((separatorX - mainX)) - lineY
 
         private inline val gridItems get() = listOf(GridItems(getSubset(talis, buttons.getSelected-1, maxRows*9), separatorX + lineY + ot, centerY.toInt(), width, 9,))
@@ -176,7 +175,7 @@ object Inventory: Pages.PVPage("Inventory") {
                 ct.selected, ct.roundness, 1f,
             ) {
                 onSelect {
-                    itemGrid.updateItems(gridItems)
+                    itemGrid.updateItems(getSubset(talis, buttons.getSelected-1, maxRows*9))
                     playClickSound()
                 }
             }
@@ -208,11 +207,11 @@ object Inventory: Pages.PVPage("Inventory") {
         private val buttons: ButtonDSL<Int> by profileLazy {
             buttons(
                 Box(mainX, startY, mainWidth, buttonHeight), lineY, ot, default = 1,
-                (1..profile.inventory.backpackIcons.size).toList(), 2,
+                profile.inventory.backpackContents.keys.mapNotNull { it.toIntOrNull()?.plus(1) }, 2, // adding and subtracting so the display matches the game menu.
                 ct.button, ct.selected, ct.roundness, 1f,
             ) {
                 onSelect {
-                    itemGrid.updateItems(gridItems)
+                    itemGrid.updateItems(inventory)
                     playClickSound()
                 }
             }
@@ -246,7 +245,7 @@ object Inventory: Pages.PVPage("Inventory") {
                 ct.selected, ct.roundness, 1f,
             ) {
                 onSelect {
-                    itemGrid.updateItems(gridItems)
+                    itemGrid.updateItems(getSubset(items, buttons.getSelected-1, 45))
                     playClickSound()
                 }
             }

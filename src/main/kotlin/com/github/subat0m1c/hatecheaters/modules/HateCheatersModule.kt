@@ -15,5 +15,5 @@ object HateCheatersModule : Module(
     val logJson: Boolean by BooleanSetting("Log Json", default = false, description = "Logs requested json data to Config/hatecheaters/json_logs")
     val debugMessages: Boolean by BooleanSetting("Debug messages", default = false, description = "Prints debug messages in your chat instead of needing to open logs.")
 
-    var server: String by StringSetting("Api Server", default = "default", hidden = true, description = "Server to be used to connect to the api")
+    val server: String by StringSetting("Api Server", default = "default", hidden = false, description = "Server to be used to connect to the api. set to \"default\" to use the default. Only change if you know what you're doing. format: \"subdomain.domain.tld\"")
 }

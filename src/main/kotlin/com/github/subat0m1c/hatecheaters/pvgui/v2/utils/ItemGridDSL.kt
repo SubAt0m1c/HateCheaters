@@ -21,7 +21,7 @@ fun itemGrid(
 ) = ItemGridDSL(items, radius, edgeSoftness, padding).apply(itemGrid)
 
 class ItemGridDSL(
-    private var items: List<GridItems>,
+    private val items: List<GridItems>,
     private val radius: Float,
     private val edgeSoftness: Float,
     private val padding: Float,
@@ -83,9 +83,9 @@ class ItemGridDSL(
 
     fun tooltipHandler(init: (ItemStack) -> List<String>) { tooltipHandler = init }
 
-    fun colorHandler(init: (Index: Int, ItemStack?) -> Color) { colorHandler = init }
+    fun colorHandler(init: (index: Int, ItemStack?) -> Color) { colorHandler = init }
 
-    fun updateItems(newItems: List<GridItems>) { items = newItems }
+    fun updateItems(newItems: List<ItemStack?>, index: Int = 0) { items[index].items = newItems }
 }
 
-data class GridItems(val items: List<ItemStack?>, val x: Int, val centerY: Int, val width: Int, val columns: Int)
+data class GridItems(var items: List<ItemStack?>, val x: Int, val centerY: Int, val width: Int, val columns: Int)

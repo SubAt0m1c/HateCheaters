@@ -3,6 +3,7 @@ package com.github.subat0m1c.hatecheaters.modules
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launchDeferred
 import com.github.subat0m1c.hatecheaters.events.impl.LoadDungeonPlayers
+import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.chatConstructor
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSecrets
@@ -22,7 +23,7 @@ object ClearSecrets : Module(
     category = Category.DUNGEON
 ) {
     private val secretMap = hashMapOf<Teammate, Deferred<Long>>()
-    private inline val teammates get() = DungeonUtils.dungeonTeammates.map { it.asTeammate() }
+    private inline val teammates get() = DungeonUtils.dungeonTeammatesNoSelf.map { it.asTeammate() }
 
     data class Teammate(val name: String, val uuid: String?, var dungeonPlayer: DungeonPlayer) {
         override fun equals(other: Any?): Boolean {
@@ -49,12 +50,11 @@ object ClearSecrets : Module(
                         val old = v.await()
 
                         val dif = (new - old).takeUnless { (-1L).equalsOneOf(old, new) }?.also { if (it !in 0..30) modMessage("Assuming something went wrong. Data: $old -> $new") }
-                        "\n§bH§3C §7|| §d${k.name} §7-> §fSecrets: §6${dif ?: "§c§l???§r"}§7, §fDeaths: §c${k.dungeonPlayer.deaths}"
+                        "§bH§3C §7|| §d${k.name} §7-> §fSecrets: §6${dif ?: "§c§l???§r"}" // §7, §fDeaths: §c${k.dungeonPlayer.deaths}" // this doesnt work atm, todo: fix odin
                     }.let {
                         chatConstructor {
-                            displayText("§bH§3C §7|| §fClear Secrets:")
-                            it.forEach { text ->
-                                clickText(text, "/hcdev writetoclipboard $text", listOf("§e§lCLICK §r§7to copy!"))
+                            it.forEachIndexed { i, text ->
+                                clickText("${if (i != 0) "\n" else ""}$text", "/hcdev writetoclipboard $text", listOf("§e§lCLICK §r§7to copy!"))
                             }
                         }.print()
                     }
@@ -67,6 +67,7 @@ object ClearSecrets : Module(
     fun onDungeonLoad(event: LoadDungeonPlayers)  {
         if (event.teammates.isEmpty()) return
         event.teammates.forEach {
+            if (it.name == mc.thePlayer.name) return@forEach
             secretMap.computeIfAbsent(it.asTeammate()) { teammate ->
                 launchDeferred {
                     getSecrets(teammate.name, teammate.uuid)

@@ -85,7 +85,7 @@ object Pages {
             }
 
             roundedRectangle(lineY, lastY, pageWidth, lastHeight, ct.button, radius = ct.roundness, edgeSoftness = 1f)
-            val betaText = if (currentPage != PageEntries.Overview) player.name else "HCPV Beta 2"
+            val betaText = if (currentPage != PageEntries.Overview) player.name else "HCPV 0.0.1"
             centeredText(betaText, pageCenter, lastY + lastHeight/2, color = ct.font, scale = if (betaText.length >= 8) 3 else 3.5)
             if (playerData != null) draw() else centeredText(loadText, mainCenterX, totalHeight/2, 7f)
             GlStateManager.popMatrix()

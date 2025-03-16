@@ -27,7 +27,6 @@ import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.skillAverage
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.minecraft.MinecraftProfileTexture
 import me.odinmain.OdinMain.mc
-import me.odinmain.utils.floor
 import me.odinmain.utils.render.Box
 import me.odinmain.utils.render.Color
 import me.odinmain.utils.render.getMCTextHeight
@@ -68,7 +67,7 @@ object Overview: Pages.PVPage("Overview") {
         val mmComps = profile.dungeons.dungeonTypes.mastermode.tierComps.without("total").values.sum()
         val floorComps = profile.dungeons.dungeonTypes.catacombs.tierComps.without("total").values.sum()
         listOf(
-            "Level§7: §a${(profile.leveling.experience/100.0).floor().toInt().colorize(500)}",
+            "Level§7: §a${floor(profile.leveling.experience/100.0).toInt().colorize(500)}",
             "§4Cata Level§7: §${ct.fontCode}${profile.dungeons.dungeonTypes.cataLevel.round(2).colorize(50)}",
             "§6Skill Average§7: §${ct.fontCode}${profile.playerData.cappedSkillAverage.round(2).colorize(55)} §7(${profile.playerData.skillAverage.round(2)})",
             "§bSecrets§7: ${profile.dungeons.secrets.commas.colorizeNumber(100000)} §7(${(profile.dungeons.secrets.toDouble()/(mmComps + floorComps)).round(2).colorize(15.0)}§7)",
