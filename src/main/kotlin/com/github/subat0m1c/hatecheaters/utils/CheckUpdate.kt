@@ -68,7 +68,7 @@ object CheckUpdate { // hi my goat SubAt0m1c <3
                 clickText(
                     "§bH§3C §8»§r Click HERE to copy the latest release link",
                     "/hcdev writetoclipboard $releaseLink",
-                    hoverText = listOf("Click to copy the release link to clipboard") // ill try make it open the link but idk how to do that atm
+                    hoverText = listOf("Click to copy the release link to clipboard") // ill try make it open the link but idk how to do that atm!
                 )
             }.print()
             Logger.info("HC > Update available.")
