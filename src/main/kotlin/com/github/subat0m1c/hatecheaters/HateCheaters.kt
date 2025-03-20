@@ -45,7 +45,7 @@ class HateCheaters {
         if (timesCheckedForUpdate > 1 || isUpdateCheckInProgress) return
 
         isUpdateCheckInProgress = true
-        launch(Dispatchers.IO) {
+        launch {
             CheckUpdate.lookForUpdates()
             isUpdateCheckInProgress = false
         }

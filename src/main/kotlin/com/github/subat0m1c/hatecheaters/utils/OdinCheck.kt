@@ -30,7 +30,7 @@ object OdinCheck {
 
         try {
             val currentOdin = Loader.instance().activeModList.find { it.modId == "od" || it.modId == "odclient" }?.version ?: ""
-            if (compareVersions(currentOdin) == -1) odinWarning("Odin is outdated!", currentOdin)
+            if (compareVersions(currentOdin, "@REQUIREDODINVERSION@") == -1) odinWarning("Odin is outdated!", currentOdin)
         } catch (e: Throwable) {
             odinWarning("An unknown error occurred trying to determine Odin version!")
             return
@@ -120,9 +120,10 @@ object OdinCheck {
      *
      * I think this code is bad but i cant be bothered fixing it. also can return lower than -1.
      */
-    private fun compareVersions(version1: String): Int {
+    fun compareVersions(version1: String, version2: String): Int {
         val v1 = versionRegex.find(version1)?.groupValues?.drop(1)?.map { it.toIntOrNull() } ?: return -2
-        val v2 = versionRegex.find("@REQUIREDODINVERSION@")?.groupValues?.drop(1)?.map { it.toIntOrNull() } ?: return -2
+        val v2 = versionRegex.find(version2)?.groupValues?.drop(1)?.map { it.toIntOrNull() } ?: return -2
+
 
         for (i in 0..2) {
             val compared = compareNumbers(v1[i], v2[i])
