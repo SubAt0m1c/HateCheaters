@@ -17,7 +17,6 @@ import me.odinmain.features.ModuleManager
 import net.minecraft.client.gui.GuiScreen
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod
-import net.minecraftforge.event.world.WorldEvent
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -35,22 +34,6 @@ class HateCheaters {
         listOf(
             this
         ).forEach { MinecraftForge.EVENT_BUS.register(it) }
-    }
-
-    private var isUpdateCheckInProgress = false
-    private var timesCheckedForUpdate = 0
-
-    @SubscribeEvent
-    fun onWorldLoad(event: WorldEvent.Load) {
-        if (timesCheckedForUpdate > 1 || isUpdateCheckInProgress) return
-
-        isUpdateCheckInProgress = true
-        launch {
-            CheckUpdate.lookForUpdates()
-            isUpdateCheckInProgress = false
-        }
-
-        timesCheckedForUpdate++
     }
 
     @SubscribeEvent

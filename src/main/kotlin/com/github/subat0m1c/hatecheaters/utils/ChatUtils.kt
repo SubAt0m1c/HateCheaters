@@ -59,7 +59,7 @@ object ChatUtils {
 
         val message get() = chat
 
-        fun print() = runOnMCThread { mc.thePlayer.addChatMessage(chat) }
+        fun print() = runOnMCThread { mc.thePlayer?.addChatMessage(chat) }
     }
 
     fun ChatStyle.setHover(text: List<String>): ChatStyle =

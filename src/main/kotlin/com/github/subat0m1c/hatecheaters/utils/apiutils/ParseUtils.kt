@@ -6,7 +6,6 @@ import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import com.github.subat0m1c.hatecheaters.utils.WebUtils.Server
 import com.github.subat0m1c.hatecheaters.utils.WebUtils.getInputStream
 import com.github.subat0m1c.hatecheaters.utils.WebUtils.getUUIDbyName
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.memberData
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerInfo
 import com.github.subat0m1c.hatecheaters.utils.apiutils.SkyCryptData.skyCryptToHypixel
 import kotlinx.coroutines.Dispatchers

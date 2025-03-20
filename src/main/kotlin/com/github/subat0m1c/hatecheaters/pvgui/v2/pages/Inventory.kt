@@ -207,7 +207,7 @@ object Inventory: Pages.PVPage("Inventory") {
         private val buttons: ButtonDSL<Int> by profileLazy {
             buttons(
                 Box(mainX, startY, mainWidth, buttonHeight), lineY, ot, default = 1,
-                profile.inventory.backpackContents.keys.mapNotNull { it.toIntOrNull()?.plus(1) }.sorted(), 2, // adding and subtracting so the display matches the game menu.
+                profile.inventory.backpackContents.keys.mapNotNull { it.toIntOrNull()?.plus(1) }.sorted(), 2, // adding and subtracting so the display matches the game menu instead of index.
                 ct.button, ct.selected, ct.roundness, 1f,
             ) {
                 onSelect {
