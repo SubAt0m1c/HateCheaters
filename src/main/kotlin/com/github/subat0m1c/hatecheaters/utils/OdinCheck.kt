@@ -117,7 +117,7 @@ object OdinCheck {
 
     /**
      * @return -1 if version1 is older, 1 if version1 is newer, 0 if they're the same.
-     *
+     * UPDATE: it now generally compares versions between the 2 args, might be good idk
      * I think this code is bad but i cant be bothered fixing it. also can return lower than -1.
      */
     fun compareVersions(version1: String, version2: String): Int {
