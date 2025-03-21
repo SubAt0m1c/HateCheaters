@@ -22,7 +22,7 @@ import me.odinmain.utils.round
 
 object Profile: Pages.PVPage("Profile") {
     private val lineWidth = mainCenterX - mainX - lineY
-    private val mainLineY = mainHeight*0.1
+    private val mainLineY = mainHeight * 0.1
 
     private val skillAverage: String by profileLazy { "§6Skill Average§7: §${ct.fontCode}${profile.playerData.cappedSkillAverage.round(2).colorize(55)} §7(${profile.playerData.skillAverage.round(2)})" }
     private val skillText: List<Pair<String, String>> by profileLazy {
@@ -39,12 +39,11 @@ object Profile: Pages.PVPage("Profile") {
     private val slayerText: List<Pair<String, String>> by profileLazy {
         profile.slayer.bosses.entries.sortedByDescending { it.value.xp }.map {
             val level = getSlayerSkillLevel(it.value.xp.toDouble(), it.key).round(2)
-            val slayer = it.key.capitalizeWords()
-            it.key to "${slayer}§7: ${level.colorize(getSlayerCap(it.key))} §7(${it.value.xp.toDouble().truncate})"
+            it.key to "${it.key.capitalizeWords()}§7: ${level.colorize(getSlayerCap(it.key))} §7(${it.value.xp.toDouble().truncate})"
         }
     }
 
-    private val slayerEntryHeight: Double by profileLazy { mainHeight.toDouble()/slayerText.size }
+    private val slayerEntryHeight: Double by profileLazy { mainHeight.toDouble() / slayerText.size }
 
     override fun draw() {
         roundedRectangle(mainCenterX, lineY, ot, mainHeight, ct.line)

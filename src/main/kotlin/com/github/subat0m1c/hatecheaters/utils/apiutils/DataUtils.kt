@@ -20,11 +20,11 @@ import kotlin.math.floor
 object ApiUtils {
 
     fun PlayerInfo.profileOrSelected(profileName: String? = null): Profiles? =
-        this.profileData.profiles.find { it.cuteName.lowercase() == profileName?.lowercase() } ?: this.profileData.profiles.find { it.selected }
+        profileData.profiles.find { it.cuteName.lowercase() == profileName?.lowercase() } ?: this.profileData.profiles.find { it.selected }
 
-    inline val PlayerInfo.memberData get() = this.profileData.profiles.find { it.selected }?.members?.get(uuid)
+    inline val PlayerInfo.memberData get() = profileData.profiles.find { it.selected }?.members?.get(uuid)
 
-    val PlayerInfo.profileList: List<Pair<String, String>> get() = this.profileData.profiles.map { it.cuteName to it.gameMode }
+    val PlayerInfo.profileList: List<Pair<String, String>> get() = profileData.profiles.map { it.cuteName to it.gameMode }
 
     /**
      * Taken and modified from [Skytils](https://github.com/Skytils/SkytilsMod) under [AGPL-3.0](https://github.com/Skytils/SkytilsMod/blob/1.x/LICENSE.md).
@@ -36,12 +36,12 @@ object ApiUtils {
         (0).rangeUntil(itemNBTList.tagCount()).map { itemNBTList.getCompoundTagAt(it).takeUnless { it.hasNoTags() }?.let { ItemStack.loadItemStackFromNBT(it) } }
     }
 
-    val MemberData.assumedMagicalPower: Int get() = magicalPower.takeUnless { it == 0 } ?: (accessoryBagStorage.tuning.currentTunings.values.sum() * 10)
+    inline val MemberData.assumedMagicalPower: Int get() = magicalPower.takeUnless { it == 0 } ?: (accessoryBagStorage.tuning.currentTunings.values.sum() * 10)
 
     /**
      * Taken and modified from [Skytils](https://github.com/Skytils/SkytilsMod) under [AGPL-3.0](https://github.com/Skytils/SkytilsMod/blob/1.x/LICENSE.md).
      */
-    val MemberData.magicalPower: Int get() = inventory.bagContents["talisman_bag"]?.itemStacks?.mapNotNull {
+    inline val MemberData.magicalPower: Int get() = inventory.bagContents["talisman_bag"]?.itemStacks?.mapNotNull {
         if (it.lore.any { it.matches(Regex("§7§4☠ §cRequires §5.+§c.")) } || it == null) return@mapNotNull null
         val mp = it.getMagicalPower + (if (it.skyblockID == "ABICASE") floor(crimsonIsle.abiphone.activeContacts.size/2.0).toInt() else 0)
         val itemId = it.skyblockID.takeUnless { it.startsWith("PARTY_HAT") || it.startsWith("BALLOON_HAT") } ?: "PARTY_HAT"
@@ -52,22 +52,22 @@ object ApiUtils {
         acc + pair.second
     }?.let { it + if (rift.access.consumedPrism) 11 else 0 } ?: 0
 
-    private val petItemRegex = Regex("(?:PET_ITEM_)?([A-Z_]+?)(?:_(COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC))?")
+    val petItemRegex = Regex("(?:PET_ITEM_)?([A-Z_]+?)(?:_(COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC))?")
 
-    val Pet.petItem: String? get() =
+    inline val Pet.petItem: String? get() =
         heldItem?.let { petItemRegex.matchEntire(it)?.destructured?.let { (heldItem, rarity) -> "${getRarityColor(rarity)}${heldItem.lowercase().replace("_", " ").capitalizeWords()}" } }
 
-    val Pet.colorName: String get() = (getRarityColor(this.tier) + this.type.formatted)
+    inline val Pet.colorName: String get() = (getRarityColor(this.tier) + this.type.formatted)
 
     fun getRarityColor(rarity: String): String {
         return when (rarity) {
-            "COMMON" -> "§f"
-            "UNCOMMON" -> "§a"
-            "RARE" -> "§9"
-            "EPIC" -> "§5"
+            "COMMON"    -> "§f"
+            "UNCOMMON"  -> "§a"
+            "RARE"      -> "§9"
+            "EPIC"      -> "§5"
             "LEGENDARY" -> "§6"
-            "MYTHIC" -> "§d"
-            else -> "§r"
+            "MYTHIC"    -> "§d"
+            else        -> "§r"
         }
     }
 }

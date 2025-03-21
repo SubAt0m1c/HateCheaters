@@ -13,27 +13,21 @@ import org.lwjgl.input.Mouse
 
 object Utils {
 
-    val String.formatted get() =
-        this.replace("_", " ").lowercase().capitalizeWords()
+    inline val String.formatted get() =
+        replace("_", " ").lowercase().capitalizeWords()
 
     /**
      * Takes the first 9 items in a list and moves them to the end.
      *
      * used because hypixel api returns hotbar in inventory list first and that looks awful
      */
-    fun <T> fixFirstNine(list: List<T>): List<T> {
-        return if (list.size >= 9) {
-            list.subList(9, list.size) + list.subList(0, 9)
-        } else {
-            list
-        }
-    }
+    fun <T> fixFirstNine(list: List<T>): List<T> =
+        if (list.size >= 9) list.subList(9, list.size) + list.subList(0, 9) else list
 
 
     fun <T> getSubset(lst: List<T>, index: Int, subsetSize: Int = 36): List<T> {
         val startIndex = index * subsetSize
-        val endIndex = startIndex + subsetSize
-        return lst.subList(startIndex.coerceAtMost(lst.size), endIndex.coerceAtMost(lst.size))
+        return lst.subList(startIndex.coerceAtMost(lst.size), (startIndex + subsetSize).coerceAtMost(lst.size))
     }
 
     fun <T> insertItemsAtIndexes(targetList: List<T>, items: List<Pair<Int, T>>): List<T> {
@@ -51,18 +45,17 @@ object Utils {
         return@with this
     }
 
-
     fun <K, V> Map<K, V>.without(vararg items: K): Map<K, V> = with(this.toMutableMap()) {
         items.forEach { this.remove(it) }
         return@with this
     }
 
     fun isObjectHovered(box: Box, mouseX: Number, mouseY: Number): Boolean =
-        (mouseX.toDouble() in box.x.toDouble()..box.x.toDouble()+box.w.toDouble() && mouseY.toDouble() in box.y.toDouble()..box.y.toDouble()+box.h.toDouble())
+        (mouseX.toDouble() in box.x.toDouble()..box.x.toDouble() + box.w.toDouble() && mouseY.toDouble() in box.y.toDouble()..box.y.toDouble()+box.h.toDouble())
 
-    val getMouseX: Double get() = Mouse.getX() * mc.currentScreen.width.toDouble() / mc.displayWidth
+    inline val getMouseX: Double get() = Mouse.getX() * mc.currentScreen.width.toDouble() / mc.displayWidth
 
-    val getMouseY: Double get() = mc.currentScreen.height - Mouse.getY() * mc.currentScreen.height.toDouble() / mc.displayHeight - 1
+    inline val getMouseY: Double get() = mc.currentScreen.height - Mouse.getY() * mc.currentScreen.height.toDouble() / mc.displayHeight - 1
 
     /**
      * Gets the height of a square array given width, rows, columns, and padding.

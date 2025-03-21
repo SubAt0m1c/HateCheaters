@@ -22,8 +22,8 @@ import me.odinmain.utils.round
 
 object Dungeons: Pages.PVPage("Dungeons") {
     private val cataLineWidth = mainCenterX - mainX - lineY
-    private val cataLineY = mainHeight*0.1
-    private val cataCenter = mainCenterX - mainWidth/4
+    private val cataCenter = mainCenterX - mainWidth / 4
+    private val cataLineY = mainHeight * 0.1
 
     private val mmComps: Int by profileLazy { (profile.dungeons.dungeonTypes.mastermode.tierComps.without("total")).values.sum() }
     private val floorComps: Int by profileLazy { (profile.dungeons.dungeonTypes.catacombs.tierComps.without("total")).values.sum() }
@@ -39,7 +39,7 @@ object Dungeons: Pages.PVPage("Dungeons") {
 
     private val textEntryHeight: Double by profileLazy { (mainHeight/2 - (cataLineY + lineY)) / text.size }
 
-    private val cataText: String by profileLazy { "§4Cata Level§7: §${ct.fontCode}${profile.dungeons.dungeonTypes.cataLevel.round(2).colorize(50)}" }
+    private val cataText by profileLazy { "§4Cata Level§7: §${ct.fontCode}${profile.dungeons.dungeonTypes.cataLevel.round(2).colorize(50)}" }
 
     private val classTextList: List<String> by profileLazy { profile.dungeons.classes.entries.map { "${it.key.capitalizeFirst().colorClass}§7: ${it.value.classLevel.round(2).colorize(50)}" } }
     private val classAverageText: String by profileLazy { "§6Class Average§7: ${profile.dungeons.classAverage.round(2).colorize(50)}" }

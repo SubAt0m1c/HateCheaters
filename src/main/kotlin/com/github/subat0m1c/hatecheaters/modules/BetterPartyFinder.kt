@@ -32,28 +32,28 @@ object BetterPartyFinder : Module(
     description = "Provides stats when a player joins your party. Includes autokick functionality. /hcitems to configure important items list.sk",
     category = Category.DUNGEON
 ) {
-    private val statsDisplay: Boolean by BooleanSetting("Stats display", default = true, description = "Displays stats of players who join your party")
+    private val statsDisplay by BooleanSetting("Stats display", default = true, description = "Displays stats of players who join your party")
 
     private val floors = arrayListOf("Entrance", "Floor 1", "Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6", "Floor 7")
-    private val floor: Int by SelectorSetting("Floor", defaultSelected = "Floor 7", floors, false, description = "Determines which floor to check pb.")
-    private val mmToggle: Boolean by BooleanSetting("Master Mode", true, description = "Use master mode times")
+    private val floor by SelectorSetting("Floor", defaultSelected = "Floor 7", floors, false, description = "Determines which floor to check pb.")
+    private val mmToggle by BooleanSetting("Master Mode", true, description = "Use master mode times")
 
-    private val autoKickDropdwon: Boolean by DropdownSetting("Auto Kick Dropdown", default = true)
-    private val informkicked: Boolean by BooleanSetting("Inform Kicked", default = false, description = "Informs the player why they were kicked.").withDependency { autoKickDropdwon }
-    private val autokicktoggle: Boolean by BooleanSetting("Auto Kick", default = false, description = "Automatically kicks players who don't meet requirements.").withDependency { autoKickDropdwon }
-    private val timeKick: Boolean by BooleanSetting("Check Time", default = false, description = "Kicks for time").withDependency { autoKickDropdwon && autokicktoggle }
-    private val timereq: Int by NumberSetting("time", 0, 0, 500, description = "Time minimum in seconds.").withDependency { autoKickDropdwon && autokicktoggle }
+    private val autoKickDropdwon by DropdownSetting("Auto Kick Dropdown", default = true)
+    private val informkicked by BooleanSetting("Inform Kicked", default = false, description = "Informs the player why they were kicked.").withDependency { autoKickDropdwon }
+    private val autokicktoggle by BooleanSetting("Auto Kick", default = false, description = "Automatically kicks players who don't meet requirements.").withDependency { autoKickDropdwon }
+    private val timeKick by BooleanSetting("Check Time", default = false, description = "Kicks for time").withDependency { autoKickDropdwon && autokicktoggle }
+    private val timereq by NumberSetting("time", 0, 0, 500, description = "Time minimum in seconds.").withDependency { autoKickDropdwon && autokicktoggle }
 
-    private val secretKick: Boolean by BooleanSetting("Check Secrets", default = true, description = "Kicks for secrets").withDependency { autoKickDropdwon && autokicktoggle }
-    private val secretsreq: Int by NumberSetting("secrets", 0, 0, 200, description = "Secret minimum in thousands.").withDependency { secretKick && autoKickDropdwon && autokicktoggle }
+    private val secretKick by BooleanSetting("Check Secrets", default = true, description = "Kicks for secrets").withDependency { autoKickDropdwon && autokicktoggle }
+    private val secretsreq by NumberSetting("secrets", 0, 0, 200, description = "Secret minimum in thousands.").withDependency { secretKick && autoKickDropdwon && autokicktoggle }
 
-    private val savgKick: Boolean by BooleanSetting("Check Secret Average", default = false, description = "Kicks for secret average.").withDependency { autoKickDropdwon && autokicktoggle }
-    private val savgreq: Float by NumberSetting("Secret Average", 0f, 0f, 20f, description = "Secret average minimum.").withDependency { savgKick && autoKickDropdwon && autokicktoggle }
+    private val savgKick by BooleanSetting("Check Secret Average", default = false, description = "Kicks for secret average.").withDependency { autoKickDropdwon && autokicktoggle }
+    private val savgreq by NumberSetting("Secret Average", 0f, 0f, 20f, description = "Secret average minimum.").withDependency { savgKick && autoKickDropdwon && autokicktoggle }
 
-    private val checkItems: Boolean by BooleanSetting("Check Items", default = false, description = "Enables checking player items.").withDependency { autoKickDropdwon && autokicktoggle }
-    private val witherImpactKick: Boolean by BooleanSetting("Wither Impact", default = false, description = "Kicks if the player doesn't have wither impact.").withDependency { autoKickDropdwon && autokicktoggle && checkItems }
-    private val dragKick: Boolean by BooleanSetting("Gdrag/Edrag", default = false, description = "Kicks if the player doesn't have gdrag or edrag.").withDependency { autoKickDropdwon && autokicktoggle && checkItems }
-    private val spiritKick: Boolean by BooleanSetting("Spirit Pet", default = false, description = "Kicks if the player doesn't have spirit pet.").withDependency { autoKickDropdwon && autokicktoggle && checkItems }
+    private val checkItems by BooleanSetting("Check Items", default = false, description = "Enables checking player items.").withDependency { autoKickDropdwon && autokicktoggle }
+    private val witherImpactKick by BooleanSetting("Wither Impact", default = false, description = "Kicks if the player doesn't have wither impact.").withDependency { autoKickDropdwon && autokicktoggle && checkItems }
+    private val dragKick by BooleanSetting("Gdrag/Edrag", default = false, description = "Kicks if the player doesn't have gdrag or edrag.").withDependency { autoKickDropdwon && autokicktoggle && checkItems }
+    private val spiritKick by BooleanSetting("Spirit Pet", default = false, description = "Kicks if the player doesn't have spirit pet.").withDependency { autoKickDropdwon && autokicktoggle && checkItems }
 
     private val petMap = mapOf(
         "ENDER_DRAGON" to { dragKick },
@@ -62,7 +62,7 @@ object BetterPartyFinder : Module(
         "JELLYFISH" to { false },
     )
 
-    private val kickCache: Boolean by BooleanSetting("Kick Cache", default = true, description = "Caches kicked players to automatically kick when they attempt to rejoin.")
+    private val kickCache by BooleanSetting("Kick Cache", default = true, description = "Caches kicked players to automatically kick when they attempt to rejoin.")
     private val action: () -> Unit by ActionSetting("Clear Cache", description = "Clears the kick list cache.") { kickedList.clear() }.withDependency { kickCache }
 
     private val pfRegex = Regex("Party Finder > (?:\\[.{1,7}])? ?(.{1,16}) joined the dungeon group! \\(.*\\)") //https://regex101.com/r/XYnAVm/1
@@ -74,8 +74,7 @@ object BetterPartyFinder : Module(
 
     init {
         onMessage(pfRegex, { enabled && statsDisplay && !autokicktoggle}) {
-            val name = pfRegex.find(it)?.groupValues?.get(1).toString()
-            if (name == mc.session.username) return@onMessage
+            if (pfRegex.find(it)?.groupValues?.get(1) == mc.session?.username) return@onMessage
 
             launch {
                 val profiles = getSkyblockProfile(name).getOrElse { return@launch modMessage(it.message) }
@@ -93,8 +92,7 @@ object BetterPartyFinder : Module(
 
 
         onMessage(pfRegex, { enabled && autokicktoggle}) {
-            val name = pfRegex.find(it)?.groupValues?.get(1).toString()
-            if (name == mc.session.username) return@onMessage
+            if (pfRegex.find(it)?.groupValues?.get(1) == mc.session?.username) return@onMessage
 
             Logger.info("$name is being searched")
 
@@ -157,9 +155,7 @@ object BetterPartyFinder : Module(
                 }
 
                 if (kickedReasons.isNotEmpty()) {
-                    if (informkicked) {
-                        partyMessage("Kicked $name for: ${kickedReasons.joinToString(", ")}")
-                    }
+                    if (informkicked) partyMessage("Kicked $name for: ${kickedReasons.joinToString(", ")}")
 
                     sendCommand("party kick $name")
                     modMessage("Kicked $name for:\n${kickedReasons.joinToString("\n")}")
@@ -260,5 +256,4 @@ object BetterPartyFinder : Module(
             displayText(getChatBreak())
         }.print()
     }
-
 }

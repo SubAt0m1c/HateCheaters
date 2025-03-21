@@ -48,7 +48,7 @@ object Overview: Pages.PVPage("Overview") {
         val longest = floor(options.maxByOrNull { it.mcWidth }?.mcWidth?.times(3.5) ?: 0.0).toInt()
         val default = "§a${profiles?.cuteName}§7 §8(§7${profiles?.gameMode}§8)"
         val dropDownBox = Box(mainCenterX - lineY - ((longest)/2), mainHeight * 0.1 + lineY, longest + lineY*2, floor(getMCTextHeight()*3.5 + lineY*2))
-        dropDownMenu(dropDownBox, ot, default, options, 3.5, ct.button, ct.accent, ct.roundness, 1f,) {
+        dropDownMenu(dropDownBox, ot, default, options, 3.5, ct.button, ct.accent, ct.roundness, 1f) {
             onSelect { selected ->
                 updateProfile(selected.substringAfter("§a").substringBefore("§7 "))
                 playClickSound()
@@ -60,14 +60,14 @@ object Overview: Pages.PVPage("Overview") {
         }
     }
 
-    private const val SKYCRYPT_TEXT: String = "Skycrypt cache only!"
-    private val skycryptPosition = lineY + mainHeight - (getMCTextHeight()*2.5)/2
+    private const val SKYCRYPT_TEXT = "Skycrypt cache only!"
+    private val skycryptPosition = lineY + mainHeight - (getMCTextHeight() * 2.5) / 2
 
     private val data: List<String> by profileLazy {
         val mmComps = profile.dungeons.dungeonTypes.mastermode.tierComps.without("total").values.sum()
         val floorComps = profile.dungeons.dungeonTypes.catacombs.tierComps.without("total").values.sum()
         listOf(
-            "Level§7: §a${floor(profile.leveling.experience/100.0).toInt().colorize(500)}",
+            "Level§7: §a${floor(profile.leveling.experience / 100.0).toInt().colorize(500)}",
             "§4Cata Level§7: §${ct.fontCode}${profile.dungeons.dungeonTypes.cataLevel.round(2).colorize(50)}",
             "§6Skill Average§7: §${ct.fontCode}${profile.playerData.cappedSkillAverage.round(2).colorize(55)} §7(${profile.playerData.skillAverage.round(2)})",
             "§bSecrets§7: ${profile.dungeons.secrets.commas.colorizeNumber(100000)} §7(${(profile.dungeons.secrets.toDouble()/(mmComps + floorComps)).round(2).colorize(15.0)}§7)",
@@ -76,16 +76,16 @@ object Overview: Pages.PVPage("Overview") {
         )
     }
 
-    private val entryHeight: Double by profileLazy {( mainHeight * 0.9 - getMCTextHeight()*2.5 - lineY -floor(getMCTextHeight()*3.5 + lineY*2)) / data.size }
+    private val entryHeight by profileLazy {( mainHeight * 0.9 - getMCTextHeight() * 2.5 - lineY -floor(getMCTextHeight() * 3.5 + lineY * 2)) / data.size }
 
-    var playerEntity: EntityLivingBase? = null
+    private var playerEntity: EntityLivingBase? = null
 
-    private val playerX = mainX + mainWidth * 5/6
+    private val playerX = mainX + mainWidth * 5 / 6
 
-    private val textCenterY = ((mainHeight * 0.1) + lineY)/2
+    private val textCenterY = ((mainHeight * 0.1) + lineY) / 2
 
     override fun draw() {
-        roundedRectangle(mainCenterX-((mainWidth*0.8)/2), mainHeight * 0.1, mainWidth*0.8, ot, ct.line)
+        roundedRectangle(mainCenterX-((mainWidth*0.8) / 2), mainHeight * 0.1, mainWidth * 0.8, ot, ct.line)
 
         centeredText(player.name, mainCenterX, textCenterY, scale = 5, color = Color.WHITE)
 
@@ -94,7 +94,7 @@ object Overview: Pages.PVPage("Overview") {
             centeredText(text, mainX + mainWidth/3, y, 2.5, ct.font)
         }
 
-        playerEntity?.let { drawPlayerOnScreen(playerX.toDouble(), lineY + mainHeight/2.0 + 175, 175, Mouse.getX() + 325, Mouse.getY() - 225, it) }
+        playerEntity?.let { drawPlayerOnScreen(playerX.toDouble(), lineY + mainHeight / 2.0 + 175, 175, Mouse.getX() + 325, Mouse.getY() - 225, it) }
 
         if (player.skyCrypt) centeredText(SKYCRYPT_TEXT, mainCenterX, skycryptPosition, 2.5, Color.RED)
         dropDown.draw()
@@ -154,7 +154,7 @@ object Overview: Pages.PVPage("Overview") {
                 uuidStr.substring(8, 12) + "-" +
                 uuidStr.substring(12, 16) + "-" +
                 uuidStr.substring(16, 20) + "-" +
-                uuidStr.substring(20, 32);
+                uuidStr.substring(20, 32)
 
         return UUID.fromString(formattedUUID)
     }

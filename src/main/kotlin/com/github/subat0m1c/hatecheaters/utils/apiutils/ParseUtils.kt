@@ -67,7 +67,6 @@ object ParseUtils {
         profileData
     }
 
-
     private fun addToCache(profiles: PlayerInfo) {
         val time = System.currentTimeMillis()
         if (profiles.profileData.profiles.isEmpty()) return Logger.info("Refusing to cache empty profile!")

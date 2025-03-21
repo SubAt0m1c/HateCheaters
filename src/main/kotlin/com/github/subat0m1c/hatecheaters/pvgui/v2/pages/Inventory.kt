@@ -38,7 +38,7 @@ object Inventory: Pages.PVPage("Inventory") {
     private val inventoryAPI: Boolean by profileLazy { profile.inventory.eChestContents.itemStacks.isNotEmpty() }
 
     private val buttons: ButtonDSL<String> by profileLazy {
-        val inventoryPageHeight = ((totalHeight-lineY * (2 + 6-1))*0.9)/ 6
+        val inventoryPageHeight = ((totalHeight-lineY * (2 + 6 - 1)) * 0.9) / 6
 
         buttons(
             Box(mainX, lineY, mainWidth, inventoryPageHeight), lineY, ot, default = "Basic",
@@ -67,12 +67,12 @@ object Inventory: Pages.PVPage("Inventory") {
         super.init()
     }
 
-    val invArmor: List<ItemStack?> by profileLazy { profile.inventory.invArmor.itemStacks }
-    val startY: Double by lazy { separatorLineY + lineY + ot }
+    val invArmor by profileLazy { profile.inventory.invArmor.itemStacks }
+    val startY by lazy { separatorLineY + lineY + ot }
     private val buttonHeight = (mainWidth - (lineY * 16))/18
-    private val centerY: Double by lazy { (startY + buttonHeight + lineY) + (mainHeight - (startY + buttonHeight))/2 }
+    private val centerY by lazy { (startY + buttonHeight + lineY) + (mainHeight - (startY + buttonHeight))/2 }
 
-    abstract class InventoryPage : Pages.PVPage("InventoryPage") {}
+    abstract class InventoryPage : Pages.PVPage("InventoryPage")
 
     object Basic: InventoryPage() {
         private val itemGrid: ItemGridDSL by profileLazy {
@@ -95,18 +95,18 @@ object Inventory: Pages.PVPage("Inventory") {
     object Wardrobe: InventoryPage() {
         private val wardrobe: List<ItemStack?> by profileLazy { profile.inventory.wardrobeContents.itemStacks }
 
-        private val selectedButtonIndex: Int get() = buttons.getSelected - 1
+        private inline val selectedButtonIndex: Int get() = buttons.getSelected - 1
         private inline val gridItems get() = listOf(GridItems(getSubset(inventoryWithArmor, selectedButtonIndex), mainX, centerY.toInt(), mainWidth + lineY / 2, 9))
 
-        private val equipped: Int by profileLazy {
+        private val equipped by profileLazy {
             val equippedWardrobe = profile.inventory.wardrobeEquipped?.let { it - 1 } ?: -1
-            val rangeStart = (selectedButtonIndex * 9)
+            val rangeStart = selectedButtonIndex * 9
             val rangeEnd = rangeStart + 9
 
             if (equippedWardrobe in rangeStart until rangeEnd) equippedWardrobe - rangeStart else -1
         }
 
-        private val inventoryWithArmor: List<ItemStack?> by profileLazy {
+        private val inventoryWithArmor by profileLazy {
             if (equipped != -1 && invArmor.isNotEmpty()) { // this is awful i think maybe
                 invArmor.mapIndexed { index, itemStack ->
                     (equipped + (9 * (invArmor.size - 1 - index))) to itemStack
@@ -114,14 +114,13 @@ object Inventory: Pages.PVPage("Inventory") {
             } else wardrobe
         }
 
-        private val itemGrid: ItemGridDSL by profileLazy {
+        private val itemGrid by profileLazy {
             itemGrid(gridItems, ct.roundness, 1f, lineY.toFloat()) {
-                val armor = invArmor.toSet()
-                colorHandler { _, item -> if (item in armor) Color.BLUE else ct.items }
+                colorHandler { _, item -> if (item in invArmor.toSet()) Color.BLUE else ct.items }
             }
         }
 
-        private val buttons: ButtonDSL<Int> by profileLazy {
+        private val buttons by profileLazy {
             buttons(
                 Box(mainX, startY, mainWidth, buttonHeight), lineY, ot, default = 1,
                 (1..ceil(wardrobe.size.toDouble() / 36).toInt()).toList(), 2,
@@ -143,23 +142,23 @@ object Inventory: Pages.PVPage("Inventory") {
     }
 
     object Talismans: InventoryPage() {
-        private val talis: List<ItemStack> by profileLazy { profile.inventory.bagContents["talisman_bag"]?.itemStacks?.filterNotNull()?.sortedByDescending { it.getMagicalPower } ?: emptyList() }
-        private val magicPower: Int by profileLazy { profile.magicalPower }
-        private val mp: String by profileLazy { "§aSelected Power: §6${profile.accessoryBagStorage.selectedPower?.capitalizeWords() ?: "§cNone!"}" }
-        private val tunings: List<String> by profileLazy { profile.accessoryBagStorage.tuning.currentTunings.map { "${it.key.replace("_", " ").capitalizeWords().colorStat}§7: ${it.value.colorize(ceil(magicPower/10.0))}" } }
-        private val abiPhone: String by profileLazy { "§5Abicase: ${floor(profile.crimsonIsle.abiphone.activeContacts.size/2.0).toInt()}" }
-        private val riftPrism: String by profileLazy { "§dRift Prism: ${ if (profile.rift.access.consumedPrism) "§aObtained" else "§cMissing"}" }
+        private val talis by profileLazy { profile.inventory.bagContents["talisman_bag"]?.itemStacks?.filterNotNull()?.sortedByDescending { it.getMagicalPower } ?: emptyList() }
+        private val magicPower by profileLazy { profile.magicalPower }
+        private val mp by profileLazy { "§aSelected Power: §6${profile.accessoryBagStorage.selectedPower?.capitalizeWords() ?: "§cNone!"}" }
+        private val tunings by profileLazy { profile.accessoryBagStorage.tuning.currentTunings.map { "${it.key.replace("_", " ").capitalizeWords().colorStat}§7: ${it.value.colorize(ceil(magicPower/10.0))}" } }
+        private val abiPhone by profileLazy { "§5Abicase: ${floor(profile.crimsonIsle.abiphone.activeContacts.size/2.0).toInt()}" }
+        private val riftPrism by profileLazy { "§dRift Prism: ${ if (profile.rift.access.consumedPrism) "§aObtained" else "§cMissing"}" }
 
-        private val textList: List<String> by profileLazy { listOf("Magical Power: ${magicPower.colorize(1697)}", mp, abiPhone, riftPrism) + tunings }
-        private val pages: Int by profileLazy { ceil(talis.size.toDouble()/(maxRows*9)).toInt() }
+        private val textList by profileLazy { listOf("Magical Power: ${magicPower.colorize(1697)}", mp, abiPhone, riftPrism) + tunings }
+        private val pages by profileLazy { ceil(talis.size.toDouble()/(maxRows * 9)).toInt() }
 
         private val separatorX = floor(mainX + mainWidth * 0.38).toInt()
         private val width = mainWidth - ((separatorX - mainX)) - lineY
 
-        private inline val gridItems get() = listOf(GridItems(getSubset(talis, buttons.getSelected-1, maxRows*9), separatorX + lineY + ot, centerY.toInt(), width, 9,))
+        private inline val gridItems get() = listOf(GridItems(getSubset(talis, buttons.getSelected - 1, maxRows * 9), separatorX + lineY + ot, centerY.toInt(), width, 9))
 
-        private val itemGrid: ItemGridDSL by profileLazy {
-            itemGrid(gridItems, ct.roundness, 1f, lineY.toFloat(),) {
+        private val itemGrid by profileLazy {
+            itemGrid(gridItems, ct.roundness, 1f, lineY.toFloat()) {
                 colorHandler { _, item ->
                     if (rarityBackgrounds) item?.lore?.let { getRarity(it) }?.color ?: ct.items else ct.items
                 }
@@ -175,13 +174,13 @@ object Inventory: Pages.PVPage("Inventory") {
                 ct.selected, ct.roundness, 1f,
             ) {
                 onSelect {
-                    itemGrid.updateItems(getSubset(talis, buttons.getSelected-1, maxRows*9))
+                    itemGrid.updateItems(getSubset(talis, buttons.getSelected - 1, maxRows*9))
                     playClickSound()
                 }
             }
         }
 
-        private val entryHeight: Double by profileLazy { (mainHeight - startY + lineY)/textList.size }
+        private val entryHeight by profileLazy { (mainHeight - startY + lineY)/textList.size }
 
         override fun draw() {
             roundedRectangle(separatorX, startY, ot, mainHeight - startY + lineY, ct.line)
@@ -201,8 +200,8 @@ object Inventory: Pages.PVPage("Inventory") {
     }
 
     object Backpacks: InventoryPage() {
-        private inline val inventory: List<ItemStack?> get() = profile.inventory.backpackContents["${buttons.getSelected-1}"]?.itemStacks ?: emptyList()
-        private inline val gridItems get() = listOf(GridItems(inventory, (mainCenterX - (mainWidth * 0.8)/2).toInt(), centerY.toInt(), (mainWidth * 0.8).toInt(), 9))
+        private inline val inventory get() = profile.inventory.backpackContents["${buttons.getSelected - 1}"]?.itemStacks ?: emptyList()
+        private inline val gridItems get() = listOf(GridItems(inventory, (mainCenterX - (mainWidth * 0.8) / 2).toInt(), centerY.toInt(), (mainWidth * 0.8).toInt(), 9))
 
         private val buttons: ButtonDSL<Int> by profileLazy {
             buttons(
@@ -217,8 +216,8 @@ object Inventory: Pages.PVPage("Inventory") {
             }
         }
 
-        private val itemGrid: ItemGridDSL by profileLazy {
-            itemGrid(gridItems, ct.roundness, 1f, lineY.toFloat(),) {
+        private val itemGrid by profileLazy {
+            itemGrid(gridItems, ct.roundness, 1f, lineY.toFloat()) {
                 colorHandler { _, item -> if (rarityBackgrounds) item?.lore?.let { getRarity(it) }?.color ?: ct.items else ct.items }
             }
         }
@@ -234,9 +233,9 @@ object Inventory: Pages.PVPage("Inventory") {
     }
 
     object EnderChest: InventoryPage() {
-        private val items: List<ItemStack?> by profileLazy { profile.inventory.eChestContents.itemStacks }
-        private val pages: Int by profileLazy { ceil(items.size/45.0).toInt() }
-        private inline val gridItems get() = listOf(GridItems(getSubset(items, buttons.getSelected-1, 45), (mainCenterX - (mainWidth * 0.8)/2).toInt(), centerY.toInt(), (mainWidth * 0.8).toInt(), 9))
+        private val items by profileLazy { profile.inventory.eChestContents.itemStacks }
+        private val pages by profileLazy { ceil(items.size / 45.0).toInt() }
+        private inline val gridItems get() = listOf(GridItems(getSubset(items, buttons.getSelected - 1, 45), (mainCenterX - (mainWidth * 0.8) / 2).toInt(), centerY.toInt(), (mainWidth * 0.8).toInt(), 9))
 
         private val buttons: ButtonDSL<Int> by profileLazy {
             buttons(
@@ -245,7 +244,7 @@ object Inventory: Pages.PVPage("Inventory") {
                 ct.selected, ct.roundness, 1f,
             ) {
                 onSelect {
-                    itemGrid.updateItems(getSubset(items, buttons.getSelected-1, 45))
+                    itemGrid.updateItems(getSubset(items, buttons.getSelected - 1, 45))
                     playClickSound()
                 }
             }
