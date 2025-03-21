@@ -8,13 +8,12 @@ import net.minecraft.item.ItemStack
 
 object ItemUtils {
 
-    val ItemStack?.getMagicalPower: Int get() {
-        var baseMp = mpMap[getRarity(this?.lore ?: emptyList())] ?: 0
-        if (this.skyblockID == "HEGEMONY_ARTIFACT") baseMp *= 2
-        return baseMp
+    inline val ItemStack.getMagicalPower: Int get() {
+        val baseMp = (mpMap[getRarity(this.lore)] ?: 0)
+        return if (skyblockID == "HEGEMONY_ARTIFACT") baseMp * 2 else baseMp
     }
 
-    private val mpMap = mapOf(
+    val mpMap = mapOf(
         ItemRarity.COMMON to 3,
         ItemRarity.UNCOMMON to 5,
         ItemRarity.RARE to 8,

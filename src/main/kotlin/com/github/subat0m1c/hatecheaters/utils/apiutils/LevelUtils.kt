@@ -14,11 +14,10 @@ object LevelUtils {
      *
      * Includes overflow formula from [SoopyV2](https://github.com/Soopyboo32/SoopyV2) under [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.en.html)
      */
-    fun getLevelWithProgress(experience: Double, values: Array<Long>, slope: Long = 0): Double {
+    private fun getLevelWithProgress(experience: Double, values: Array<Long>, slope: Long = 0): Double {
         var xp = experience
         var level = 0
         val maxLevelExperience = values.last()
-
 
         for (i in values.indices) {
             val toRemove = values[i]
@@ -34,8 +33,7 @@ object LevelUtils {
 
         if (xp > 0 && slope <= 0) {
             level += (xp / maxLevelExperience).toInt()
-            val progress = xp % maxLevelExperience / maxLevelExperience
-            return level+progress
+            return level + (xp % maxLevelExperience / maxLevelExperience)
         } else {
             var reqSlope = slope
             var requiredXp = maxLevelExperience.toDouble() + reqSlope
@@ -47,19 +45,18 @@ object LevelUtils {
                 if (level % 10 == 0) reqSlope *= 2
             }
 
-            if (xp < requiredXp) {
-                val progress = xp / requiredXp
-                return level + progress
-            }
+            if (xp < requiredXp) return level + ( xp / requiredXp)
         }
 
         return level.toDouble()
     }
 
-    val DungeonsData.classAverage: Double get() =
+    inline val DungeonsData.classAverage: Double get() =
         classes.values.sumOf { it.classLevel }/classes.size
+
     val DungeonTypes.cataLevel: Double get() =
         getLevelWithProgress(catacombs.experience, dungeonsLevels)
+
     val ClassData.classLevel: Double get() =
         getLevelWithProgress(experience, dungeonsLevels)
 
@@ -74,43 +71,45 @@ object LevelUtils {
         75000000, 93000000, 116250000, 200000000
     )
 
-    val PlayerData.skillAverage: Double get() =
+    inline val PlayerData.skillAverage: Double get() =
         experience.without("SKILL_SOCIAL", "SKILL_SOCIAL", "SKILL_DUNGEONEERING").let { skills -> skills.values.sumOf { getSkillLevel(it) }/skills.size }
 
-    val PlayerData.cappedSkillAverage: Double get() =
+    inline val PlayerData.cappedSkillAverage: Double get() =
         experience.without("SKILL_SOCIAL", "SKILL_SOCIAL", "SKILL_DUNGEONEERING").let { skills -> skills.entries.sumOf { getSkillLevel(it.value).coerceAtMost(
             getSkillCap(it.key.lowercase().substringAfter("skill_")).toDouble()) }/skills.size }
 
-    fun getSkillLevel(exp: Double): Double = getLevelWithProgress(exp, skillLevels, 600000)
+    fun getSkillLevel(exp: Double): Double =
+        getLevelWithProgress(exp, skillLevels, 600000)
 
-    fun getSkillCap(skill: String): Int = when (skill) {
-        "taming" -> 60
-        "mining" -> 60
-        "foraging" -> 50
-        "enchanting" -> 60
-        "carpentry" -> 50
-        "farming" -> 60
-        "combat" -> 60
-        "fishing" -> 50
-        "alchemy" -> 50
-        "runecrafting" -> 25
-        "social" -> 20
-        else -> -1
-    }
+    fun getSkillCap(skill: String): Int =
+        when (skill) {
+            "taming"       -> 60
+            "mining"       -> 60
+            "foraging"     -> 50
+            "enchanting"   -> 60
+            "carpentry"    -> 50
+            "farming"      -> 60
+            "combat"       -> 60
+            "fishing"      -> 50
+            "alchemy"      -> 50
+            "runecrafting" -> 25
+            "social"       -> 20
+            else           -> -1
+        }
 
     fun getSkillColor(skill: String): Color = when (skill) {
-        "taming" -> ProfileViewer.currentTheme.font
-        "mining" -> Color.GRAY
-        "foraging" -> Color.DARK_GREEN
-        "enchanting" -> Color.MAGENTA
-        "carpentry" -> Color("A52A2AFF")
-        "farming" -> Color.GREEN
-        "combat" -> Color.RED
-        "fishing" -> Color.BLUE
-        "alchemy" -> Color.YELLOW
+        "taming"       -> ProfileViewer.currentTheme.font
+        "mining"       -> Color.GRAY
+        "foraging"     -> Color.DARK_GREEN
+        "enchanting"   -> Color.MAGENTA
+        "carpentry"    -> Color("A52A2AFF")
+        "farming"      -> Color.GREEN
+        "combat"       -> Color.RED
+        "fishing"      -> Color.BLUE
+        "alchemy"      -> Color.YELLOW
         "runecrafting" -> Color.PURPLE
-        "social" -> Color.GREEN
-        else -> ProfileViewer.currentTheme.font
+        "social"       -> Color.GREEN
+        else           -> ProfileViewer.currentTheme.font
     }
 
     private val skillLevels: Array<Long> = arrayOf(
@@ -132,23 +131,18 @@ object LevelUtils {
             getSlayerCap(slayer).toDouble())
 
     fun getSlayerColor(slayer: String): Color = when (slayer) {
-        "wolf" -> ProfileViewer.currentTheme.font
-        "zombie" -> Color.DARK_GREEN
+        "wolf"     -> ProfileViewer.currentTheme.font
+        "zombie"   -> Color.DARK_GREEN
         "enderman" -> Color.MAGENTA
-        "vampire" -> Color.RED
-        "blaze" -> Color.ORANGE
-        "spider" -> Color.BLACK
-        else -> ProfileViewer.currentTheme.font
+        "vampire"  -> Color.RED
+        "blaze"    -> Color.ORANGE
+        "spider"   -> Color.BLACK
+        else       -> ProfileViewer.currentTheme.font
     }
 
-    private val slayerLevels: Array<Long> = arrayOf(
-        5, 10, 185, 800, 4000, 15000, 85000, 300000,
-        600000
-    )
+    private val slayerLevels: Array<Long> = arrayOf(5, 10, 185, 800, 4000, 15000, 85000, 300000, 600000)
 
-    private val vampireLevels: Array<Long> = arrayOf(
-        20, 55, 165, 640, 1560
-    )
+    private val vampireLevels: Array<Long> = arrayOf(20, 55, 165, 640, 1560)
 
     fun getSlayerCap(slayer: String): Int = if (slayer == "vampire") 5 else 9
 }

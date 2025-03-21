@@ -51,18 +51,17 @@ class ButtonDSL<T>(
 
     fun draw() {
         options.forEachIndexed { i, option ->
-            val y = if (!vertical) box.y else box.y + (buttonHeight + lineY)*i
-            val x = if (!vertical) box.x + (buttonWidth + lineY)*i else box.x
+            val y = if (!vertical) box.y else box.y + (buttonHeight + lineY) * i
+            val x = if (!vertical) box.x + (buttonWidth + lineY) * i else box.x
             if (option == selected) roundedRectangle(x, y, buttonWidth, box.h, accent, radius, edgeSoftness)
             else roundedRectangle(x, y, buttonWidth, box.h, color, radius, edgeSoftness)
-            centeredText(option.toString(), x + buttonWidth/2, box.y + box.h/2, textScale, Color.WHITE, shadow = true)
+            centeredText(option.toString(), x + buttonWidth / 2, box.y + box.h / 2, textScale, Color.WHITE, shadow = true)
         }
     }
 
     fun click(mouseX: Int, mouseY: Int, button: Int) {
         options.withIndex().find { (i, _) ->
-            val x = box.x + (buttonWidth + lineY)*i
-            isObjectHovered(Box(x, box.y, buttonWidth, box.h), mouseX, mouseY)
+            isObjectHovered(Box(box.x + (buttonWidth + lineY) * i, box.y, buttonWidth, box.h), mouseX, mouseY)
         }?.let { (_, entry) ->
             if (entry == selected) return@let
             selected = entry

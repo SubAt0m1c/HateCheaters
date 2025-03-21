@@ -11,6 +11,7 @@ import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.logging.FileHandler
+import java.util.logging.Logger
 import java.util.logging.Logger as javaLogger
 import java.util.logging.SimpleFormatter
 import java.util.zip.GZIPOutputStream
@@ -20,7 +21,7 @@ import java.util.zip.GZIPOutputStream
  */
 object LogHandler {
     object Logger {
-        val log = javaLogger.getLogger("HateCheatersLogger")
+        val log: javaLogger = javaLogger.getLogger("HateCheatersLogger")
 
         fun info(message: String?) = log.info(message).also { debug(message) }
 
@@ -65,15 +66,9 @@ object LogHandler {
 
     private fun setupLogger() = runCatching {
         val logDir = File("config/hatecheaters/mod_logs")
-        if (!logDir.exists()) {
-            logDir.mkdirs()
-        }
+        if (!logDir.exists()) logDir.mkdirs()
 
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss")
-        val dateString = dateFormat.format(Date())
-        val logFileName = "${logDir.absolutePath}/$dateString.log"
-
-        val fileHandler = FileHandler(logFileName, true)
+        val fileHandler = FileHandler("${logDir.absolutePath}/${SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(Date())}.log", true)
         fileHandler.formatter = SimpleFormatter()
         Logger.log.addHandler(fileHandler)
         Logger.log.useParentHandlers = false
@@ -81,11 +76,8 @@ object LogHandler {
 
     fun logJsonToFile(jsonString: String, name: String = "unknown", type: String = "unknown", dir: String = "hypixel_logs") {
         if (!HateCheatersModule.enabled || !HateCheatersModule.logJson) return
-        val minecraftDir = File("config/hatecheaters")
-        val logFolder = File(minecraftDir, dir)
+        val logFolder = File(File("config/hatecheaters"), dir)
         if (!logFolder.exists()) logFolder.mkdirs()
-        val logFile = File(logFolder, "${name}_${type}_${getCurrentDateTimeString()}.json")
-
-        logFile.writeText(jsonString)
+        File(logFolder, "${name}_${type}_${getCurrentDateTimeString()}.json").writeText(jsonString)
     }
 }

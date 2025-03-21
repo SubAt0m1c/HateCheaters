@@ -23,24 +23,21 @@ data class ReleaseInfo(
 )
 
 object CheckUpdate {
-    private const val GITHUBAPIURL = "https://api.github.com/repos/subat0m1c/HateCheaters/releases/latest"
+    private const val GITHUB_API_URL = "https://api.github.com/repos/subat0m1c/HateCheaters/releases/latest"
     private inline val currentVersion: String get() = HateCheaters.version
 
     fun lookForUpdates() = launch {
         try {
             Logger.info("Currently on HateCheaters $currentVersion")
-            val jsonResponse = WebUtils.getInputStream(GITHUBAPIURL).getOrElse { return@launch }
-            val jsonString = jsonResponse.bufferedReader().use { it.readText() }
+            val jsonString = WebUtils.getInputStream(GITHUB_API_URL).getOrElse { return@launch }.bufferedReader().use { it.readText() }
             checkVersion(jsonString)
         } catch (e: Exception) {
             Logger.warning("Error while checking for updates: ${e.message}")
         }
     }
 
-
     private fun checkVersion(jsonResponse: String) {
-        val releaseInfo = json.decodeFromString<ReleaseInfo>(jsonResponse)
-        val latestVersion = releaseInfo.tagName
+        val latestVersion = json.decodeFromString<ReleaseInfo>(jsonResponse).tagName
 
         val isNewVersionAvailable = compareVersions(latestVersion, currentVersion)
         runIn(40) {
@@ -63,9 +60,7 @@ object CheckUpdate {
                    }.print()
 
                    Logger.info("HC > Update available.")
-               } else -> {
-                   Logger.info("HC > No update needed.")
-               }
+               } else -> Logger.info("HC > No update needed.")
            }
         }
     }
