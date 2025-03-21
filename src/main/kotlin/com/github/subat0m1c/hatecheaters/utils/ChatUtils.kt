@@ -8,7 +8,6 @@ import me.odinmain.utils.skyblock.modMessage as odinModMessage
 import me.odinmain.utils.render.getMCTextWidth
 import me.odinmain.utils.runOnMCThread
 import me.odinmain.utils.skyblock.createClickStyle
-import me.odinmain.utils.toFixed
 import net.minecraft.event.ClickEvent
 import net.minecraft.event.HoverEvent
 import net.minecraft.util.ChatComponentText
