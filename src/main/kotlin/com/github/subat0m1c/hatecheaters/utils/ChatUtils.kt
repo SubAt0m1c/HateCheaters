@@ -44,7 +44,7 @@ object ChatUtils {
         val message get() = chat
 
         fun hoverText(text: String, hoverText: List<String>): IChatComponent =
-            chat.appendSibling(ChatComponentText(text)).apply { chatStyle.setHover(hoverText) }
+            chat.appendSibling(ChatComponentText(text).apply { chatStyle.setHover(hoverText) })
 
         fun clickText(text: String, command: String, hoverText: List<String> = emptyList(), chatStyle: ClickEvent.Action = ClickEvent.Action.RUN_COMMAND): IChatComponent =
             chat.appendSibling(ChatComponentText(text).apply { setChatStyle(createClickStyle(chatStyle, command).setHover(hoverText)) })
@@ -52,7 +52,7 @@ object ChatUtils {
         fun displayText(text: String = "\n", chatStyle: ChatStyle? = null): IChatComponent =
             chat.appendSibling(ChatComponentText(text).apply { setChatStyle(chatStyle) })
 
-        fun print() = modMessage(chat, prefix = "")
+        fun print() = runOnMCThread { mc.thePlayer?.addChatMessage(chat) }
     }
 
     fun ChatStyle.setHover(text: List<String>): ChatStyle =

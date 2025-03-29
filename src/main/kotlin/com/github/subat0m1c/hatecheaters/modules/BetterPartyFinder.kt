@@ -4,14 +4,13 @@ import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.formatted
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.chatConstructor
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorStat
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.secondsToMinutes
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.colorName
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.itemStacks
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.magicalPower
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.memberData
+import com.github.subat0m1c.hatecheaters.utils.apiutils.DataUtils.colorName
+import com.github.subat0m1c.hatecheaters.utils.apiutils.DataUtils.maxMagicalPower
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.cataLevel
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.classAverage
@@ -21,17 +20,19 @@ import me.odinmain.features.Category
 import me.odinmain.features.Module
 import me.odinmain.features.settings.Setting.Companion.withDependency
 import me.odinmain.features.settings.impl.*
-import me.odinmain.utils.capitalizeFirst
-import me.odinmain.utils.noControlCodes
-import me.odinmain.utils.round
+import me.odinmain.utils.*
 import me.odinmain.utils.skyblock.*
+import me.odinmain.utils.skyblock.PlayerUtils.alert
 import kotlin.collections.HashSet
+import kotlin.math.ceil
 
 object BetterPartyFinder : Module(
     name = "Better Party Finder",
     description = "Provides stats when a player joins your party. Includes autokick functionality. /hcitems to configure important items list.sk",
     category = Category.DUNGEON
 ) {
+    private val fullPartyNotification by BooleanSetting("Full Party Notification", default = true, description = "Notifies you when your party is full.")
+
     private val statsDisplay by BooleanSetting("Stats display", default = true, description = "Displays stats of players who join your party")
 
     private val floors = arrayListOf("Entrance", "Floor 1", "Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6", "Floor 7")
@@ -42,15 +43,20 @@ object BetterPartyFinder : Module(
     private val informkicked by BooleanSetting("Inform Kicked", default = false, description = "Informs the player why they were kicked.").withDependency { autoKickDropdwon }
     private val autokicktoggle by BooleanSetting("Auto Kick", default = false, description = "Automatically kicks players who don't meet requirements.").withDependency { autoKickDropdwon }
     private val timeKick by BooleanSetting("Check Time", default = false, description = "Kicks for time").withDependency { autoKickDropdwon && autokicktoggle }
-    private val timereq by NumberSetting("time", 0, 0, 500, description = "Time minimum in seconds.").withDependency { autoKickDropdwon && autokicktoggle }
+    private val timeMinutes by NumberSetting("Minutes", 5, 0, 10, description = "Time minimum in minutes.", unit = "m").withDependency { autoKickDropdwon && autokicktoggle }
+    private val timeSeconds by NumberSetting("Seconds", 0, 0, 60, description = "Time minimum in seconds.", unit = "s").withDependency { autoKickDropdwon && autokicktoggle }
+    private inline val timeReq get() = timeMinutes * 60 + timeSeconds
 
     private val secretKick by BooleanSetting("Check Secrets", default = true, description = "Kicks for secrets").withDependency { autoKickDropdwon && autokicktoggle }
-    private val secretsreq by NumberSetting("secrets", 0, 0, 200, description = "Secret minimum in thousands.").withDependency { secretKick && autoKickDropdwon && autokicktoggle }
+    private val secretsreq by NumberSetting("Secrets", 0, 0, 200, description = "Secret minimum in thousands.", unit = "k").withDependency { secretKick && autoKickDropdwon && autokicktoggle }
 
     private val savgKick by BooleanSetting("Check Secret Average", default = false, description = "Kicks for secret average.").withDependency { autoKickDropdwon && autokicktoggle }
     private val savgreq by NumberSetting("Secret Average", 0f, 0f, 20f, description = "Secret average minimum.").withDependency { savgKick && autoKickDropdwon && autokicktoggle }
 
     private val checkItems by BooleanSetting("Check Items", default = false, description = "Enables checking player items.").withDependency { autoKickDropdwon && autokicktoggle }
+    private val apiOffKick by BooleanSetting("Api Off Kick", default = true, description = "Kicks if the player's api is off. If this setting is disabled, it will ignore the item check when players have api disabled.").withDependency { autoKickDropdwon && autokicktoggle && checkItems }
+    private val magicalPowerKick by BooleanSetting("Check Magical Power", default = false, description = "Kicks if the player doesn't have enough magical power.").withDependency { autoKickDropdwon && autokicktoggle && checkItems }
+    private val magicalPowerReq by NumberSetting("Magical Power", 1300, 0, 2000, increment = 20, description = "Magical power minimum.").withDependency { magicalPowerKick && autoKickDropdwon && autokicktoggle && checkItems }
     private val witherImpactKick by BooleanSetting("Wither Impact", default = false, description = "Kicks if the player doesn't have wither impact.").withDependency { autoKickDropdwon && autokicktoggle && checkItems }
     private val dragKick by BooleanSetting("Gdrag/Edrag", default = false, description = "Kicks if the player doesn't have gdrag or edrag.").withDependency { autoKickDropdwon && autokicktoggle && checkItems }
     private val spiritKick by BooleanSetting("Spirit Pet", default = false, description = "Kicks if the player doesn't have spirit pet.").withDependency { autoKickDropdwon && autokicktoggle && checkItems }
@@ -73,8 +79,12 @@ object BetterPartyFinder : Module(
     val importantItems: MutableList<String> by ListSetting("itememsmemsmsms", mutableListOf())
 
     init {
+        onMessage(Regex("Party Finder > Your dungeon group is full! Click here to warp to the dungeon!"), {enabled && fullPartyNotification}) {
+            alert("§eYour party is full!")
+        }
+
         onMessage(pfRegex, { enabled && statsDisplay && !autokicktoggle}) {
-            if (pfRegex.find(it)?.groupValues?.get(1) == mc.session?.username) return@onMessage
+            val name = pfRegex.find(it)?.groupValues?.get(1)?.takeUnless { it == mc.session.username } ?: return@onMessage
 
             launch {
                 val profiles = getSkyblockProfile(name).getOrElse { return@launch modMessage(it.message) }
@@ -92,7 +102,7 @@ object BetterPartyFinder : Module(
 
 
         onMessage(pfRegex, { enabled && autokicktoggle}) {
-            if (pfRegex.find(it)?.groupValues?.get(1) == mc.session?.username) return@onMessage
+            val name = pfRegex.find(it)?.groupValues?.get(1)?.takeUnless { it == mc.session.username } ?: return@onMessage
 
             Logger.info("$name is being searched")
 
@@ -117,10 +127,10 @@ object BetterPartyFinder : Module(
                 val dungeon = if (!mmToggle) currentProfile.dungeons.dungeonTypes.catacombs else currentProfile.dungeons.dungeonTypes.mastermode
                 dungeon.fastestTimeSPlus["$floor"]?.times(0.001)?.let {
                     if (!timeKick) return@let
-                    if (it > (timereq)) {
-                        kickedReasons.add("Did not meet time req: ${secondsToMinutes(it)}/${secondsToMinutes(timereq)}")
+                    if (it > (timeReq)) {
+                        kickedReasons.add("Did not meet time req for ${if (mmToggle) "m" else "f"}${floor}: ${secondsToMinutes(it)}/${secondsToMinutes(timeReq)}")
                     }
-                } ?: kickedReasons.add("Couldn't confirm completion status")
+                } ?: kickedReasons.add("Couldn't confirm completion status for ${if (mmToggle) "m" else "f"}${floor}")
 
                 val secretCount = currentProfile.dungeons.secrets
                 secretCount.let {
@@ -140,33 +150,36 @@ object BetterPartyFinder : Module(
                 }
 
                 if (checkItems) {
-                    val allItems = (currentProfile.inventory.invContents.itemStacks + currentProfile.inventory.eChestContents.itemStacks + currentProfile.inventory.backpackContents.flatMap { it.value.itemStacks })
+                    val pets = currentProfile.pets.pets.mapNotNullTo(HashSet()) { if (it.tier != "LEGENDARY") null else it.type }
 
-                    if (witherImpactKick && allItems.none { it?.lore?.any { it.noControlCodes.matches(witherImpactRegex) } == true }) kickedReasons.add("Did not have wither impact")
+                    for (entry in petMap) if (entry.value() && entry.key !in pets) kickedReasons.add("Did not have legendary ${entry.key.formatted}")
 
-                    val pets = currentProfile.pets.pets.mapNotNullTo(HashSet()) {
-                        if (it.tier != "LEGENDARY") return@mapNotNullTo null
-                        it.type
-                    }
+                    if (currentProfile.inventoryApi) {
+                        if (witherImpactKick && currentProfile.allItems.none { it?.lore?.any { it.noControlCodes.matches(witherImpactRegex) } == true }) kickedReasons.add("Did not have wither impact")
 
-                    for (entry in petMap) {
-                        if (entry.value() && entry.key !in pets) kickedReasons.add("Did not have legendary ${entry.key.formatted}")
-                    }
+                        val mp = currentProfile.magicalPower
+                        if (magicalPowerKick && mp < magicalPowerReq) kickedReasons.add("Did not meet mp req: ${mp}/${magicalPowerReq}")
+                    } else if (apiOffKick) kickedReasons.add("Inventory API is off")
                 }
 
                 if (kickedReasons.isNotEmpty()) {
-                    if (informkicked) partyMessage("Kicked $name for: ${kickedReasons.joinToString(", ")}")
+                    if (informkicked) {
+                        runIn(5) { sendCommand("party kick $name") }
+                        partyMessage("Kicked $name for: ${kickedReasons.joinToString(", ")}")
+                    } else sendCommand("party kick $name")
 
-                    sendCommand("party kick $name")
-                    modMessage("Kicked $name for:\n${kickedReasons.joinToString("\n")}")
-                    return@launch
+                    return@launch modMessage("Kicking $name for: \n${kickedReasons.joinToString(" \n")}")
                 }
 
                 displayDungeonData(currentProfile, profiles.name)
             }
         }
 
-        onMessage(kickRegex, { kickCache && enabled }) { kickRegex.find(it)?.groupValues?.get(1)?.let { name -> kickedList.add(it).takeUnless { kickedList.contains(name) } } }
+        onMessage(kickRegex, { kickCache && enabled }) { message ->
+            kickRegex.find(message)?.groupValues?.get(1)
+                ?.takeUnless { name -> kickedList.contains(name) }
+                ?.let { name -> kickedList.add(name) }
+        }
     }
 
     private val witherImpactRegex = Regex("(?:⦾ )?Ability: Wither Impact {2}RIGHT CLICK")
@@ -179,7 +192,7 @@ object BetterPartyFinder : Module(
         val fpbs = (1..7).map { it to catacombs.dungeonTypes.catacombs.fastestTimeSPlus[it.toString()] }
         val mmpbs =  (1..7).map { it to catacombs.dungeonTypes.mastermode.fastestTimeSPlus[it.toString()] }
 
-        val allItems = (currentProfile.inventory.invContents.itemStacks + currentProfile.inventory.eChestContents.itemStacks + currentProfile.inventory.backpackContents.flatMap { it.value.itemStacks })
+        val allItems = currentProfile.allItems
 
         val armor = currentProfile.inventory.invArmor.itemStacks.filterNotNull().reversed()
 
@@ -193,6 +206,10 @@ object BetterPartyFinder : Module(
 
         val mmComps = (catacombs.dungeonTypes.mastermode.tierComps.toMutableMap().apply { this.remove("total") }).values.sum()
         val floorComps = (catacombs.dungeonTypes.catacombs.tierComps.toMutableMap().apply { this.remove("total") }).values.sum()
+
+        val hype = allItems.find { it?.lore?.any { it.noControlCodes.matches(witherImpactRegex) } == true }
+
+        val tunings = currentProfile.accessoryBagStorage.tuning.currentTunings.map { "${it.key.replace("_", " ").capitalizeWords().colorStat}§7: ${it.value.colorize(ceil(currentProfile.magicalPower /10.0))}" }
 
         chatConstructor {
             displayText(getChatBreak())
@@ -213,12 +230,32 @@ object BetterPartyFinder : Module(
             displayText("""
                 §3| §bSecrets: §f${catacombs.secrets.colorize(100000)} §8: §bAverage: §f${(catacombs.secrets.toDouble()/(mmComps + floorComps)).round(2).colorize(15.0)}
                 §3| §cBlood mobs: §f${(profileKills["watcher_summon_undead"] ?: 0) + (profileKills["master_watcher_summon_undead"] ?: 0)}
-            
-                §3| ${if (allItems.isNotEmpty()) "§eMagical power: ${currentProfile.magicalPower.colorize(1730)} §7(${currentProfile.accessoryBagStorage.selectedPower})" else "§o§4Inventory Api Disabled!"}
-            
-                §3| §5Wither Impact: ${if (allItems.any { it?.lore?.any { it.noControlCodes.matches(witherImpactRegex) } == true }) "§l§2Found!" else "§o§4Missing!"}
                 """.trimIndent()
             )
+
+            displayText()
+
+            if (currentProfile.inventoryApi) {
+                hoverText(
+                    "\n§3| §5Magical Power: §f${currentProfile.magicalPower.colorize(maxMagicalPower)}",
+                    listOf("Tunings: ") + tunings
+                )
+
+                displayText()
+
+                hype?.let {
+                    hoverText("\n§3| §5Wither Impact: §l§2Found!", (listOf(it.displayName) + it.lore))
+                } ?: displayText("\n§3| §5Wither Impact: §o§4Missing!")
+            } else {
+                hoverText(
+                    "\n§3| §5Assumed Magical Power: ${currentProfile.assumedMagicalPower.colorize(maxMagicalPower)}",
+                    listOf("Assumed using the following tunings:") + tunings
+                )
+
+                displayText()
+
+                displayText("\n§3| §o§4Inventory API Disabled!")
+            }
 
             displayText()
 
@@ -239,12 +276,12 @@ object BetterPartyFinder : Module(
             }
 
             hoverText(
-                "\n§3| §7Personal Bests  §e§lHOVER",
+                "\n§3| §7Personal Bests  §e§lHOVER §7(F${floor}: ${fpbs.getSafe(floor-1)?.second?.let { secondsToMinutes(it * 0.001) } ?: "§o§4None!"})",
                 fpbs.map { "§aFloor ${it.first} §7| §2${it.second?.let { secondsToMinutes(it * 0.001) } ?: "§o§4None!"}" }
             )
 
             hoverText(
-                "\n§3| §4§lMM §8Personal Bests  §e§lHOVER",
+                "\n§3| §4§lMM §8Personal Bests  §e§lHOVER §7(M${floor}: ${mmpbs.getSafe(floor-1)?.second?.let { secondsToMinutes(it * 0.001) } ?: "§o§4None!"})",
                 mmpbs.map { "§cFloor ${it.first} §7| §2${it.second?.let { secondsToMinutes(it * 0.001) } ?: "§o§4None!"}" }
             )
 

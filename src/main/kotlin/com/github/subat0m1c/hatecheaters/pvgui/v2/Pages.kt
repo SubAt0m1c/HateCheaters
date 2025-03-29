@@ -9,7 +9,6 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getMouseX
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getMouseY
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.isObjectHovered
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.mcWidth
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.profileOrSelected
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.MemberData
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerInfo
 import com.github.subat0m1c.hatecheaters.utils.apiutils.SkyCryptData.dummyPlayer

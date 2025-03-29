@@ -1,8 +1,18 @@
 package com.github.subat0m1c.hatecheaters.utils.apiutils
 
+import com.github.subat0m1c.hatecheaters.utils.ItemUtils.getMagicalPower
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlinx.serialization.json.JsonElement
+import me.odinmain.utils.skyblock.lore
+import me.odinmain.utils.skyblock.skyblockID
+import net.minecraft.item.ItemStack
+import net.minecraft.nbt.CompressedStreamTools
+import net.minecraftforge.common.util.Constants
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
+import kotlin.math.floor
 
 //todo all the missing data. right now its about enough for what i currently need
 object HypixelData {
@@ -12,7 +22,14 @@ object HypixelData {
         val uuid: String,
         val name: String,
         val skyCrypt: Boolean = false
-    )
+    ) {
+        fun profileOrSelected(profileName: String? = null): Profiles? =
+           profileData.profiles.find { it.cuteName.lowercase() == profileName?.lowercase() } ?: profileData.profiles.find { it.selected }
+
+        inline val memberData get() = profileData.profiles.find { it.selected }?.members?.get(uuid)
+
+        @Transient val profileList: List<Pair<String, String>> = profileData.profiles.map { it.cuteName to it.gameMode }
+    }
 
     @Serializable
     data class ProfilesData(
@@ -35,6 +52,7 @@ object HypixelData {
         val cuteName: String,
         val selected: Boolean,
     )
+
     @Serializable
     data class MemberData(
         val rift: RiftData = RiftData(),
@@ -65,7 +83,27 @@ object HypixelData {
         val playerStats: PlayerStats = PlayerStats(),
         val slayer: Slayers = Slayers(),
         val inventory: Inventory = Inventory(),
-    )
+    ) {
+        /**
+         * Taken and modified from [Skytils](https://github.com/Skytils/SkytilsMod) under [AGPL-3.0](https://github.com/Skytils/SkytilsMod/blob/1.x/LICENSE.md).
+         */
+        @Transient val magicalPower = inventory.bagContents["talisman_bag"]?.itemStacks?.mapNotNull {
+            if (it.lore.any { it.matches(Regex("§7§4☠ §cRequires §5.+§c.")) } || it == null) return@mapNotNull null
+            val mp = it.getMagicalPower + (if (it.skyblockID == "ABICASE") floor(crimsonIsle.abiphone.activeContacts.size/2.0).toInt() else 0)
+            val itemId = it.skyblockID.takeUnless { it.startsWith("PARTY_HAT") || it.startsWith("BALLOON_HAT") } ?: "PARTY_HAT"
+            itemId to mp
+        }?.groupBy { it.first }?.mapValues { entry ->
+            entry.value.maxBy { it.second }
+        }?.values?.fold(0) { acc, pair ->
+            acc + pair.second
+        }?.let { it + if (rift.access.consumedPrism) 11 else 0 } ?: 0
+
+        @Transient val inventoryApi = inventory.eChestContents.itemStacks.isNotEmpty()
+
+        @Transient val allItems = (inventory.invContents.itemStacks + inventory.eChestContents.itemStacks + inventory.backpackContents.flatMap { it.value.itemStacks })
+
+        @Transient val assumedMagicalPower = magicalPower.takeUnless { it == 0 } ?: (accessoryBagStorage.tuning.currentTunings.values.sum() * 10)
+    }
 
     @Serializable
     data class Slayers(
@@ -695,7 +733,17 @@ object HypixelData {
     data class InventoryContents(
         val type: Int? = null,
         val data: String = ""
-    )
+    ) {
+        /**
+         * Taken and modified from [Skytils](https://github.com/Skytils/SkytilsMod) under [AGPL-3.0](https://github.com/Skytils/SkytilsMod/blob/1.x/LICENSE.md).
+         */
+        @OptIn(ExperimentalEncodingApi::class)
+        val itemStacks: List<ItemStack?> get() = with(data) {
+            if (isEmpty()) return emptyList()
+            val itemNBTList = CompressedStreamTools.readCompressed(Base64.decode(this).inputStream()).getTagList("i", Constants.NBT.TAG_COMPOUND)
+            (0).rangeUntil(itemNBTList.tagCount()).map { itemNBTList.getCompoundTagAt(it).takeUnless { it.hasNoTags() }?.let { ItemStack.loadItemStackFromNBT(it) } }
+        }
+    }
 
     @Serializable
     data class CommunityUpgrades(

@@ -11,18 +11,12 @@ import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import me.odinmain.utils.runIn
 
-val json = Json {
-    isLenient = true
-    ignoreUnknownKeys = true
-}
-
-@Serializable
-data class ReleaseInfo(
-    @SerialName("tag_name")
-    val tagName: String
-)
-
 object CheckUpdate {
+    private val json = Json {
+        isLenient = true
+        ignoreUnknownKeys = true
+    }
+
     private const val GITHUB_API_URL = "https://api.github.com/repos/subat0m1c/HateCheaters/releases/latest"
     private inline val currentVersion: String get() = HateCheaters.version
 
@@ -64,4 +58,10 @@ object CheckUpdate {
            }
         }
     }
+
+    @Serializable
+    data class ReleaseInfo(
+        @SerialName("tag_name")
+        val tagName: String
+    )
 }

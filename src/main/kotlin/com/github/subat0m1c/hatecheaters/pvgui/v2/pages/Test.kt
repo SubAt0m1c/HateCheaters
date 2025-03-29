@@ -9,7 +9,6 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.GridItems
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.fixFirstNine
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.itemGrid
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.profileLazy
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.itemStacks
 import me.odinmain.utils.render.Color
 
 object Test : Pages.PVPage("Test") {

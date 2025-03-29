@@ -5,12 +5,11 @@ import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.scale
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.currentPage
 import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Overview.setPlayer
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.ProfileLazy
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.profileOrSelected
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerInfo
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSkyblockProfile
 import me.odinmain.utils.render.scale
 import me.odinmain.utils.render.translate
-import me.odinmain.utils.skyblock.modMessage
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.util.MovementInputFromOptions

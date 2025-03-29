@@ -3,7 +3,6 @@ package com.github.subat0m1c.hatecheaters.modules
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launchDeferred
 import com.github.subat0m1c.hatecheaters.events.impl.LoadDungeonPlayers
-import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.chatConstructor
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSecrets
@@ -49,7 +48,7 @@ object ClearSecrets : Module(
                         }.also { new -> secretMap[k] = new }.await()
                         val old = v.await()
 
-                        val dif = (new - old).takeUnless { (-1L).equalsOneOf(old, new) }?.also { if (it !in 0..30) modMessage("Assuming something went wrong. Data: $old -> $new") }
+                        val dif = (new - old).takeUnless { (-1L).equalsOneOf(old, new) }?.also { if (it !in 0..40) modMessage("Assuming something went wrong. Data: $old -> $new") }
                         "§bH§3C §7|| §d${k.name} §7-> §fSecrets: §6${dif ?: "§c§l???§r"}" // §7, §fDeaths: §c${k.dungeonPlayer.deaths}" // this doesnt work atm, todo: fix odin
                     }.let {
                         chatConstructor {

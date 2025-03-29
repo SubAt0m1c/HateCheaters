@@ -6,8 +6,8 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.playClickSound
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getSubset
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.buttons
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.profileLazy
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.colorName
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.petItem
+import com.github.subat0m1c.hatecheaters.utils.apiutils.DataUtils.colorName
+import com.github.subat0m1c.hatecheaters.utils.apiutils.DataUtils.petItem
 import me.odinmain.utils.render.Box
 import me.odinmain.utils.render.roundedRectangle
 import kotlin.math.ceil
@@ -27,7 +27,7 @@ object Pets: Pages.PVPage("Pets") {
     }
 
     private val pets by profileLazy {
-        profile.pets.pets.map { pet -> "${pet.colorName} ${pet.petItem?.let { "§7(§${ct.fontCode}${pet}§7)" } ?: ""}" }
+        profile.pets.pets.map { pet -> "${pet.colorName} ${pet.petItem?.let { "§7(§${ct.fontCode}${it}§7)" } ?: ""}" }
     }
 
     private val entryHeight by profileLazy {

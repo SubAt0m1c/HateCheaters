@@ -13,8 +13,6 @@ import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorStat
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.getMagicalPower
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.itemStacks
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.magicalPower
 import me.odinmain.utils.render.*
 import me.odinmain.utils.skyblock.getRarity
 import me.odinmain.utils.skyblock.lore
@@ -35,7 +33,7 @@ object Inventory: Pages.PVPage("Inventory") {
 
     val separatorLineY: Double by lazy { lineY + pageHeight }
 
-    private val inventoryAPI: Boolean by profileLazy { profile.inventory.eChestContents.itemStacks.isNotEmpty() }
+    private val inventoryAPI: Boolean by profileLazy { profile.inventoryApi }
 
     private val buttons: ButtonDSL<String> by profileLazy {
         val inventoryPageHeight = ((totalHeight-lineY * (2 + 6 - 1)) * 0.9) / 6

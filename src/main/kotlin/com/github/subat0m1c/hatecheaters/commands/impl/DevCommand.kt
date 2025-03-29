@@ -5,7 +5,6 @@ import com.github.stivais.commodore.utils.GreedyString
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.WebUtils.testQue
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ApiUtils.memberData
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSkyblockProfile
 import net.minecraft.client.gui.GuiScreen
 
