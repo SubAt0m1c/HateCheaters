@@ -8,6 +8,7 @@ import me.odinmain.utils.skyblock.modMessage as odinModMessage
 import me.odinmain.utils.render.getMCTextWidth
 import me.odinmain.utils.runOnMCThread
 import me.odinmain.utils.skyblock.createClickStyle
+import me.odinmain.utils.toFixed
 import net.minecraft.event.ClickEvent
 import net.minecraft.event.HoverEvent
 import net.minecraft.util.ChatComponentText
@@ -139,7 +140,7 @@ object ChatUtils {
     }
 
     inline val Double.truncate: String get() = when {
-        this >= 1_000_000_000 -> "${String.format("%.2f", this / 1_000_000_000)}b" // this >= 1_000_000_000 -> "${(this / 1_000_000_000).toFixed()}b" use this after full update to beta17
+        this >= 1_000_000_000 -> "${(this / 1_000_000_000).toFixed(2)}b"
         this >= 1_000_000     -> "${(this.toInt() / 1_000_000)}m"
         this >= 1_000         -> "${(this.toInt() / 1_000)}k"
         else                  -> "${this.toInt()}"

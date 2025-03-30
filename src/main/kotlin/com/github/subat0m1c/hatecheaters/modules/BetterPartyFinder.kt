@@ -84,7 +84,7 @@ object BetterPartyFinder : Module(
         }
 
         onMessage(pfRegex, { enabled && statsDisplay && !autokicktoggle}) {
-            val name = pfRegex.find(it)?.groupValues?.get(1)?.takeUnless { it == mc.session.username } ?: return@onMessage
+            val name = it.groupValues[1].takeUnless { it == mc.session.username } ?: return@onMessage
 
             launch {
                 val profiles = getSkyblockProfile(name).getOrElse { return@launch modMessage(it.message) }
@@ -102,7 +102,7 @@ object BetterPartyFinder : Module(
 
 
         onMessage(pfRegex, { enabled && autokicktoggle}) {
-            val name = pfRegex.find(it)?.groupValues?.get(1)?.takeUnless { it == mc.session.username } ?: return@onMessage
+            val name = it.groupValues[1].takeUnless { it == mc.session.username } ?: return@onMessage
 
             Logger.info("$name is being searched")
 
@@ -176,9 +176,7 @@ object BetterPartyFinder : Module(
         }
 
         onMessage(kickRegex, { kickCache && enabled }) { message ->
-            kickRegex.find(message)?.groupValues?.get(1)
-                ?.takeUnless { name -> kickedList.contains(name) }
-                ?.let { name -> kickedList.add(name) }
+            message.groupValues[1].takeUnless { name -> kickedList.contains(name) }?.let { name -> kickedList.add(name) }
         }
     }
 

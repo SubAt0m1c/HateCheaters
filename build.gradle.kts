@@ -15,7 +15,8 @@ plugins {
 
 //Constants:
 
-val requiredOdin = project.findProperty("requiredOdin") as String
+val requiredOdin: String by project
+val odinRepository: String by project
 val baseGroup: String by project
 val mcVersion: String by project
 val version: String by project
@@ -31,7 +32,7 @@ blossom {
 }
 
 tasks.register("downloadOdin") {
-    val downloadUrl = "https://github.com/SubAt0m1c/Odin/releases/download/${requiredOdinVersion}/${requiredOdin}"
+    val downloadUrl = "https://github.com/${odinRepository}/releases/download/${requiredOdinVersion}/${requiredOdin}"
     val targetFile = file("build/resources/Odin")
 
     doLast {
