@@ -75,7 +75,7 @@ object Inventory: Pages.PVPage("Inventory") {
         private val itemGrid: ItemGridDSL by profileLazy {
             val inventory = invArmor.reversed() + listOf(null) + profile.inventory.equipment.itemStacks + fixFirstNine(profile.inventory.invContents.itemStacks)
 
-            itemGrid(listOf(GridItems(inventory, mainX, (startY + (mainHeight - ((separatorLineY)))/2).toInt(), mainWidth + lineY / 2, 9)), ct.roundness, 1f, lineY.toFloat()) {
+            itemGrid(listOf(GridItems(inventory, mainX, (startY + (mainHeight - ((separatorLineY)))/2).toInt(), mainWidth, 9)), ct.roundness, 1f, lineY.toFloat()) {
                 colorHandler { i, item ->
                     when {
                         i == 4 -> Color.TRANSPARENT // this should be replaced by separate inventory grids at some point
@@ -93,7 +93,7 @@ object Inventory: Pages.PVPage("Inventory") {
         private val wardrobe: List<ItemStack?> by profileLazy { profile.inventory.wardrobeContents.itemStacks }
 
         private inline val selectedButtonIndex: Int get() = buttons.getSelected - 1
-        private inline val gridItems get() = listOf(GridItems(getSubset(inventoryWithArmor, selectedButtonIndex), mainX, centerY.toInt(), mainWidth + lineY / 2, 9))
+        private inline val gridItems get() = listOf(GridItems(getSubset(inventoryWithArmor, selectedButtonIndex), mainX, centerY.toInt(), mainWidth, 9))
 
         private val equipped by profileLazy {
             val equippedWardrobe = profile.inventory.wardrobeEquipped?.let { it - 1 } ?: -1
