@@ -22,7 +22,23 @@ object BetterPartyFinder : Module(
     description = "Provides stats when a player joins your party. Includes autokick functionality. /hcitems to configure important items list.",
     category = Category.DUNGEON
 ) {
+    private val defaultSounds = arrayListOf("mob.blaze.hit", "random.pop", "random.orb", "random.break", "mob.guardian.land.hit", "Custom")
+
     private val fullPartyNotification by BooleanSetting("Full Party Notification", default = true, description = "Notifies you when your party is full.")
+    private val joinSound by BooleanSetting("Party Join Sound", default = false, description = "Plays a sound when someone joins your party.")
+    private val soundDropdown by DropdownSetting("Sound Dropdown")
+    private val waitForKick by BooleanSetting("Wait for Kick", default = true, description = "Waits to see if the player will be kicked before playing the sound.").withDependency { joinSound && soundDropdown }
+
+    private val sound by SelectorSetting("Click Sound", "mob.blaze.hit", defaultSounds, description = "Which sound to play when you click in a terminal.").withDependency { joinSound && soundDropdown}
+    private val customSound by StringSetting("Custom Click Sound", "mob.blaze.hit",
+        description = "Name of a custom sound to play. This is used when Custom is selected in the Sound setting.", length = 32
+    ).withDependency { sound == defaultSounds.size - 1 && joinSound && soundDropdown }
+    private val volume by NumberSetting("Click Volume", 1f, 0, 1, .01f, description = "Volume of the sound.").withDependency { joinSound && soundDropdown }
+    private val pitch by NumberSetting("Click Pitch", 2f, 0, 2, .01f, description = "Pitch of the sound.").withDependency { joinSound && soundDropdown }
+    val reset by ActionSetting("Play click sound", description = "Plays the sound with the current settings.") {
+        playCustomSound()
+    }.withDependency { joinSound && soundDropdown }
+
 
     private val statsDisplay by BooleanSetting("Stats display", default = true, description = "Displays stats of players who join your party")
 
@@ -77,6 +93,8 @@ object BetterPartyFinder : Module(
         onMessage(pfRegex, { enabled && statsDisplay && !autokicktoggle}) {
             val name = it.groupValues[1].takeUnless { it == mc.session.username } ?: return@onMessage
 
+            if (joinSound) playCustomSound()
+
             launch {
                 val profiles = getSkyblockProfile(name).getOrElse { return@launch modMessage(it.message) }
                 profiles.profileData.profiles
@@ -101,6 +119,8 @@ object BetterPartyFinder : Module(
                 modMessage("Kicked $name since they have been kicked previously.")
                 return@onMessage
             }
+
+            if (joinSound && !waitForKick) playCustomSound()
 
             launch {
                 val kickedReasons = mutableListOf<String>()
@@ -161,6 +181,7 @@ object BetterPartyFinder : Module(
                     return@launch modMessage("Kicking $name for: \n${kickedReasons.joinToString(" \n")}")
                 }
 
+                if (joinSound && waitForKick) playCustomSound()
                 displayDungeonData(currentProfile, profiles.name, petMap.keys, floor)
             }
         }
@@ -169,4 +190,6 @@ object BetterPartyFinder : Module(
             message.groupValues[1].takeUnless { name -> kickedList.contains(name) }?.let { name -> kickedList.add(name) }
         }
     }
+
+    private fun playCustomSound() = PlayerUtils.playLoudSound(if (sound == defaultSounds.size - 1) customSound else defaultSounds[sound], volume, pitch)
 }

@@ -61,7 +61,7 @@ object DungeonStats {
                 listOf("§e§lCLICK §r§ato open profile viewer for §b$name")
             )
 
-            displayText("\r\n§3| §4Cata Level: §f${catacombs.dungeonTypes.cataLevel.round(2).colorize(50)} §8: ")
+            displayText("\n§3| §4Cata Level: §f${catacombs.dungeonTypes.cataLevel.round(2).colorize(50)} §8: ")
 
             hoverText(
                 "§dClass Avg: §6${catacombs.classAverage.round(2).colorize(50)}\n",
