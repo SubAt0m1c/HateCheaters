@@ -22,15 +22,15 @@ object BetterPartyFinder : Module(
     description = "Provides stats when a player joins your party. Includes autokick functionality. /hcitems to configure important items list.",
     category = Category.DUNGEON
 ) {
-    private val defaultSounds = arrayListOf("mob.blaze.hit", "random.pop", "random.orb", "random.break", "mob.guardian.land.hit", "Custom")
+    private val defaultSounds = arrayListOf("note.pling", "random.pop", "random.orb", "random.break", "mob.guardian.land.hit", "Custom")
 
     private val fullPartyNotification by BooleanSetting("Full Party Notification", default = true, description = "Notifies you when your party is full.")
     private val joinSound by BooleanSetting("Party Join Sound", default = false, description = "Plays a sound when someone joins your party.")
     private val soundDropdown by DropdownSetting("Sound Dropdown")
     private val waitForKick by BooleanSetting("Wait for Kick", default = true, description = "Waits to see if the player will be kicked before playing the sound.").withDependency { joinSound && soundDropdown }
 
-    private val sound by SelectorSetting("Click Sound", "mob.blaze.hit", defaultSounds, description = "Which sound to play when you click in a terminal.").withDependency { joinSound && soundDropdown}
-    private val customSound by StringSetting("Custom Click Sound", "mob.blaze.hit",
+    private val sound by SelectorSetting("Click Sound", "note.pling", defaultSounds, description = "Which sound to play when you click in a terminal.").withDependency { joinSound && soundDropdown}
+    private val customSound by StringSetting("Custom Click Sound", "note.pling",
         description = "Name of a custom sound to play. This is used when Custom is selected in the Sound setting.", length = 32
     ).withDependency { sound == defaultSounds.size - 1 && joinSound && soundDropdown }
     private val volume by NumberSetting("Click Volume", 1f, 0, 1, .01f, description = "Volume of the sound.").withDependency { joinSound && soundDropdown }
