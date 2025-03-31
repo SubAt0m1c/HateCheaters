@@ -15,9 +15,9 @@ import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorizeNumber
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.commas
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.mcWidth
-import com.github.subat0m1c.hatecheaters.utils.apiutils.DataUtils.colorName
-import com.github.subat0m1c.hatecheaters.utils.apiutils.DataUtils.maxMagicalPower
-import com.github.subat0m1c.hatecheaters.utils.apiutils.DataUtils.petItem
+import com.github.subat0m1c.hatecheaters.utils.ItemUtils.colorName
+import com.github.subat0m1c.hatecheaters.utils.ItemUtils.maxMagicalPower
+import com.github.subat0m1c.hatecheaters.utils.ItemUtils.petItem
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerInfo
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.cappedSkillAverage
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.cataLevel
@@ -58,9 +58,6 @@ object Overview: Pages.PVPage("Overview") {
         }
     }
 
-    private const val SKYCRYPT_TEXT = "Skycrypt cache only!"
-    private val skycryptPosition = lineY + mainHeight - (getMCTextHeight() * 2.5) / 2
-
     private val data: List<String> by profileLazy {
         val mmComps = profile.dungeons.dungeonTypes.mastermode.tierComps.without("total").values.sum()
         val floorComps = profile.dungeons.dungeonTypes.catacombs.tierComps.without("total").values.sum()
@@ -93,8 +90,6 @@ object Overview: Pages.PVPage("Overview") {
         }
 
         playerEntity?.let { drawPlayerOnScreen(playerX.toDouble(), lineY + mainHeight / 2.0 + 175, 175, Mouse.getX() + 325, Mouse.getY() - 225, it) }
-
-        if (player.skyCrypt) centeredText(SKYCRYPT_TEXT, mainCenterX, skycryptPosition, 2.5, Color.RED)
         dropDown.draw()
     }
 

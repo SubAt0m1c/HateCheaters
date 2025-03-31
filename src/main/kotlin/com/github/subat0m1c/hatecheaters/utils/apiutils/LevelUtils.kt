@@ -140,9 +140,9 @@ object LevelUtils {
         else       -> ProfileViewer.currentTheme.font
     }
 
-    private val slayerLevels: Array<Long> = arrayOf(5, 10, 185, 800, 4000, 15000, 85000, 300000, 600000)
+    private val slayerLevels: Array<Long> = arrayOf(5, 10, 185, 800, 4000, 15000, 80000, 300000, 600000)
 
-    private val vampireLevels: Array<Long> = arrayOf(20, 55, 165, 640, 1560)
+    private val vampireLevels: Array<Long> = arrayOf(20, 55, 165, 600, 1560)
 
     fun getSlayerCap(slayer: String): Int = if (slayer == "vampire") 5 else 9
 }

@@ -31,7 +31,7 @@ object CheckUpdate {
     }
 
     private fun checkVersion(jsonResponse: String) {
-        val latestVersion = json.decodeFromString<ReleaseInfo>(jsonResponse).tagName
+        val (latestVersion, name, notes) = json.decodeFromString<ReleaseInfo>(jsonResponse)
 
         val isNewVersionAvailable = compareVersions(latestVersion, currentVersion)
         runIn(40) {
@@ -43,11 +43,14 @@ object CheckUpdate {
                isNewVersionAvailable > 0 -> {
                    ChatUtils.chatConstructor {
                        displayText(getChatBreak())
-                       displayText("§bH§3C §8»§r Update available! ($currentVersion → $latestVersion) ")
+                       displayText("§bHate§3Cheaters§r Update available! ($currentVersion → $latestVersion)")
+                       displayText()
+                       hoverText("Release: $name, release notes: §e§lHOVER§r", listOf(formatNotes(notes)))
+                       displayText()
                        clickText(
-                           "Click here to open the latest release link!",
+                           "Click §e§lHERE§r to open the latest release link!",
                            "https://github.com/SubAt0m1c/HateCheaters/releases/tag/$latestVersion",
-                           listOf("Click to open the release link."),
+                           listOf("§e§lCLICK§r to open the release link."),
                            ClickEvent.Action.OPEN_URL
                        )
                        displayText(getChatBreak())
@@ -59,9 +62,17 @@ object CheckUpdate {
         }
     }
 
+    private fun formatNotes(notes: String) = notes
+        .replace("\r", "")
+        .replace("#", "§l")
+
     @Serializable
     data class ReleaseInfo(
         @SerialName("tag_name")
-        val tagName: String
+        val tagName: String,
+        @SerialName("name")
+        val name: String,
+        @SerialName("body")
+        val notes: String
     )
 }

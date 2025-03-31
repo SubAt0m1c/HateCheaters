@@ -17,7 +17,7 @@ object HateCheatersModule : Module(
 ) {
     val logJson by BooleanSetting("Log Json", default = false, description = "Logs requested json data to Config/hatecheaters/json_logs")
     val debugMessages by BooleanSetting("Debug messages", default = false, description = "Prints debug messages in your chat instead of needing to open logs.")
-    val checkUpdates by BooleanSetting("Update Checker", default = true, description = "Checks GitHub for latest HateCheaters releases and notifies you if you are on an old version!")
+    private val checkUpdates by BooleanSetting("Update Checker", default = true, description = "Checks GitHub for latest HateCheaters releases and notifies you if you are on an old version!")
     val server by StringSetting("Api Server", default = "default", hidden = false, description = "Server to be used to connect to the api. set to \"default\" to use the default. Only change if you know what you're doing. format: \"subdomain.domain.tld\"")
 
     private var checkedForUpdate = false
@@ -27,9 +27,7 @@ object HateCheatersModule : Module(
             if (checkedForUpdate || !checkUpdates) destroyExecutor()
             if (!LocationUtils.isInSkyblock) return@execute
             checkedForUpdate = true
-            launch {
-                CheckUpdate.lookForUpdates()
-            }
+            CheckUpdate.lookForUpdates()
         }
     }
 }

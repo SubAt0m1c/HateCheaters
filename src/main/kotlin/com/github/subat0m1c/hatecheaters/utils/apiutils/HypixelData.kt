@@ -1,5 +1,8 @@
 package com.github.subat0m1c.hatecheaters.utils.apiutils
 
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorStat
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.getMagicalPower
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -12,6 +15,7 @@ import net.minecraft.nbt.CompressedStreamTools
 import net.minecraftforge.common.util.Constants
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
+import kotlin.math.ceil
 import kotlin.math.floor
 
 //todo all the missing data. right now its about enough for what i currently need
@@ -21,7 +25,6 @@ object HypixelData {
         val profileData: ProfilesData,
         val uuid: String,
         val name: String,
-        val skyCrypt: Boolean = false
     ) {
         fun profileOrSelected(profileName: String? = null): Profiles? =
            profileData.profiles.find { it.cuteName.lowercase() == profileName?.lowercase() } ?: profileData.profiles.find { it.selected }
@@ -29,6 +32,14 @@ object HypixelData {
         inline val memberData get() = profileData.profiles.find { it.selected }?.members?.get(uuid)
 
         @Transient val profileList: List<Pair<String, String>> = profileData.profiles.map { it.cuteName to it.gameMode }
+
+        companion object {
+            val dummyPlayer = PlayerInfo(
+                uuid = "BAH",
+                name = "???",
+                profileData = ProfilesData()
+            )
+        }
     }
 
     @Serializable
@@ -97,6 +108,10 @@ object HypixelData {
         }?.values?.fold(0) { acc, pair ->
             acc + pair.second
         }?.let { it + if (rift.access.consumedPrism) 11 else 0 } ?: 0
+
+        @Transient val tunings = accessoryBagStorage.tuning.currentTunings.map { "${it.key.replace("_", " ").capitalizeWords().colorStat}§7: ${it.value.colorize(
+            ceil(magicalPower /10.0)
+        )}" }
 
         @Transient val inventoryApi = inventory.eChestContents.itemStacks.isNotEmpty()
 

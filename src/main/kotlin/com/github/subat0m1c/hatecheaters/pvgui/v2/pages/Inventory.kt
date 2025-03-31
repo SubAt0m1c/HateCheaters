@@ -10,7 +10,6 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.fixFirstNine
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getSubset
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.insertItemsAtIndexes
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorStat
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.getMagicalPower
 import me.odinmain.utils.render.*
@@ -143,7 +142,7 @@ object Inventory: Pages.PVPage("Inventory") {
         private val talis by profileLazy { profile.inventory.bagContents["talisman_bag"]?.itemStacks?.filterNotNull()?.sortedByDescending { it.getMagicalPower } ?: emptyList() }
         private val magicPower by profileLazy { profile.magicalPower }
         private val mp by profileLazy { "§aSelected Power: §6${profile.accessoryBagStorage.selectedPower?.capitalizeWords() ?: "§cNone!"}" }
-        private val tunings by profileLazy { profile.accessoryBagStorage.tuning.currentTunings.map { "${it.key.replace("_", " ").capitalizeWords().colorStat}§7: ${it.value.colorize(ceil(magicPower/10.0))}" } }
+        private val tunings by profileLazy { profile.tunings }
         private val abiPhone by profileLazy { "§5Abicase: ${floor(profile.crimsonIsle.abiphone.activeContacts.size/2.0).toInt()}" }
         private val riftPrism by profileLazy { "§dRift Prism: ${ if (profile.rift.access.consumedPrism) "§aObtained" else "§cMissing"}" }
 

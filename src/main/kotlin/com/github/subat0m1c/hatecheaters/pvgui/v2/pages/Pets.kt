@@ -6,8 +6,8 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.playClickSound
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getSubset
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.buttons
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.profileLazy
-import com.github.subat0m1c.hatecheaters.utils.apiutils.DataUtils.colorName
-import com.github.subat0m1c.hatecheaters.utils.apiutils.DataUtils.petItem
+import com.github.subat0m1c.hatecheaters.utils.ItemUtils.colorName
+import com.github.subat0m1c.hatecheaters.utils.ItemUtils.petItem
 import me.odinmain.utils.render.Box
 import me.odinmain.utils.render.roundedRectangle
 import kotlin.math.ceil
