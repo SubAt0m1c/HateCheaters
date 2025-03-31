@@ -26,10 +26,10 @@ object BetterPartyFinder : Module(
 
     private val fullPartyNotification by BooleanSetting("Full Party Notification", default = true, description = "Notifies you when your party is full.")
     private val joinSound by BooleanSetting("Party Join Sound", default = false, description = "Plays a sound when someone joins your party.")
+
     private val soundDropdown by DropdownSetting("Sound Dropdown")
     private val waitForKick by BooleanSetting("Wait for Kick", default = true, description = "Waits to see if the player will be kicked before playing the sound.").withDependency { joinSound && soundDropdown }
-
-    private val sound by SelectorSetting("Click Sound", "note.pling", defaultSounds, description = "Which sound to play when you click in a terminal.").withDependency { joinSound && soundDropdown}
+    private val sound by SelectorSetting("Click Sound", "note.pling", defaultSounds, description = "Which sound to play").withDependency { joinSound && soundDropdown}
     private val customSound by StringSetting("Custom Click Sound", "note.pling",
         description = "Name of a custom sound to play. This is used when Custom is selected in the Sound setting.", length = 32
     ).withDependency { sound == defaultSounds.size - 1 && joinSound && soundDropdown }
@@ -50,8 +50,8 @@ object BetterPartyFinder : Module(
     private val informkicked by BooleanSetting("Inform Kicked", default = false, description = "Informs the player why they were kicked.").withDependency { autoKickDropdwon }
     private val autokicktoggle by BooleanSetting("Auto Kick", default = false, description = "Automatically kicks players who don't meet requirements.").withDependency { autoKickDropdwon }
     private val timeKick by BooleanSetting("Check Time", default = false, description = "Kicks for time").withDependency { autoKickDropdwon && autokicktoggle }
-    private val timeMinutes by NumberSetting("Minutes", 5, 0, 10, description = "Time minimum in minutes.", unit = "m").withDependency { autoKickDropdwon && autokicktoggle }
-    private val timeSeconds by NumberSetting("Seconds", 0, 0, 60, description = "Time minimum in seconds.", unit = "s").withDependency { autoKickDropdwon && autokicktoggle }
+    private val timeMinutes by NumberSetting("Minutes", 5, 0, 10, description = "Time minimum in minutes.", unit = "m").withDependency { timeKick && autoKickDropdwon && autokicktoggle }
+    private val timeSeconds by NumberSetting("Seconds", 0, 0, 60, description = "Time minimum in seconds.", unit = "s").withDependency { timeKick && autoKickDropdwon && autokicktoggle }
     private inline val timeReq get() = timeMinutes * 60 + timeSeconds
 
     private val secretKick by BooleanSetting("Check Secrets", default = true, description = "Kicks for secrets").withDependency { autoKickDropdwon && autokicktoggle }
