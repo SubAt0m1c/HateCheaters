@@ -126,7 +126,7 @@ object DungeonStats {
                 mmpbs.map { "§cFloor ${it.first} §7| §2${it.second?.let { secondsToMinutes(it * 0.001) } ?: "§o§4None!"}" }
             )
 
-            if (importantItems.isNotEmpty() && allItems.isNotEmpty()) hoverText(
+            if (importantItems.isNotEmpty() && currentProfile.inventoryApi) hoverText(
                 "\n\n§3| §5Important Items  §e§lHOVER",
                 items.map { "§b${it.first.capitalizeWords()} §7-> ${if (it.second) "§a✔" else "§4§l✖"}" }
             )

@@ -101,7 +101,7 @@ object LevelUtils {
         "taming"       -> ProfileViewer.currentTheme.font
         "mining"       -> Color.GRAY
         "foraging"     -> Color.DARK_GREEN
-        "enchanting"   -> Color.MAGENTA
+        "enchanting"   -> Color(170, 0, 170)
         "carpentry"    -> Color("A52A2AFF")
         "farming"      -> Color.GREEN
         "combat"       -> Color.RED
@@ -133,7 +133,7 @@ object LevelUtils {
     fun getSlayerColor(slayer: String): Color = when (slayer) {
         "wolf"     -> ProfileViewer.currentTheme.font
         "zombie"   -> Color.DARK_GREEN
-        "enderman" -> Color.MAGENTA
+        "enderman" -> Color(170, 0, 170)
         "vampire"  -> Color.RED
         "blaze"    -> Color.ORANGE
         "spider"   -> Color.BLACK

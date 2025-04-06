@@ -86,13 +86,12 @@ object BetterPartyFinder : Module(
     val importantItems: MutableList<String> by ListSetting("itememsmemsmsms", mutableListOf())
 
     init {
-        onMessage(Regex("Party Finder > Your dungeon group is full! Click here to warp to the dungeon!"), {enabled && fullPartyNotification}) {
+        onMessage(Regex("Party Finder > Your dungeon group is full! Click here to warp to the dungeon!"), { enabled && fullPartyNotification }) {
             alert("§eYour party is full!")
         }
 
-        onMessage(pfRegex, { enabled && statsDisplay && !autokicktoggle}) {
-            val name = it.groupValues[1].takeUnless { it == mc.session.username } ?: return@onMessage
-
+        onMessage(pfRegex, { enabled && statsDisplay && !autokicktoggle }) { matchResult ->
+            val name = matchResult.groupValues[1].takeUnless { it == mc.session.username } ?: return@onMessage
             if (joinSound) playCustomSound()
 
             launch {
@@ -110,8 +109,8 @@ object BetterPartyFinder : Module(
         }
 
 
-        onMessage(pfRegex, { enabled && autokicktoggle}) {
-            val name = it.groupValues[1].takeUnless { it == mc.session.username } ?: return@onMessage
+        onMessage(pfRegex, { enabled && autokicktoggle }) { matchResult ->
+            val name = matchResult.groupValues[1].takeUnless { it == mc.session.username } ?: return@onMessage
             Logger.info("$name is being searched")
 
             if (kickedList.contains(name) && kickCache) {
