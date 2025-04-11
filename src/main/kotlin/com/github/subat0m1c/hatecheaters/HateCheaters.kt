@@ -1,6 +1,6 @@
 package com.github.subat0m1c.hatecheaters
 
-import com.github.subat0m1c.hatecheaters.utils.CheckUpdate
+import com.github.subat0m1c.hatecheaters.commands.CommandRegistry
 import com.github.subat0m1c.hatecheaters.commands.impl.PVCommand
 import com.github.subat0m1c.hatecheaters.modules.BetterPartyFinder
 import com.github.subat0m1c.hatecheaters.modules.ClearSecrets
@@ -12,7 +12,6 @@ import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import com.github.subat0m1c.hatecheaters.utils.OdinCheck.checkIfOdinIsLoaded
 import kotlinx.coroutines.*
 import me.odinmain.OdinMain.mc
-import com.github.subat0m1c.hatecheaters.commands.CommandRegistry
 import me.odinmain.features.ModuleManager
 import net.minecraft.client.gui.GuiScreen
 import net.minecraftforge.common.MinecraftForge

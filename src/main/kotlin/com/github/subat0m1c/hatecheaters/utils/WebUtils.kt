@@ -2,18 +2,23 @@ package com.github.subat0m1c.hatecheaters.utils
 
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
+import com.github.subat0m1c.hatecheaters.utils.SSLUtils.createSslContext
+import com.github.subat0m1c.hatecheaters.utils.SSLUtils.getTrustManager
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSkyblockProfile
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.json
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import okhttp3.Callback
+import okhttp3.Dispatcher
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okio.IOException
 import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
+import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 object WebUtils {
 
@@ -22,16 +27,6 @@ object WebUtils {
         enum class EndPoints(val append: String) {
             SECRETS("secrets/"),
             PROFILE("get/"),
-        }
-    }
-
-    object Queue {
-        private val mutex = Mutex()
-
-        suspend fun <T> queue(block: suspend () -> T): T = mutex.withLock {
-            val result = block()
-            delay(100)
-            return result
         }
     }
 
@@ -55,41 +50,70 @@ object WebUtils {
         )
     }
 
-    suspend fun getInputStream(url: String): Result<InputStream> = withContext(Dispatchers.IO) { Queue.queue { runInputStream(url) } }
-
-    private fun runInputStream(url: String): Result<InputStream> = runCatching {
+    suspend fun getInputStream(url: String): Result<InputStream> {
         Logger.info(url)
-        val connection = setupHTTPConnection(URL(url))
+        val request = Request.Builder().url(url).build()
 
-        if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-            return@runCatching connection.inputStream.also { Logger.info("Successfully fetched data for $url") }
-        } else {
-            val response = connection.responseMessage
-            Logger.warning("Failed to fetch data for $url: $response")
-            return Result.failure(InputStreamException("Failed to establish input stream for $url: $response"))
-        }
+        clientCall(request).fold(
+            onSuccess = { return Result.success(it) },
+            onFailure = { e -> return Result.failure<InputStream>(e).also { Logger.warning("Failed to get input stream. Error: ${e.message}") } }
+        )
     }
 
     private const val USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
 
-    private fun setupHTTPConnection(url: URL) = (url.openConnection() as HttpURLConnection).apply {
-        requestMethod = "GET"
-        readTimeout = 10000
-        connectTimeout = 5000
-        setRequestProperty("Accept", "application/json")
-        setRequestProperty("User-Agent", USER_AGENT)
+    suspend fun getUUIDbyName(name: String): Result<MojangData> {
+        val request = Request.Builder()
+            .url("https://api.mojang.com/users/profiles/minecraft/$name")
+            .build()
+
+        clientCall(request).fold(
+            onSuccess = { return Result.success(json.decodeFromString<MojangData>(it.bufferedReader().use { it.readText() })) },
+            onFailure = { e -> return Result.failure<MojangData>(e).also { Logger.warning("Failed to get uuid stream. Error: ${e.message}") } }
+        )
     }
 
-    fun getUUIDbyName(name: String): Result<MojangData> = runCatching {
-        val connection = setupHTTPConnection(URL("https://api.mojang.com/users/profiles/minecraft/$name"))
+    private suspend fun clientCall(request: Request): Result<InputStream> = suspendCoroutine { cont ->
+        client.newCall(request).enqueue(
+            object : Callback {
+                override fun onFailure(call: okhttp3.Call, e: IOException) = cont.resume(Result.failure(e))
 
-        if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-            json.decodeFromString(connection.inputStream.bufferedReader().use {it.readText()})
-        } else {
-            Logger.warning("Failed to get uuid for player $name")
-            return Result.failure(FailedToGetUUIDException("Failed to get uuid. ($name may not exist!) Error: ${connection.responseMessage}"))
+                override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) = try {
+                    if (response.isSuccessful) {
+                        response.body?.let {
+                            Result.success(it.byteStream())
+                        } ?: Result.failure(InputStreamException("Failed to establish input stream for ${request.url}: ${response.message}"))
+                    } else {
+                        Result.failure(InputStreamException("Failed to establish input stream for ${request.url}: ${response.message}"))
+                    }
+                } catch (e: Exception) {
+                    Result.failure(e)
+                }.let { cont.resume(it) }
+            }
+        )
+
+    }
+
+    val client = OkHttpClient.Builder().apply {
+        sslSocketFactory(createSslContext().socketFactory, getTrustManager())
+
+        dispatcher(Dispatcher().apply {
+            maxRequests = 1
+            maxRequestsPerHost = 1
+        })
+
+        readTimeout(10, TimeUnit.SECONDS)
+        connectTimeout(5, TimeUnit.SECONDS)
+        writeTimeout(10, TimeUnit.SECONDS)
+
+        addInterceptor { chain ->
+            chain.request().newBuilder()
+                .header("Accept", "application/json")
+                .header("User-Agent", USER_AGENT)
+                .build()
+                .let { chain.proceed(it) }
         }
-    }
+    }.build()
 
     @Serializable
     data class MojangData(
@@ -98,6 +122,5 @@ object WebUtils {
         val uuid: String
     )
 
-    class FailedToGetUUIDException(message: String) : Exception(message)
     class InputStreamException(message: String) : Exception(message)
 }

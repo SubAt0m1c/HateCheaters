@@ -11,6 +11,7 @@ import kotlinx.coroutines.async
 import me.odinmain.features.Category
 import me.odinmain.features.Module
 import me.odinmain.utils.equalsOneOf
+import me.odinmain.utils.noControlCodes
 import me.odinmain.utils.runIn
 import me.odinmain.utils.skyblock.dungeon.DungeonPlayer
 import me.odinmain.utils.skyblock.dungeon.DungeonUtils
@@ -53,7 +54,7 @@ object ClearSecrets : Module(
                     }.let {
                         chatConstructor {
                             it.forEachIndexed { i, text ->
-                                clickText("${if (i != 0) "\n" else ""}$text", "/hcdev writetoclipboard $text", listOf("§e§lCLICK §r§7to copy!"))
+                                clickText("${if (i != 0) "\n" else ""}$text", "/hcdev writetoclipboard ${text.noControlCodes}", listOf("§e§lCLICK §r§7to copy!"))
                             }
                         }.print()
                     }

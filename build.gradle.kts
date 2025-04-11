@@ -120,12 +120,15 @@ dependencies {
     minecraft("com.mojang:minecraft:1.8.9")
     mappings("de.oceanlabs.mcp:mcp_stable:22-1.8.9")
     forge("net.minecraftforge:forge:1.8.9-11.15.1.2318-1.8.9")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation(files("build/resources/Odin/${requiredOdin}"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
     shadowImpl("org.apache.logging.log4j:log4j-core:2.20.0")
     shadowImpl("org.apache.logging.log4j:log4j-api:2.20.0")
+
+    shadowImpl("com.squareup.okhttp3:okhttp:4.9.3")
+    shadowImpl("com.squareup.okio:okio:3.4.0")
 
     shadowImpl(kotlin("stdlib-jdk8"))
 
