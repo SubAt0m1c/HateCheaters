@@ -1,7 +1,7 @@
 package com.github.subat0m1c.hatecheaters.pvgui.v2
 
-import com.github.subat0m1c.hatecheaters.modules.ProfileViewer
-import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.scale
+import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer
+import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer.scale
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui.loadText
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui.playerData
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui.profileName
@@ -16,8 +16,10 @@ import me.odinmain.OdinMain.mc
 import me.odinmain.utils.minus
 import me.odinmain.utils.render.*
 import me.odinmain.utils.skyblock.PlayerUtils.playLoudSound
+import me.odinmain.utils.ui.Colors
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.GlStateManager.translate
 
 object Pages {
 
@@ -69,7 +71,7 @@ object Pages {
         // todo make vertical button dsl for this
         fun preDraw() {
             GlStateManager.pushMatrix()
-            translate(sx, sy, 0)
+            translate(sx.toDouble(), sy.toDouble(), 0.0)
             roundedRectangle(0, 0, totalWidth, totalHeight, ct.main, ct.roundness, 1f)
 
             roundedRectangle(lineX, lineY, ot, totalHeight-lineY*2, ct.line)
@@ -110,7 +112,7 @@ object Pages {
     /**
      * The "Centered" parameter in [mcText()] does not center vertically, thus this should be used instead.
      */
-    fun centeredText(text: String, x: Number, y: Number, scale: Number = 1f, color: Color = Color.WHITE, shadow: Boolean = true) =
+    fun centeredText(text: String, x: Number, y: Number, scale: Number = 1f, color: Color = Colors.WHITE, shadow: Boolean = true) =
         mcText(text, x - (text.mcWidth * scale.toDouble() / 2), y - (getMCTextHeight() * scale.toDouble()) / 2, scale, color, shadow, false)
 
     fun playClickSound() = playLoudSound("gui.button.press", 0.5f, 1.1f)

@@ -1,7 +1,6 @@
-package com.github.subat0m1c.hatecheaters.modules
+package com.github.subat0m1c.hatecheaters.modules.skyblock
 
 import com.github.subat0m1c.hatecheaters.utils.CheckUpdate
-import me.odinmain.features.Category
 import me.odinmain.features.Module
 import me.odinmain.features.settings.AlwaysActive
 import me.odinmain.features.settings.impl.BooleanSetting
@@ -11,7 +10,6 @@ import me.odinmain.features.settings.impl.StringSetting
 object HateCheatersModule : Module(
     name = "Hate Cheaters",
     description = "Hate cheaters nonsense",
-    category = Category.SKYBLOCK
 ) {
     val logJson by BooleanSetting("Log Json", default = false, description = "Logs requested json data to Config/hatecheaters/json_logs")
     val debugMessages by BooleanSetting("Debug messages", default = false, description = "Prints debug messages in your chat instead of needing to open logs.")

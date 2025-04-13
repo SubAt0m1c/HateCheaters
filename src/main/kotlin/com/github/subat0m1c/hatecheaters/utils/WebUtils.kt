@@ -10,10 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import okhttp3.Callback
-import okhttp3.Dispatcher
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import okhttp3.*
 import okio.IOException
 import java.io.InputStream
 import java.util.concurrent.TimeUnit
@@ -76,9 +73,9 @@ object WebUtils {
     private suspend fun clientCall(request: Request): Result<InputStream> = suspendCoroutine { cont ->
         client.newCall(request).enqueue(
             object : Callback {
-                override fun onFailure(call: okhttp3.Call, e: IOException) = cont.resume(Result.failure(e))
+                override fun onFailure(call: Call, e: IOException) = cont.resume(Result.failure(e))
 
-                override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) = try {
+                override fun onResponse(call: Call, response: Response) = try {
                     if (response.isSuccessful) {
                         response.body?.let {
                             Result.success(it.byteStream())

@@ -1,4 +1,4 @@
-package com.github.subat0m1c.hatecheaters.modules
+package com.github.subat0m1c.hatecheaters.modules.dungeons
 
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launchDeferred
@@ -8,8 +8,8 @@ import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSecrets
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
-import me.odinmain.features.Category
 import me.odinmain.features.Module
+import me.odinmain.features.settings.impl.BooleanSetting
 import me.odinmain.utils.equalsOneOf
 import me.odinmain.utils.noControlCodes
 import me.odinmain.utils.runIn
@@ -20,8 +20,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 object ClearSecrets : Module(
     "Clear Secrets",
     description = "Displays each team members secrets on run complete.",
-    category = Category.DUNGEON
 ) {
+    private val compactMessage by BooleanSetting("Compact Message", false, description = "Shows teammate data in one line instead of multiple lines.")
     private val secretMap = hashMapOf<Teammate, Deferred<Long>>()
     private inline val teammates get() = DungeonUtils.dungeonTeammatesNoSelf.map { it.asTeammate() }
 
@@ -50,11 +50,13 @@ object ClearSecrets : Module(
                         val old = v.await()
 
                         val dif = (new - old).takeUnless { (-1L).equalsOneOf(old, new) }?.also { if (it !in 0..40) modMessage("Assuming something went wrong. Data: $old -> $new") }
-                        "§bH§3C §7|| §d${k.name} §7-> §fSecrets: §6${dif ?: "§c§l???§r"}" // §7, §fDeaths: §c${k.dungeonPlayer.deaths}" // this doesnt work atm, todo: fix odin
+                        if (compactMessage) "§d${k.name}: §6${dif ?: "§c§l???§7"}"
+                        else "§bH§3C §7|| §d${k.name} §7-> §fSecrets: §6${dif ?: "§c§l???§r"}" // §7, §fDeaths: §c${k.dungeonPlayer.deaths}" // this doesnt work atm, todo: fix odin
                     }.let {
                         chatConstructor {
                             it.forEachIndexed { i, text ->
-                                clickText("${if (i != 0) "\n" else ""}$text", "/hcdev writetoclipboard ${text.noControlCodes}", listOf("§e§lCLICK §r§7to copy!"))
+                                if (compactMessage) clickText("${if (i == 0) "§bH§3C §7|| " else ", "}$text", "/hcdev writetoclipboard ${text.noControlCodes}", listOf("§e§lCLICK §r§7to copy!"))
+                                else clickText("${if (i != 0) "\n" else ""}$text", "/hcdev writetoclipboard ${text.noControlCodes}", listOf("§e§lCLICK §r§7to copy!"))
                             }
                         }.print()
                     }

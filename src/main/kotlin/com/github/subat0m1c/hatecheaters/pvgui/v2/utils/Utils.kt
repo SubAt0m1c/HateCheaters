@@ -3,11 +3,11 @@ package com.github.subat0m1c.hatecheaters.pvgui.v2.utils
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.render.Box
-import me.odinmain.utils.render.Color
 import me.odinmain.utils.render.RenderUtils.bind
-import me.odinmain.utils.render.translate
+import me.odinmain.utils.ui.Colors
 import net.minecraft.client.gui.inventory.GuiInventory.drawEntityOnScreen
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.GlStateManager.translate
 import net.minecraft.entity.EntityLivingBase
 import org.lwjgl.input.Mouse
 
@@ -69,9 +69,9 @@ object Utils {
 
     fun drawPlayerOnScreen(x: Double, y: Double, scale: Int, mouseX: Int, mouseY: Int, renderPlayer: EntityLivingBase) {
         GlStateManager.pushMatrix()
-        Color.WHITE.bind()
+        Colors.WHITE.bind()
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
-        translate(x, y, 200f)
+        translate(x, y, 200.0)
         drawEntityOnScreen(0, 0, scale, ((x*2)-mouseX).toFloat(), (mouseY-y).toFloat(), renderPlayer)
         GlStateManager.popMatrix()
     }

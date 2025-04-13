@@ -1,6 +1,6 @@
 package com.github.subat0m1c.hatecheaters.utils.apiutils
 
-import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
+import com.github.subat0m1c.hatecheaters.modules.skyblock.HateCheatersModule
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.logJsonToFile
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import com.github.subat0m1c.hatecheaters.utils.WebUtils.Server

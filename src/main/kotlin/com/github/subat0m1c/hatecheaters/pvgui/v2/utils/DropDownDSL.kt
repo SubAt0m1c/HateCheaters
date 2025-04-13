@@ -8,6 +8,7 @@ import me.odinmain.utils.minus
 import me.odinmain.utils.plus
 import me.odinmain.utils.render.*
 import me.odinmain.utils.times
+import me.odinmain.utils.ui.Colors
 
 fun <T> dropDownMenu(
     box: Box,
@@ -58,11 +59,11 @@ class DropDownDSL <T> (
 
     fun draw() {
         roundedRectangle(box.x, box.y, box.w, box.h, color, radius, edgeSoftness)
-        mcText(selectedText(selected), (box.x + box.w/2), (box.y + (box.h/2))-(getMCTextHeight() *textScale)/2, textScale.toFloat(), Color.WHITE)
+        mcText(selectedText(selected), (box.x + box.w/2), (box.y + (box.h/2))-(getMCTextHeight() *textScale)/2, textScale.toFloat(), Colors.WHITE)
         trueOptions.takeIf { extended }?.forEachIndexed { i, entry ->
             val y = box.y + ((box.h+box.h/8) * (i+1)) + (box.h/8)
             roundedRectangle(box.x, y, box.w, box.h, color, radius, edgeSoftness)
-            mcText(displayText(entry), (box.x + box.w/2), (y + (box.h/2))-(getMCTextHeight() *textScale)/2, textScale.toFloat(), Color.WHITE)
+            mcText(displayText(entry), (box.x + box.w/2), (y + (box.h/2))-(getMCTextHeight() *textScale)/2, textScale.toFloat(), Colors.WHITE)
         }
     }
 

@@ -30,6 +30,7 @@ import me.odinmain.utils.render.Color
 import me.odinmain.utils.render.getMCTextHeight
 import me.odinmain.utils.render.roundedRectangle
 import me.odinmain.utils.round
+import me.odinmain.utils.ui.Colors
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.client.resources.DefaultPlayerSkin
@@ -82,7 +83,7 @@ object Overview: Pages.PVPage("Overview") {
     override fun draw() {
         roundedRectangle(mainCenterX-((mainWidth*0.8) / 2), mainHeight * 0.1, mainWidth * 0.8, ot, ct.line)
 
-        centeredText(player.name, mainCenterX, textCenterY, scale = 5, color = Color.WHITE)
+        centeredText(player.name, mainCenterX, textCenterY, scale = 5, color = Colors.WHITE)
 
         data.forEachIndexed { i, text ->
             val y = (mainHeight * 0.1 + lineY)+floor(getMCTextHeight()*3.5 + lineY*2) + entryHeight*i + entryHeight/2

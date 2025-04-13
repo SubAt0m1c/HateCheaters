@@ -1,4 +1,4 @@
-package com.github.subat0m1c.hatecheaters.modules
+package com.github.subat0m1c.hatecheaters.modules.dungeons
 
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
 import com.github.subat0m1c.hatecheaters.utils.DungeonStats.displayDungeonData
@@ -8,7 +8,6 @@ import com.github.subat0m1c.hatecheaters.utils.ChatUtils.secondsToMinutes
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.witherImpactRegex
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSkyblockProfile
-import me.odinmain.features.Category
 import me.odinmain.features.Module
 import me.odinmain.features.settings.Setting.Companion.withDependency
 import me.odinmain.features.settings.impl.*
@@ -20,7 +19,6 @@ import kotlin.collections.HashSet
 object BetterPartyFinder : Module(
     name = "Better Party Finder",
     description = "Provides stats when a player joins your party. Includes autokick functionality. /hcitems to configure important items list.",
-    category = Category.DUNGEON
 ) {
     private val defaultSounds = arrayListOf("note.pling", "random.pop", "random.orb", "random.break", "mob.guardian.land.hit", "Custom")
 
@@ -29,7 +27,7 @@ object BetterPartyFinder : Module(
 
     private val soundDropdown by DropdownSetting("Sound Dropdown")
     private val waitForKick by BooleanSetting("Wait for Kick", default = true, description = "Waits to see if the player will be kicked before playing the sound.").withDependency { joinSound && soundDropdown }
-    private val sound by SelectorSetting("Click Sound", "note.pling", defaultSounds, description = "Which sound to play").withDependency { joinSound && soundDropdown}
+    private val sound by SelectorSetting("Click Sound", "note.pling", defaultSounds, description = "Which sound to play").withDependency { joinSound && soundDropdown }
     private val customSound by StringSetting("Custom Click Sound", "note.pling",
         description = "Name of a custom sound to play. This is used when Custom is selected in the Sound setting.", length = 32
     ).withDependency { sound == defaultSounds.size - 1 && joinSound && soundDropdown }
@@ -43,7 +41,7 @@ object BetterPartyFinder : Module(
     private val statsDisplay by BooleanSetting("Stats display", default = true, description = "Displays stats of players who join your party")
 
     private val floors = arrayListOf("Entrance", "Floor 1", "Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6", "Floor 7")
-    private val floor by SelectorSetting("Floor", defaultSelected = "Floor 7", floors, false, description = "Determines which floor to check pb.")
+    private val floor by SelectorSetting("Floor", defaultSelected = "Floor 7", floors, description = "Determines which floor to check pb.")
     private val mmToggle by BooleanSetting("Master Mode", true, description = "Use master mode times")
 
     private val autoKickDropdwon by DropdownSetting("Auto Kick Dropdown", default = true)
@@ -137,15 +135,17 @@ object BetterPartyFinder : Module(
                 dungeon.fastestTimeSPlus["$floor"]?.times(0.001)?.let {
                     if (!timeKick) return@let
                     if (it > (timeReq)) {
-                        kickedReasons.add("Did not meet time req for ${if (mmToggle) "m" else "f"}${floor}: ${secondsToMinutes(it)}/${secondsToMinutes(timeReq)}")
+                        kickedReasons.add("Did not meet time req for ${if (mmToggle) "m" else "f"}$floor: ${secondsToMinutes(it)}/${secondsToMinutes(
+                            timeReq
+                        )}")
                     }
-                } ?: kickedReasons.add("Couldn't confirm completion status for ${if (mmToggle) "m" else "f"}${floor}")
+                } ?: kickedReasons.add("Couldn't confirm completion status for ${if (mmToggle) "m" else "f"}$floor")
 
                 val secretCount = currentProfile.dungeons.secrets
                 secretCount.let {
                     if (!secretKick) return@let
                     if (it < (secretsreq * 1000)) {
-                        kickedReasons.add("Did not meet secret req: ${it}/${secretsreq}")
+                        kickedReasons.add("Did not meet secret req: ${it}/$secretsreq")
                     }
                 }
 
@@ -154,7 +154,7 @@ object BetterPartyFinder : Module(
                 ((secretCount.toDouble()/(mmComps + floorComps).toDouble()).toFloat()).let {
                     if (!savgKick) return@let
                     if (it < savgreq) {
-                        kickedReasons.add("Did not meet savg req: ${it.round(2)}/${savgreq}")
+                        kickedReasons.add("Did not meet savg req: ${it.round(2)}/$savgreq")
                     }
                 }
 
@@ -167,7 +167,7 @@ object BetterPartyFinder : Module(
                         if (witherImpactKick && currentProfile.allItems.none { it?.lore?.any { it.noControlCodes.matches(witherImpactRegex) } == true }) kickedReasons.add("Did not have wither impact")
 
                         val mp = currentProfile.magicalPower
-                        if (magicalPowerKick && mp < magicalPowerReq) kickedReasons.add("Did not meet mp req: ${mp}/${magicalPowerReq}")
+                        if (magicalPowerKick && mp < magicalPowerReq) kickedReasons.add("Did not meet mp req: ${mp}/$magicalPowerReq")
                     } else if (apiOffKick) kickedReasons.add("Inventory API is off")
                 }
 

@@ -10,6 +10,7 @@ import me.odinmain.utils.render.Box
 import me.odinmain.utils.render.Color
 import me.odinmain.utils.render.roundedRectangle
 import me.odinmain.utils.times
+import me.odinmain.utils.ui.Colors
 
 fun <T> buttons(
     box: Box,
@@ -55,7 +56,7 @@ class ButtonDSL<T>(
             val x = if (!vertical) box.x + (buttonWidth + lineY) * i else box.x
             if (option == selected) roundedRectangle(x, y, buttonWidth, box.h, accent, radius, edgeSoftness)
             else roundedRectangle(x, y, buttonWidth, box.h, color, radius, edgeSoftness)
-            centeredText(option.toString(), x + buttonWidth / 2, box.y + box.h / 2, textScale, Color.WHITE, shadow = true)
+            centeredText(option.toString(), x + buttonWidth / 2, box.y + box.h / 2, textScale, Colors.WHITE, shadow = true)
         }
     }
 

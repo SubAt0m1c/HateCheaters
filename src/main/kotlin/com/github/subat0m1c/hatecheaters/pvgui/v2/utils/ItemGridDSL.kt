@@ -4,8 +4,11 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.isObjectHovered
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.render.*
 import me.odinmain.utils.skyblock.lore
+import me.odinmain.utils.ui.Colors
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.GlStateManager.translate
+import net.minecraft.client.renderer.GlStateManager.scale
 import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.client.config.GuiUtils
@@ -27,7 +30,7 @@ class ItemGridDSL(
     private val padding: Float,
 ) {
     private var tooltipHandler: (ItemStack) -> List<String> = { listOf(it.displayName) + it.lore }
-    private var colorHandler: (index: Int, ItemStack?) -> Color = { _, _ -> Color.WHITE }
+    private var colorHandler: (index: Int, ItemStack?) -> Color = { _, _ -> Colors.WHITE }
 
     private val fontRenderer: FontRenderer = mc.fontRendererObj
     private var hoveredItem: ItemStack? = null
@@ -53,7 +56,7 @@ class ItemGridDSL(
                 if (itemStack != null) {
                     GlStateManager.pushMatrix()
                     GlStateManager.translate(x, y.toFloat(), 0f)
-                    GlStateManager.scale(itemWidth / 16f, itemWidth / 16f, 1f)
+                    scale(itemWidth / 16f, itemWidth / 16f, 1f)
                     mc.renderItem.renderItemIntoGUI(itemStack, 0, 0)
                     mc.renderItem.renderItemOverlayIntoGUI(fontRenderer, itemStack, 0, 0, null)
                     GlStateManager.popMatrix()
@@ -67,7 +70,7 @@ class ItemGridDSL(
 
         hoveredItem?.let {
             GlStateManager.pushMatrix()
-            translate(mouseX, mouseY, 0)
+            translate(mouseX.toDouble(), mouseY.toDouble(), 0.0)
             scale(2f, 2f, 1f)
             GuiUtils.drawHoveringText(tooltipHandler(it), 0, 0, mc.displayWidth, mc.displayHeight, -1, fontRenderer)
             GlStateManager.popMatrix()

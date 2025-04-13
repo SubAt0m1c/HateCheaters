@@ -1,6 +1,6 @@
 package com.github.subat0m1c.hatecheaters.pvgui.v2.pages
 
-import com.github.subat0m1c.hatecheaters.modules.ProfileViewer
+import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages
 import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Inventory.separatorLineY
 import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Inventory.startY
@@ -9,7 +9,7 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.itemGrid
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.profileLazy
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.createCustomSkull
-import me.odinmain.utils.render.Color
+import me.odinmain.utils.ui.Colors
 
 object Test : Pages.PVPage("Test") {
     private val centerY by lazy { startY + (mainHeight - ((separatorLineY)))/2 }
@@ -27,7 +27,7 @@ object Test : Pages.PVPage("Test") {
             lineY.toFloat(),
         ) {
             colorHandler { i, _ ->
-                Color.TRANSPARENT
+                Colors.TRANSPARENT
             }
         }
     }

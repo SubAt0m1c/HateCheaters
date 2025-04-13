@@ -2,11 +2,11 @@ package com.github.subat0m1c.hatecheaters
 
 import com.github.subat0m1c.hatecheaters.commands.CommandRegistry
 import com.github.subat0m1c.hatecheaters.commands.impl.PVCommand
-import com.github.subat0m1c.hatecheaters.modules.BetterPartyFinder
-import com.github.subat0m1c.hatecheaters.modules.ClearSecrets
-import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
-import com.github.subat0m1c.hatecheaters.modules.ProfileViewer
-import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.pvCommand
+import com.github.subat0m1c.hatecheaters.modules.dungeons.BetterPartyFinder
+import com.github.subat0m1c.hatecheaters.modules.dungeons.ClearSecrets
+import com.github.subat0m1c.hatecheaters.modules.skyblock.HateCheatersModule
+import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer
+import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer.pvCommand
 import com.github.subat0m1c.hatecheaters.utils.LogHandler
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import com.github.subat0m1c.hatecheaters.utils.OdinCheck.checkIfOdinIsLoaded

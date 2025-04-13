@@ -1,7 +1,7 @@
 package com.github.subat0m1c.hatecheaters.pvgui.v2.pages
 
-import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.maxRows
-import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.rarityBackgrounds
+import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer.maxRows
+import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer.rarityBackgrounds
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.centeredText
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.playClickSound
@@ -15,6 +15,7 @@ import com.github.subat0m1c.hatecheaters.utils.ItemUtils.getMagicalPower
 import me.odinmain.utils.render.*
 import me.odinmain.utils.skyblock.getRarity
 import me.odinmain.utils.skyblock.lore
+import me.odinmain.utils.ui.Colors
 import net.minecraft.item.ItemStack
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -45,7 +46,7 @@ object Inventory: Pages.PVPage("Inventory") {
     }
 
     override fun draw() {
-        if (!inventoryAPI) return centeredText("Inventory API disabled!", mainCenterX, mainHeight/2, 4f, Color.RED, true)
+        if (!inventoryAPI) return centeredText("Inventory API disabled!", mainCenterX, mainHeight/2, 4f, Colors.MINECRAFT_RED, true)
         roundedRectangle(mainX, separatorLineY, mainWidth, ot, ct.line)
 
         buttons.draw()
@@ -78,7 +79,7 @@ object Inventory: Pages.PVPage("Inventory") {
             itemGrid(listOf(GridItems(inventory, mainX, (startY + (mainHeight - ((separatorLineY)))/2).toInt(), mainWidth, 9)), ct.roundness, 1f, lineY.toFloat()) {
                 colorHandler { i, item ->
                     when {
-                        i == 4 -> Color.TRANSPARENT // this should be replaced by separate inventory grids at some point
+                        i == 4 -> Colors.TRANSPARENT // this should be replaced by separate inventory grids at some point
                         rarityBackgrounds -> item?.lore?.let { getRarity(it) }?.color ?: ct.items
                         else -> ct.items
                     }
@@ -113,7 +114,7 @@ object Inventory: Pages.PVPage("Inventory") {
 
         private val itemGrid by profileLazy {
             itemGrid(gridItems, ct.roundness, 1f, lineY.toFloat()) {
-                colorHandler { _, item -> if (item in invArmor.toSet()) Color.BLUE else ct.items }
+                colorHandler { _, item -> if (item in invArmor.toSet()) Colors.MINECRAFT_BLUE else ct.items }
             }
         }
 

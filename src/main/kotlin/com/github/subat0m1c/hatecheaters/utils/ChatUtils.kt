@@ -1,7 +1,7 @@
 package com.github.subat0m1c.hatecheaters.utils
 
-import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule.debugMessages
-import com.github.subat0m1c.hatecheaters.modules.ProfileViewer
+import com.github.subat0m1c.hatecheaters.modules.skyblock.HateCheatersModule.debugMessages
+import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.skyblock.modMessage as odinModMessage

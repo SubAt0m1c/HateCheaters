@@ -2,7 +2,7 @@ package com.github.subat0m1c.hatecheaters.commands.impl
 
 import com.github.stivais.commodore.Commodore
 import com.github.stivais.commodore.utils.GreedyString
-import com.github.subat0m1c.hatecheaters.modules.BetterPartyFinder.importantItems
+import com.github.subat0m1c.hatecheaters.modules.dungeons.BetterPartyFinder.importantItems
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.formatted
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import me.odinmain.config.Config

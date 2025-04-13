@@ -1,6 +1,6 @@
 package com.github.subat0m1c.hatecheaters.utils
 
-import com.github.subat0m1c.hatecheaters.modules.BetterPartyFinder.importantItems
+import com.github.subat0m1c.hatecheaters.modules.dungeons.BetterPartyFinder.importantItems
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.formatted
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords

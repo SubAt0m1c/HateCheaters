@@ -1,12 +1,13 @@
 package com.github.subat0m1c.hatecheaters.utils.apiutils
 
-import com.github.subat0m1c.hatecheaters.modules.ProfileViewer
+import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.ClassData
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.DungeonTypes
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.DungeonsData
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerData
 import me.odinmain.utils.render.Color
+import me.odinmain.utils.ui.Colors
 
 object LevelUtils {
     /**
@@ -99,16 +100,16 @@ object LevelUtils {
 
     fun getSkillColor(skill: String): Color = when (skill) {
         "taming"       -> ProfileViewer.currentTheme.font
-        "mining"       -> Color.GRAY
-        "foraging"     -> Color.DARK_GREEN
+        "mining"       -> Colors.MINECRAFT_GRAY
+        "foraging"     -> Colors.MINECRAFT_DARK_GREEN
         "enchanting"   -> Color(170, 0, 170)
         "carpentry"    -> Color("A52A2AFF")
-        "farming"      -> Color.GREEN
-        "combat"       -> Color.RED
-        "fishing"      -> Color.BLUE
-        "alchemy"      -> Color.YELLOW
-        "runecrafting" -> Color.PURPLE
-        "social"       -> Color.GREEN
+        "farming"      -> Colors.MINECRAFT_GREEN
+        "combat"       -> Colors.MINECRAFT_RED
+        "fishing"      -> Colors.MINECRAFT_BLUE
+        "alchemy"      -> Colors.MINECRAFT_YELLOW
+        "runecrafting" -> Colors.MINECRAFT_LIGHT_PURPLE
+        "social"       -> Colors.MINECRAFT_GREEN
         else           -> ProfileViewer.currentTheme.font
     }
 
@@ -132,11 +133,11 @@ object LevelUtils {
 
     fun getSlayerColor(slayer: String): Color = when (slayer) {
         "wolf"     -> ProfileViewer.currentTheme.font
-        "zombie"   -> Color.DARK_GREEN
+        "zombie"   -> Colors.MINECRAFT_DARK_GREEN
         "enderman" -> Color(170, 0, 170)
-        "vampire"  -> Color.RED
-        "blaze"    -> Color.ORANGE
-        "spider"   -> Color.BLACK
+        "vampire"  -> Colors.MINECRAFT_RED
+        "blaze"    -> Colors.MINECRAFT_GOLD
+        "spider"   -> Colors.BLACK
         else       -> ProfileViewer.currentTheme.font
     }
 

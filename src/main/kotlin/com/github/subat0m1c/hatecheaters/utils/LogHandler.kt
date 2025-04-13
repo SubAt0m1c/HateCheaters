@@ -1,17 +1,15 @@
 package com.github.subat0m1c.hatecheaters.utils
 
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
-import com.github.subat0m1c.hatecheaters.modules.HateCheatersModule
+import com.github.subat0m1c.hatecheaters.modules.skyblock.HateCheatersModule
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.debug
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.getCurrentDateTimeString
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.logging.FileHandler
-import java.util.logging.Logger
 import java.util.logging.Logger as javaLogger
 import java.util.logging.SimpleFormatter
 import java.util.zip.GZIPOutputStream
@@ -27,7 +25,7 @@ object LogHandler {
 
         fun warning(message: String?) = log.warning(message).also { debug(message) }
 
-        fun severe(message: String?) = log.warning(message).also { debug(message) }
+        fun severe(message: String?) = log.severe(message).also { debug(message) }
 
         fun fine(message: String?) = log.fine(message).also { debug(message) }
 

@@ -2,16 +2,17 @@ package com.github.subat0m1c.hatecheaters.pvgui.v2
 
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
 import com.github.subat0m1c.hatecheaters.modules.ProfileViewer.scale
+import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer.scale
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.currentPage
 import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Overview.setPlayer
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.ProfileLazy
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerInfo
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSkyblockProfile
-import me.odinmain.utils.render.scale
-import me.odinmain.utils.render.translate
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.gui.ScaledResolution
+import net.minecraft.client.renderer.GlStateManager.scale
+import net.minecraft.client.renderer.GlStateManager.translate
 import net.minecraft.util.MovementInputFromOptions
 
 object PVGui : GuiScreen() {
@@ -27,13 +28,13 @@ object PVGui : GuiScreen() {
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
         val sr = ScaledResolution(mc)
-        scale(1f / sr.scaleFactor, 1f / sr.scaleFactor)
-        translate(mc.displayWidth / 2, mc.displayHeight / 2)
-        scale(scale, scale)
+        scale(1.0 / sr.scaleFactor, 1.0 / sr.scaleFactor, 0.0)
+        translate(mc.displayWidth / 2.0, mc.displayHeight / 2.0, 0.0)
+        scale(scale, scale, 0.0)
         currentPage.page.preDraw()
-        scale(1f / scale, 1f / scale)
-        translate(-mc.displayWidth / 2, -mc.displayHeight / 2)
-        scale(sr.scaleFactor, sr.scaleFactor)
+        scale(1f / scale, 1f / scale, 0.0)
+        translate(-mc.displayWidth / 2.0, -mc.displayHeight / 2.0, 0.0)
+        scale(sr.scaleFactor.toDouble(), sr.scaleFactor.toDouble(), 0.0)
         super.drawScreen(mouseX, mouseY, partialTicks)
     }
 
