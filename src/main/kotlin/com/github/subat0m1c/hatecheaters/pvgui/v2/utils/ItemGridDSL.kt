@@ -3,6 +3,7 @@ package com.github.subat0m1c.hatecheaters.pvgui.v2.utils
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.isObjectHovered
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.render.*
+import me.odinmain.utils.render.RenderUtils.bind
 import me.odinmain.utils.skyblock.lore
 import me.odinmain.utils.ui.Colors
 import net.minecraft.client.gui.FontRenderer
@@ -38,7 +39,8 @@ class ItemGridDSL(
     fun draw(mouseX: Int, mouseY: Int) {
         GlStateManager.pushMatrix()
 
-        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f)
+        Colors.WHITE.bind()
+        GlStateManager.enableRescaleNormal()
         RenderHelper.enableGUIStandardItemLighting()
 
         hoveredItem = null
@@ -55,7 +57,7 @@ class ItemGridDSL(
 
                 if (itemStack != null) {
                     GlStateManager.pushMatrix()
-                    GlStateManager.translate(x, y.toFloat(), 0f)
+                    translate(x, y.toFloat(), 0f)
                     scale(itemWidth / 16f, itemWidth / 16f, 1f)
                     mc.renderItem.renderItemIntoGUI(itemStack, 0, 0)
                     mc.renderItem.renderItemOverlayIntoGUI(fontRenderer, itemStack, 0, 0, null)
@@ -68,6 +70,10 @@ class ItemGridDSL(
             }
         }
 
+        RenderHelper.disableStandardItemLighting()
+        GlStateManager.disableRescaleNormal()
+        GlStateManager.popMatrix()
+
         hoveredItem?.let {
             GlStateManager.pushMatrix()
             translate(mouseX.toDouble(), mouseY.toDouble(), 0.0)
@@ -75,13 +81,6 @@ class ItemGridDSL(
             GuiUtils.drawHoveringText(tooltipHandler(it), 0, 0, mc.displayWidth, mc.displayHeight, -1, fontRenderer)
             GlStateManager.popMatrix()
         }
-
-        RenderHelper.disableStandardItemLighting()
-        GlStateManager.disableRescaleNormal()
-        GlStateManager.disableLighting()
-        GL11.glDisable(GL11.GL_DEPTH_TEST)
-
-        GlStateManager.popMatrix()
     }
 
     fun tooltipHandler(init: (ItemStack) -> List<String>) { tooltipHandler = init }
