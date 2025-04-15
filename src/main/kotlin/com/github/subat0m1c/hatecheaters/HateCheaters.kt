@@ -7,6 +7,8 @@ import com.github.subat0m1c.hatecheaters.modules.dungeons.ClearSecrets
 import com.github.subat0m1c.hatecheaters.modules.skyblock.HateCheatersModule
 import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer
 import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer.pvCommand
+import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.ItemGridDSL
+import com.github.subat0m1c.hatecheaters.utils.ExtraStatsHandler
 import com.github.subat0m1c.hatecheaters.utils.LogHandler
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import com.github.subat0m1c.hatecheaters.utils.OdinCheck.checkIfOdinIsLoaded
@@ -31,7 +33,7 @@ class HateCheaters {
         checkIfOdinIsLoaded()
 
         listOf(
-            this
+            this, ItemGridDSL, ExtraStatsHandler
         ).forEach { MinecraftForge.EVENT_BUS.register(it) }
     }
 

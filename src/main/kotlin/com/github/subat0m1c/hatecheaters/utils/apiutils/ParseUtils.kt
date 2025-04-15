@@ -16,6 +16,8 @@ object ParseUtils {
     private val cachedPlayerData: MutableMap<String, Pair<PlayerInfo, Long>> = mutableMapOf()
     val json: Json = Json { ignoreUnknownKeys = true }
 
+    val cachedPlayers get() = cachedPlayerData.keys
+
     suspend fun getSecrets(playerName: String, uuid: String? = null): Result<Long> = withContext(Dispatchers.IO) {
         getSecretData(
             uuid ?: getUUIDbyName(playerName).getOrElse { return@withContext Result.failure(it) }.uuid

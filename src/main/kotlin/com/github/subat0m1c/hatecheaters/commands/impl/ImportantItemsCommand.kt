@@ -17,9 +17,7 @@ val ItemCommand = Commodore("hcitems") {
     }
 
     literal("remove").executable {
-        param("item") {
-            suggests { importantItems }
-        }
+        param("item").suggests { importantItems }
 
         runs { item: GreedyString ->
             val name = item.string.formatted

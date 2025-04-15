@@ -1,5 +1,8 @@
 package com.github.subat0m1c.hatecheaters.pvgui.v2.utils
 
+import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui
+import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getMouseX
+import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getMouseY
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.isObjectHovered
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.render.*
@@ -12,8 +15,9 @@ import net.minecraft.client.renderer.GlStateManager.translate
 import net.minecraft.client.renderer.GlStateManager.scale
 import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.item.ItemStack
+import net.minecraftforge.client.event.GuiScreenEvent
 import net.minecraftforge.fml.client.config.GuiUtils
-import org.lwjgl.opengl.GL11
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.math.ceil
 
 fun itemGrid(
@@ -33,17 +37,12 @@ class ItemGridDSL(
     private var tooltipHandler: (ItemStack) -> List<String> = { listOf(it.displayName) + it.lore }
     private var colorHandler: (index: Int, ItemStack?) -> Color = { _, _ -> Colors.WHITE }
 
-    private val fontRenderer: FontRenderer = mc.fontRendererObj
-    private var hoveredItem: ItemStack? = null
-
     fun draw(mouseX: Int, mouseY: Int) {
         GlStateManager.pushMatrix()
 
         Colors.WHITE.bind()
         GlStateManager.enableRescaleNormal()
         RenderHelper.enableGUIStandardItemLighting()
-
-        hoveredItem = null
 
         items.forEach { gridItems ->
             val itemWidth = (gridItems.width - (gridItems.columns - 1) * padding) / gridItems.columns.coerceAtLeast(1)
@@ -64,30 +63,35 @@ class ItemGridDSL(
                     GlStateManager.popMatrix()
                 }
 
-                if (isObjectHovered(Box(x, y, itemWidth, itemWidth), mouseX, mouseY)) {
-                    hoveredItem = itemStack
-                }
+                if (isObjectHovered(Box(x, y, itemWidth, itemWidth), mouseX, mouseY)) hoveredItem = itemStack?.let { HoverItem(it, tooltipHandler) }
             }
         }
 
         RenderHelper.disableStandardItemLighting()
         GlStateManager.disableRescaleNormal()
         GlStateManager.popMatrix()
-
-        hoveredItem?.let {
-            GlStateManager.pushMatrix()
-            translate(mouseX.toDouble(), mouseY.toDouble(), 0.0)
-            scale(2f, 2f, 1f)
-            GuiUtils.drawHoveringText(tooltipHandler(it), 0, 0, mc.displayWidth, mc.displayHeight, -1, fontRenderer)
-            GlStateManager.popMatrix()
-        }
     }
-
     fun tooltipHandler(init: (ItemStack) -> List<String>) { tooltipHandler = init }
 
     fun colorHandler(init: (index: Int, ItemStack?) -> Color) { colorHandler = init }
 
     fun updateItems(newItems: List<ItemStack?>, index: Int = 0) { items[index].items = newItems }
+
+    companion object {
+        private val fontRenderer: FontRenderer = mc.fontRendererObj
+        private var hoveredItem: HoverItem? = null
+
+        @SubscribeEvent
+        fun onGuiRender(event: GuiScreenEvent.DrawScreenEvent.Post) {
+            if (event.gui != PVGui) return
+            hoveredItem?.let { (item, tooltipHandler) ->
+                // rendered outside inventory grid stack since the tooltip code has its own translation and scaling i dont wanna mess up
+                GuiUtils.drawHoveringText(tooltipHandler(item), getMouseX.toInt(), getMouseY.toInt(), event.gui.width, event.gui.height, -1, fontRenderer)
+            }
+            hoveredItem = null
+        }
+    }
 }
 
+data class HoverItem(val item: ItemStack, val tooltipHandler: (ItemStack) -> List<String>)
 data class GridItems(var items: List<ItemStack?>, val x: Int, val centerY: Int, val width: Int, val columns: Int)

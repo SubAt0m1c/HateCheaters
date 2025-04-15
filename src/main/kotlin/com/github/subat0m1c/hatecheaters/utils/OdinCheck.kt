@@ -113,7 +113,7 @@ object OdinCheck {
         FMLCommonHandler.instance().expectServerStopped()
     }
 
-    private val versionRegex = Regex("(\\d)\\.(\\d)\\.(\\d)(?:\\.(\\d))?(?:\\.beta(\\d+))?")
+    private val versionRegex = Regex("(\\d+)\\.(\\d+)\\.(\\d+)(?:\\.(\\d+))?(?:\\.beta(\\d+))?")
 
     /**
      * UPDATE: it now generally compares versions between the 2 args, might be good idk

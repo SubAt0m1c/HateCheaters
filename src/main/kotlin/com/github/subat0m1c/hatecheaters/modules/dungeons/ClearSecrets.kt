@@ -5,12 +5,11 @@ import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launchDeferred
 import com.github.subat0m1c.hatecheaters.events.impl.LoadDungeonPlayers
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.chatConstructor
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
+import com.github.subat0m1c.hatecheaters.utils.ExtraStatsHandler
 import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSecrets
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
 import me.odinmain.features.Module
 import me.odinmain.features.settings.impl.BooleanSetting
-import me.odinmain.utils.equalsOneOf
 import me.odinmain.utils.noControlCodes
 import me.odinmain.utils.runIn
 import me.odinmain.utils.skyblock.dungeon.DungeonPlayer
@@ -22,36 +21,20 @@ object ClearSecrets : Module(
     description = "Displays each team members secrets on run complete.",
 ) {
     private val compactMessage by BooleanSetting("Compact Message", false, description = "Shows teammate data in one line instead of multiple lines.")
-    private val secretMap = hashMapOf<Teammate, Deferred<Long>>()
-    private inline val teammates get() = DungeonUtils.dungeonTeammatesNoSelf.map { it.asTeammate() }
 
-    data class Teammate(val name: String, val uuid: String?, var dungeonPlayer: DungeonPlayer) {
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other !is Teammate) return false
-
-            return name == other.name && uuid == other.uuid
-        }
-
-        override fun hashCode(): Int = 31 * name.hashCode() + (uuid?.hashCode() ?: 0)
-    }
+    private inline val teammates get() = DungeonUtils.dungeonTeammates.map { it.asTeammate() }.toSet()
+    private val teammateList = hashSetOf<Teammate>()
+    private var ownSecrets: Long? = null
 
     init {
         onMessage(Regex("^\\s*(Master Mode)? ?(?:The)? Catacombs - (Entrance|Floor .{1,3})\$")) {
-            secretMap.keys.retainAll(teammates.toSet())
+            teammateList.retainAll(teammates)
             runIn(30, true) { // bm waits a bit, figure I should as well? not sure.
                 launch {
-                    secretMap.entries.map { (k, v) ->
-                        val new = async {
-                            getSecrets(k.name, k.uuid)
-                                .onFailure { modMessage("Failed to get secrets for ${k.name}: ${it.message}") }
-                                .getOrDefault(-1)
-                        }.also { new -> secretMap[k] = new }.await()
-                        val old = v.await()
-
-                        val dif = (new - old).takeUnless { (-1L).equalsOneOf(old, new) }?.also { if (it !in 0..40) modMessage("Assuming something went wrong. Data: $old -> $new") }
-                        if (compactMessage) "§d${k.name}: §6${dif ?: "§c§l???§7"}"
-                        else "§bH§3C §7|| §d${k.name} §7-> §fSecrets: §6${dif ?: "§c§l???§r"}" // §7, §fDeaths: §c${k.dungeonPlayer.deaths}" // this doesnt work atm, todo: fix odin
+                    teammateList.map {
+                        val secrets = it.calcSecrets()
+                        if (compactMessage) "§d${it.name}: §6${secrets ?: "§c§l???§7"}"
+                        else "§bH§3C §7|| §d${it.name} §7-> §fSecrets: §6${secrets ?: "§c§l???§r"}"
                     }.let {
                         chatConstructor {
                             it.forEachIndexed { i, text ->
@@ -63,22 +46,58 @@ object ClearSecrets : Module(
                 }
             }
         }
+
+        onMessage(Regex(" {29}> EXTRA STATS <")) { ExtraStatsHandler.waitForOtherMods() }
+
+        onMessage(Regex("^\\s*Secrets Found: (\\d+)\$")) {
+            modMessage("WHATFRICKSECRETS")
+            ownSecrets = it.groupValues[1].toLongOrNull() ?: 0
+        }
     }
 
     @SubscribeEvent
     fun onDungeonLoad(event: LoadDungeonPlayers)  {
         if (event.teammates.isEmpty()) return
         event.teammates.forEach {
-            if (it.name == mc.thePlayer.name) return@forEach
-            secretMap.computeIfAbsent(it.asTeammate()) { teammate ->
-                launchDeferred {
-                    getSecrets(teammate.name, teammate.uuid)
-                        .onFailure { modMessage("Failed to get secrets for ${teammate.name}: ${it.message}") }
-                        .getOrDefault(-1)
-                }
-            }
+            val teammate = it.asTeammate()
+            if (teammate in teammateList) return@forEach
+            teammateList.add(teammate.apply { if (it.name != mc.thePlayer.name) pullSecrets() })
         }
     }
 
     private fun DungeonPlayer.asTeammate() = Teammate(name, entity?.uniqueID?.toString(), this)
+
+    data class Teammate(val name: String, val uuid: String?, var dungeonPlayer: DungeonPlayer) {
+        var secrets: Deferred<Long>? = null
+
+        fun pullSecrets() {
+            secrets = launchDeferred {
+                getSecrets(name, uuid)
+                    .onFailure { modMessage("Failed to get secrets for ${name}: ${it.message}") }
+                    .getOrDefault(-1)
+            }
+        }
+
+        suspend fun calcSecrets(): Long? {
+            if (name == mc.session.username) return ownSecrets.also { ownSecrets = null }
+            val old = secrets?.await() ?: -1
+            val new = CompletableDeferred<Long>().apply {
+                complete(
+                    getSecrets(name, uuid)
+                        .onFailure { modMessage("Failed to get secrets for ${name}: ${it.message}") }
+                        .getOrDefault(-1)
+                )
+            }.also { new -> secrets = new }.await()
+            return if (old == -1L || new == -1L) null else new - old
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Teammate) return false
+
+            return name == other.name && uuid == other.uuid
+        }
+
+        override fun hashCode(): Int = 31 * name.hashCode() + (uuid?.hashCode() ?: 0)
+    }
 }
