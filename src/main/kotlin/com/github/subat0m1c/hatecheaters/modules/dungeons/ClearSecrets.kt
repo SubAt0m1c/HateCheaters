@@ -49,10 +49,7 @@ object ClearSecrets : Module(
 
         onMessage(Regex(" {29}> EXTRA STATS <")) { ExtraStatsHandler.waitForOtherMods() }
 
-        onMessage(Regex("^\\s*Secrets Found: (\\d+)\$")) {
-            modMessage("WHATFRICKSECRETS")
-            ownSecrets = it.groupValues[1].toLongOrNull() ?: 0
-        }
+        onMessage(Regex("^\\s*Secrets Found: (\\d+)\$")) { ownSecrets = it.groupValues[1].toLongOrNull() ?: 0 }
     }
 
     @SubscribeEvent

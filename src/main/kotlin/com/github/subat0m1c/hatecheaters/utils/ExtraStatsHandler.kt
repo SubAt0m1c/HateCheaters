@@ -27,28 +27,21 @@ object ExtraStatsHandler {
     }
 
     @SubscribeEvent
-    fun onChatMessage(event: ClientChatReceivedEvent) {
+    fun onChatMessage(event: ClientChatReceivedEvent) = with(event.message.unformattedText) {
         if (!DungeonUtils.inDungeons) return
-        if ((event.message.unformattedText.matches(blank) || formattingRegexes.any { it.matches(event.message.unformattedText.noControlCodes) }) && expectingStats) event.isCanceled = true
-        if (regexes.none { it.matches(event.message.unformattedText.noControlCodes) }) return
-        if (expectingStats || hideButDontCheck.any { it.matches(event.message.unformattedText.noControlCodes) }) event.isCanceled = true
+        if ((hideButDontCheck.any { it.matches(noControlCodes) } || blank.matches(this)) && expectingStats) event.isCanceled = true
+        if (regexes.none { it.matches(noControlCodes) }) return@with
+        if (expectingStats) event.isCanceled = true
         else receivedStats = true
     }
 
     private val blank = Regex("§r")
-
-    private val formattingRegexes = listOf(
-        Regex("^▬+\$"),
-        Regex("^ {7}$"),
-    )
-
-    /**
-     * ngl i think this stuff sucks and looks bad but it works and i dont wanna fix
-     */
     private val hideButDontCheck = listOf(
         Regex("^\\s*Team Score: \\d+ \\(.{1,2}\\)\\s?(?:\\(NEW RECORD!\\))?\$"),
         Regex("^\\s*☠ Defeated (.+) in 0?([\\dhms ]+?)\\s*(\\(NEW RECORD!\\))?\$"),
         Regex("^\\s*Deaths: \\d+\$"),
+        Regex("^▬+\$"),
+        Regex("^ {7}$"),
     )
 
     private val regexes = listOf(
@@ -59,5 +52,5 @@ object ExtraStatsHandler {
         Regex("^\\s*Ally Healing: [\\d,.]+\\s?(?:\\(NEW RECORD!\\))?\$"),
         Regex("^\\s*Enemies Killed: \\d+\\s?(?:\\(NEW RECORD!\\))?\$"),
         Regex("^\\s*Secrets Found: \\d+\$"),
-    ) + hideButDontCheck
+    )
 }
