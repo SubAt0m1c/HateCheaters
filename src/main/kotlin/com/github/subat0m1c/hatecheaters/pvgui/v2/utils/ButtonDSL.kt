@@ -40,6 +40,9 @@ class ButtonDSL<T>(
     private val edgeSoftness: Float = 0f,
     private val vertical: Boolean
 ) {
+    private val lineY =
+        10 // same value as the profile viewer lineY but i dont want to un protect it. Should be moved to a padding value instead thouhg.
+
     private var selected: T = default
     private var onSelect: (T) -> Unit = {}
 

@@ -32,7 +32,7 @@ object Dungeons: Pages.PVPage("Dungeons") {
         listOf(
             "§bSecrets§7: ${profile.dungeons.secrets.commas.colorizeNumber(100000)}",
             "§dAverage Secret Count§7: ${(profile.dungeons.secrets.toDouble()/(mmComps + floorComps)).round(2).colorize(15.0)}",
-            "§cBlood Mob Kills§7: ${((profile.playerStats.kills["watcher_summon_undead"] ?: 0) + (profile.playerStats.kills["master_watcher_summon_undead"] ?: 0)).commas}",
+            "§cBlood Mob Kills§7: ${profile.playerStats.bloodMobKills.commas}",
             "§7Spirit Pet: ${if (profile.pets.pets.any { it.type == "SPIRIT" && it.tier == "LEGENDARY" }) "§l§2Found!" else "§o§4Missing!"}",
         )
     }
@@ -86,10 +86,10 @@ object Dungeons: Pages.PVPage("Dungeons") {
 
         roundedRectangle(mainCenterX + ot + lineY, lineY + mainHeight/2, cataLineWidth, ot, ct.line)
     }
-}
 
-fun HypixelData.DungeonTypeData.floorStats(floor: String): String =
-    "${if (floor == "0") "Entrance" else "Floor $floor"}: §${ct.fontCode}${this.tierComps[floor]?.commas ?: "§cDNF"} " +
-        "§7| §${ct.fontCode}${this.fastestTimes[floor]?.let { secondsToMinutes(it*0.001) } ?: "§cDNF"} " +
-        "§7| §${ct.fontCode}${this.fastestTimeS[floor]?.let { secondsToMinutes(it*0.001) } ?: "§cDNF"} " +
-        "§7| §a${this.fastestTimeSPlus[floor]?.let { secondsToMinutes(it*0.001) } ?: "§cDNF"}"
+    private fun HypixelData.DungeonTypeData.floorStats(floor: String): String =
+        "${if (floor == "0") "Entrance" else "Floor $floor"}: §${ct.fontCode}${this.tierComps[floor]?.commas ?: "§cDNF"} " +
+                "§7| §${ct.fontCode}${this.fastestTimes[floor]?.let { secondsToMinutes(it * 0.001) } ?: "§cDNF"} " +
+                "§7| §${ct.fontCode}${this.fastestTimeS[floor]?.let { secondsToMinutes(it * 0.001) } ?: "§cDNF"} " +
+                "§7| §a${this.fastestTimeSPlus[floor]?.let { secondsToMinutes(it * 0.001) } ?: "§cDNF"}"
+}

@@ -1,7 +1,7 @@
 package com.github.subat0m1c.hatecheaters.utils
 
 import com.github.subat0m1c.hatecheaters.modules.skyblock.HateCheatersModule.debugMessages
-import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer
+import com.github.subat0m1c.hatecheaters.modules.skyblock.HateCheatersModule.toasts
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.skyblock.modMessage as odinModMessage
@@ -9,6 +9,7 @@ import me.odinmain.utils.render.getMCTextWidth
 import me.odinmain.utils.runOnMCThread
 import me.odinmain.utils.skyblock.createClickStyle
 import me.odinmain.utils.toFixed
+import com.github.subat0m1c.hatecheaters.utils.toasts.ToastManager.toaster
 import net.minecraft.event.ClickEvent
 import net.minecraft.event.HoverEvent
 import net.minecraft.util.ChatComponentText
@@ -20,15 +21,11 @@ import kotlin.math.floor
 
 object ChatUtils {
 
-    /**
-     * Sends a client-side message with an optional prefix.
-     *
-     * Taken and modified from [Odin](https://github.com/odtheking/Odin) under [BSD-3](https://github.com/odtheking/Odin/blob/main/LICENSE).
-     *
-     * @param message Message to be sent.
-     * @param prefix If `true`, adds a prefix to the message.
-     * @param chatStyle Optional chat style to be applied to the message.
-     */
+    fun toastMessage(title: String, message: Any?, includeTitle: Boolean = false) {
+        if (toasts) toaster(title, message.toString())
+        else modMessage(message?.let { if (includeTitle) "${title}§7: $it" else it })
+    }
+
     fun modMessage(message: Any?, prefix: String = "§bH§3C §8»§r ", chatStyle: ChatStyle? = null) {
         odinModMessage(message, prefix, chatStyle)
         Logger.log.info("Messaged >> $message")
@@ -74,27 +71,14 @@ object ChatUtils {
 
     fun String.colorizeNumber(max: Number): String {
         val number = this.replace(",", "").toDoubleOrNull() ?: return this
-        val maxDouble = max.toDouble()
-
-        val color = when {
-            number >= maxDouble        -> "§b"
-            number >= maxDouble * 0.9  -> "§c"
-            number >= maxDouble * 0.75 -> "§d"
-            number >= maxDouble * 0.65 -> "§6"
-            number >= maxDouble * 0.50 -> "§5"
-            number >= maxDouble * 0.25 -> "§9"
-            number >= maxDouble * 0.10 -> "§a"
-            else -> "§f"
-        }
-
-        return "$color$this"
+        return "${number.colorCode(max)}$this"
     }
 
-    fun Number.colorize(max: Number): String {
+    fun Number.colorCode(max: Number): String {
         val number = this.toDouble()
         val maxDouble = max.toDouble()
 
-        val color = when {
+        return when {
             number >= maxDouble        -> "§b"
             number >= maxDouble * 0.9  -> "§c"
             number >= maxDouble * 0.75 -> "§d"
@@ -104,9 +88,9 @@ object ChatUtils {
             number >= maxDouble * 0.10 -> "§a"
             else -> "§f"
         }
-
-        return "$color$this"
     }
+
+    fun Number.colorize(max: Number): String = "${this.colorCode(max)}$this"
 
     inline val String.mcWidth get() = getMCTextWidth(this)
 
@@ -130,13 +114,20 @@ object ChatUtils {
     inline val String.colorStat: String get() = when (this.lowercase().replace(" ", "_")) {
         "health"          -> "§c$this"
         "defense"         -> "§a$this"
-        "walk_speed"      -> "§${ProfileViewer.currentTheme.fontCode}$this"
+        "walk_speed" -> "§f$this"
         "strength"        -> "§c$this"
         "critical_chance" -> "§9$this"
         "critical_damage" -> "§9$this"
         "attack_speed"    -> "§e$this"
         "intelligence"    -> "§b$this"
         else              -> this
+    }
+
+    fun Double.truncate(decimals: Int = 0) = when {
+        this >= 1_000_000_000 -> "${(this / 1_000_000_000).toFixed(decimals)}b"
+        this >= 1_000_000 -> "${(this / 1_000_000).toFixed(decimals)}m"
+        this >= 1_000 -> "${(this / 1_000).toFixed(decimals)}k"
+        else -> this.toFixed(decimals)
     }
 
     inline val Double.truncate: String get() = when {

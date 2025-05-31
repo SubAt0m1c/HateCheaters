@@ -14,7 +14,9 @@ import kotlin.math.ceil
 import kotlin.math.floor
 
 object Pets: Pages.PVPage("Pets") {
-    private val activePet by profileLazy { "§6Active Pet§7: §${ct.fontCode}${profile.pets.pets.find { it.active }?.colorName ?: "None!"} ${profile.pets.pets.find { it.active }?.petItem?.let { "§7(§${ct.fontCode}${it}§7)" } ?: ""}" }
+    private val activePet by profileLazy {
+        "§6Active Pet§7: §${ct.fontCode}${profile.pets.activePet?.let { "${it.colorName}${it.petItem?.let { " §7(§${ct.fontCode}${it}§7)" } ?: ""}" } ?: "None!"}"
+    }
     private val buttonHeight = (mainWidth - (lineY * 16)) / 18
     private val mainLineY = mainHeight * 0.1
 
@@ -27,7 +29,7 @@ object Pets: Pages.PVPage("Pets") {
     }
 
     private val pets by profileLazy {
-        profile.pets.pets.map { pet -> "${pet.colorName} ${pet.petItem?.let { "§7(§${ct.fontCode}${it}§7)" } ?: ""}" }
+        profile.pets.pets.map { pet -> "${pet.colorName}${pet.petItem?.let { " §7(§${ct.fontCode}${it}§7)" } ?: ""}" }
     }
 
     private val entryHeight by profileLazy {

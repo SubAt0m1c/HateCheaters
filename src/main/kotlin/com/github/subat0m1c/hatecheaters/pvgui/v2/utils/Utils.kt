@@ -39,14 +39,15 @@ object Utils {
     }
 
     //faster than filter i think probably maybe idk if it matters though
+    // definitely wasnt
 
     fun <T> List<T>.without(vararg items: T): List<T> = with(this.toMutableList()) {
-        items.forEach { this.remove(it) }
+        removeAll { it in items }
         return@with this
     }
 
     fun <K, V> Map<K, V>.without(vararg items: K): Map<K, V> = with(this.toMutableMap()) {
-        items.forEach { this.remove(it) }
+        keys.removeAll { it in items }
         return@with this
     }
 
@@ -56,16 +57,6 @@ object Utils {
     inline val getMouseX: Double get() = Mouse.getX() * mc.currentScreen.width.toDouble() / mc.displayWidth
 
     inline val getMouseY: Double get() = mc.currentScreen.height - Mouse.getY() * mc.currentScreen.height.toDouble() / mc.displayHeight - 1
-
-    /**
-     * Gets the height of a square array given width, rows, columns, and padding.
-     *
-     * use height and swap rows and columns to get the width given height.
-     */
-    fun getProperHeight(width: Int, rows: Int, columns: Int, padding: Int): Int =
-        rows * ((width - (columns - 1) * padding) / columns) + (rows - 1) * padding
-
-    fun getBoxHeight(size: Int, lineY: Number, length: Int) = (length - (size - 1) * lineY.toInt()) / size
 
     fun drawPlayerOnScreen(x: Double, y: Double, scale: Int, mouseX: Int, mouseY: Int, renderPlayer: EntityLivingBase) {
         GlStateManager.pushMatrix()

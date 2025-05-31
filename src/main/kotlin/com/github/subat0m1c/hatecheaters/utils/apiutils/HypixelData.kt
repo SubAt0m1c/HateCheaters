@@ -44,10 +44,21 @@ object HypixelData {
 
     @Serializable
     data class ProfilesData(
+        val error: String? = null,
         val cause: String? = null,
         @SerialName("profiles")
-        val profiles: List<Profiles> = emptyList(),
-    )
+        private val profileList: List<Profiles>? = emptyList(), // for some reason this gets sent as null instead of empty sometimes. kinda weird.
+    ) {
+        @Transient
+        val profiles = profileList.orEmpty()
+
+        @Transient
+        val failed: String? = when {
+            error != null -> error
+            cause != null -> cause
+            else -> null
+        }
+    }
 
     @Serializable
     data class Profiles(
@@ -94,6 +105,7 @@ object HypixelData {
         val playerStats: PlayerStats = PlayerStats(),
         val slayer: Slayers = Slayers(),
         val inventory: Inventory = Inventory(),
+        val collection: Map<String, Long> = mapOf()
     ) {
         /**
          * Taken and modified from [Skytils](https://github.com/Skytils/SkytilsMod) under [AGPL-3.0](https://github.com/Skytils/SkytilsMod/blob/1.x/LICENSE.md).
@@ -138,7 +150,10 @@ object HypixelData {
     data class PlayerStats(
         val kills: Map<String, Int> = emptyMap(),
         val deaths: Map<String, Int> = emptyMap(),
-    )
+    ) {
+        @Transient
+        val bloodMobKills = (kills["watcher_summon_undead"] ?: 0) + (kills["master_watcher_summon_undead"] ?: 0)
+    }
 
     @Serializable
     data class CrimsonIsle(
@@ -299,7 +314,10 @@ object HypixelData {
     data class PetsData(
         //todo other useless things here
         val pets: List<Pet> = emptyList()
-    )
+    ) {
+        @Transient
+        val activePet = pets.find { it.active }
+    }
 
     @Serializable
     data class Pet(
@@ -430,7 +448,9 @@ object HypixelData {
         val fastestTimeSPlus: Map<String, Long> = emptyMap(),
         @SerialName("most_damage_Archer")
         val mostDamageArcher: Map<String, Double> = emptyMap(),
-    )
+    ) {
+//        @Transient val total =
+    }
 
     @Serializable
     data class BestRun(
@@ -756,7 +776,10 @@ object HypixelData {
         val itemStacks: List<ItemStack?> get() = with(data) {
             if (isEmpty()) return emptyList()
             val itemNBTList = CompressedStreamTools.readCompressed(Base64.decode(this).inputStream()).getTagList("i", Constants.NBT.TAG_COMPOUND)
-            (0).rangeUntil(itemNBTList.tagCount()).map { itemNBTList.getCompoundTagAt(it).takeUnless { it.hasNoTags() }?.let { ItemStack.loadItemStackFromNBT(it) } }
+            0.rangeUntil(itemNBTList.tagCount()).map {
+                itemNBTList.getCompoundTagAt(it).takeUnless { it.hasNoTags() }
+                    ?.let { ItemStack.loadItemStackFromNBT(it) }
+            }
         }
     }
 

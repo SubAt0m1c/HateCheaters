@@ -18,6 +18,7 @@ import com.github.subat0m1c.hatecheaters.utils.ChatUtils.mcWidth
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.colorName
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.maxMagicalPower
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.petItem
+import com.github.subat0m1c.hatecheaters.utils.LogHandler
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerInfo
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.cappedSkillAverage
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.cataLevel
@@ -68,7 +69,7 @@ object Overview: Pages.PVPage("Overview") {
             "§6Skill Average§7: §${ct.fontCode}${profile.playerData.cappedSkillAverage.round(2).colorize(55)} §7(${profile.playerData.skillAverage.round(2)})",
             "§bSecrets§7: ${profile.dungeons.secrets.commas.colorizeNumber(100000)} §7(${(profile.dungeons.secrets.toDouble()/(mmComps + floorComps)).round(2).colorize(15.0)}§7)",
             "Magical Power: ${profile.assumedMagicalPower.colorize(maxMagicalPower)}",
-            "§${ct.fontCode}${profile.pets.pets.find { it.active }?.colorName ?: "None!"} ${profile.pets.pets.find { it.active }?.petItem?.let { "§7(§${ct.fontCode}${it}§7)" } ?: ""}",
+            "§${ct.fontCode}${profile.pets.activePet?.colorName ?: "None!"} ${profile.pets.pets.find { it.active }?.petItem?.let { "§7(§${ct.fontCode}${it}§7)" } ?: ""}",
         )
     }
 
@@ -105,8 +106,8 @@ object Overview: Pages.PVPage("Overview") {
         var playerLocationSkin: ResourceLocation? = null
         var playerSkinType: String? = null
 
-        try {
-            Minecraft.getMinecraft().skinManager.loadProfileTextures(
+        runCatching {
+            mc.skinManager.loadProfileTextures(
                 gameProfile,
                 { type, location1, profileTexture ->
                     when (type) {
@@ -122,25 +123,17 @@ object Overview: Pages.PVPage("Overview") {
                 },
                 false
             )
-        } catch (_: Exception) {}
+        }.onFailure { LogHandler.Logger.warning("Failed to load skin data for ${player.name}: $it") }
 
+        playerEntity = object : EntityOtherPlayerMP(mc.theWorld, gameProfile) {
+            override fun getLocationSkin(): ResourceLocation =
+                playerLocationSkin ?: DefaultPlayerSkin.getDefaultSkin(uniqueID)
 
-        val playerE = object : EntityOtherPlayerMP(Minecraft.getMinecraft().theWorld, gameProfile) {
-            override fun getLocationSkin(): ResourceLocation {
-                return playerLocationSkin?: DefaultPlayerSkin.getDefaultSkin(uniqueID)
-            }
-            override fun getLocationCape(): ResourceLocation {
-                return playerLocationCape ?: super.getLocationCape()
-            }
-
-            override fun getSkinType(): String {
-                return playerSkinType ?: DefaultPlayerSkin.getSkinType(uniqueID)
-            }
+            override fun getLocationCape(): ResourceLocation = playerLocationCape ?: super.getLocationCape()
+            override fun getSkinType(): String = playerSkinType ?: DefaultPlayerSkin.getSkinType(uniqueID)
 
             override fun getAlwaysRenderNameTagForRender(): Boolean = false
         }
-
-        playerEntity = playerE
     }
 
     private fun getDashedUUID(uuidStr: String): UUID {

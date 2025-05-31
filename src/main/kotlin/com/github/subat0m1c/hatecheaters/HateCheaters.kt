@@ -13,8 +13,10 @@ import com.github.subat0m1c.hatecheaters.utils.LogHandler
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import com.github.subat0m1c.hatecheaters.utils.OdinCheck.checkIfOdinIsLoaded
 import kotlinx.coroutines.*
+import kotlinx.serialization.json.Json
 import me.odinmain.OdinMain.mc
 import me.odinmain.features.ModuleManager
+import com.github.subat0m1c.hatecheaters.utils.toasts.ToastRenderer
 import net.minecraft.client.gui.GuiScreen
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod
@@ -33,7 +35,7 @@ class HateCheaters {
         checkIfOdinIsLoaded()
 
         listOf(
-            this, ItemGridDSL, ExtraStatsHandler
+            this, ItemGridDSL, ExtraStatsHandler, ToastRenderer
         ).forEach { MinecraftForge.EVENT_BUS.register(it) }
     }
 
@@ -54,6 +56,8 @@ class HateCheaters {
 
     companion object {
         val version = "@MODVERSION@"
+
+        val json: Json = Json { ignoreUnknownKeys = true }
 
         var screen: GuiScreen? = null
         val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())

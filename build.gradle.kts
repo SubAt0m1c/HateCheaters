@@ -16,6 +16,7 @@ plugins {
 //Constants:
 
 val requiredOdin: String by project
+val useActions = project.hasProperty("useActions") && project.property("useActions") == "true"
 val odinRepository: String by project
 val baseGroup: String by project
 val mcVersion: String by project
@@ -32,16 +33,28 @@ blossom {
 }
 
 tasks.register("downloadOdin") {
-    val downloadUrl = "https://github.com/${odinRepository}/releases/download/${requiredOdinVersion}/${requiredOdin}"
+    val downloadUrl =
+        if (!useActions) "https://github.com/${odinRepository}/releases/download/${requiredOdinVersion}/${requiredOdin}" else "https://nightly.link/odtheking/Odin/workflows/build/main/Odin%20Build.zip"
     val targetFile = file("build/resources/Odin")
+
+    val targetOdin = if (!useActions) requiredOdin else requiredOdin.substringBefore(".jar") + ".zip"
 
     doLast {
         targetFile.mkdirs()
 
         URL(downloadUrl).openStream().use { input ->
-            FileOutputStream(File(targetFile, requiredOdin)).use { output ->
+            FileOutputStream(File(targetFile, targetOdin)).use { output ->
                 input.copyTo(output)
             }
+        }
+
+        if (useActions) {
+            val downloadFile = file("build/resources/Odin/${targetOdin}")
+            copy {
+                from(zipTree(downloadFile))
+                into(targetFile)
+            }
+            downloadFile.delete()
         }
     }
 }

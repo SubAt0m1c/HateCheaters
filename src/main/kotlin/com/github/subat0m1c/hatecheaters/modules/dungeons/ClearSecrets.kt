@@ -6,7 +6,7 @@ import com.github.subat0m1c.hatecheaters.events.impl.LoadDungeonPlayers
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.chatConstructor
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.ExtraStatsHandler
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSecrets
+import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelApi.getSecrets
 import kotlinx.coroutines.*
 import me.odinmain.features.Module
 import me.odinmain.features.settings.impl.BooleanSetting
@@ -18,9 +18,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object ClearSecrets : Module(
     "Clear Secrets",
-    description = "Displays each team members secrets on run complete.",
+    desc = "Displays each team members secrets on run complete.",
 ) {
-    private val compactMessage by BooleanSetting("Compact Message", false, description = "Shows teammate data in one line instead of multiple lines.")
+    private val compactMessage by BooleanSetting(
+        "Compact Message",
+        false,
+        desc = "Shows teammate data in one line instead of multiple lines."
+    )
 
     private inline val teammates get() = DungeonUtils.dungeonTeammates.map { it.asTeammate() }.toSet()
     private val teammateList = hashSetOf<Teammate>()

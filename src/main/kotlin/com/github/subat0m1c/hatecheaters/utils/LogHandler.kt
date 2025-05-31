@@ -21,15 +21,17 @@ object LogHandler {
     object Logger {
         val log: javaLogger = javaLogger.getLogger("HateCheatersLogger")
 
-        fun info(message: String?) = log.info(message).also { debug(message) }
+        fun info(message: Any?) = log.info(message.toString()).also { debug(message) }
 
-        fun warning(message: String?) = log.warning(message).also { debug(message) }
+        fun warning(message: Any?) = log.warning(message.toString()).also { debug(message) }
 
-        fun severe(message: String?) = log.severe(message).also { debug(message) }
+        fun severe(message: Any?) = log.severe(message.toString()).also { debug(message) }
 
-        fun fine(message: String?) = log.fine(message).also { debug(message) }
+        fun fine(message: Any?) = log.fine(message.toString()).also { debug(message) }
 
-        fun message(message: String, data: Any? = null) = log.info("Recieved message: $message." + (data?.let { " With data: $it" } ?: "")).also { debug("$message." + (data?.let { " With data: $it" } ?: "")) }
+        fun message(message: Any, data: Any? = null) =
+            log.info("Recieved message: $message." + (data?.let { " With data: $it" } ?: ""))
+                .also { debug("$message." + (data?.let { " With data: $it" } ?: "")) }
     }
 
     init {
@@ -72,10 +74,10 @@ object LogHandler {
         Logger.log.useParentHandlers = false
     }.onFailure { it.printStackTrace() }
 
-    fun logJsonToFile(jsonString: String, name: String = "unknown", type: String = "unknown", dir: String = "hypixel_logs") {
-        if (!HateCheatersModule.enabled || !HateCheatersModule.logJson) return
-        val logFolder = File(File("config/hatecheaters"), dir)
-        if (!logFolder.exists()) logFolder.mkdirs()
-        File(logFolder, "${name}_${type}_${getCurrentDateTimeString()}.json").writeText(jsonString)
-    }
+//    fun logJsonToFile(jsonString: String, name: String = "unknown", type: String = "unknown", dir: String = "hypixel_logs") {
+//        if (!HateCheatersModule.enabled || !HateCheatersModule.logJson) return
+//        val logFolder = File(File("config/hatecheaters"), dir)
+//        if (!logFolder.exists()) logFolder.mkdirs()
+//        File(logFolder, "${name}_${type}_${getCurrentDateTimeString()}.json").writeText(jsonString)
+//    }
 }

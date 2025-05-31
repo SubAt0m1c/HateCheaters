@@ -4,12 +4,35 @@ import com.github.stivais.commodore.Commodore
 import com.github.stivais.commodore.utils.GreedyString
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
-import com.github.subat0m1c.hatecheaters.utils.CheckUpdate
-import com.github.subat0m1c.hatecheaters.utils.WebUtils.testQue
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSkyblockProfile
+import com.github.subat0m1c.hatecheaters.utils.networkutils.CheckUpdate
+import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelApi.getProfile
+import com.github.subat0m1c.hatecheaters.utils.toasts.Toast
+import com.github.subat0m1c.hatecheaters.utils.toasts.ToastManager
+import me.odinmain.OdinMain.mc
+import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.client.gui.GuiScreen
+import net.minecraft.entity.EntityTracker
+import net.minecraft.entity.ai.EntityAIWatchClosest
+import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraft.item.Item
+import net.minecraft.item.ItemStack
+import net.minecraft.network.play.client.C01PacketChatMessage
+import net.minecraft.network.play.server.S2FPacketSetSlot
+import net.minecraft.util.ChatComponentText
+import net.minecraft.util.Vec3
+import java.util.UUID
 
 val DevCommand = Commodore("hcdev") {
+    literal("toast").runs { scale: Float?, message: GreedyString? ->
+        ToastManager.addToast(
+            Toast(
+                "Test Toast",
+                message?.string ?: "",
+                textScale = scale ?: 1f
+            )
+        )
+    }
 
     literal("checkupdate").runs {
         modMessage("Checking for updates...")
@@ -17,18 +40,11 @@ val DevCommand = Commodore("hcdev") {
     }
 
     literal("apitest") {
-        runs { name: String, skipCache: Boolean? ->
+        runs { name: String ->
             launch {
-                getSkyblockProfile(name, skipCache ?: false)
+                getProfile(name)
                     .getOrElse { return@launch modMessage(it.message) }.memberData ?: return@launch modMessage("Could not find player data.")
                 modMessage("Succeeded!")
-            }
-        }
-
-        literal("que").runs {
-            launch {
-                modMessage("testing que...")
-                testQue()
             }
         }
     }

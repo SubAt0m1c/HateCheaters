@@ -4,7 +4,7 @@ import com.github.stivais.commodore.Commodore
 import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer.pvCommand
 import com.github.subat0m1c.hatecheaters.modules.render.launchPV
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.cachedPlayers
+import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelApi.cachedPlayers
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.containsOneOf
 

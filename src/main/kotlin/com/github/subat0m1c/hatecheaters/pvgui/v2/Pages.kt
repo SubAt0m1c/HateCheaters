@@ -34,39 +34,43 @@ object Pages {
         //Test(page = com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Test)
     }
 
+    // TODO: Make this look good
     abstract class PVPage(val name: String) {
-        inline val player: PlayerInfo get() = playerData ?: dummyPlayer // these should never be rendered when null, however making them not nullable without asserting is good.
-        inline val profile: MemberData get() = player.profileOrSelected(profileName)?.members?.get(player.uuid) ?: MemberData(playerId = "")
-        inline val ct get() = ProfileViewer.currentTheme
+        protected inline val player: PlayerInfo
+            get() = playerData
+                ?: dummyPlayer // these should never be rendered when null, however making them not nullable without asserting is good.
+        protected inline val profile: MemberData
+            get() = player.profileOrSelected(profileName)?.members?.get(player.uuid) ?: MemberData(playerId = "")
+        protected inline val ct get() = ProfileViewer.currentTheme
 
         private val totalWidth = 1000
         private val lineX = 216
-        val totalHeight = 560
-        val ot = 1
+        protected val totalHeight = 560
+        protected val ot = 1
 
         /** Used as a spacer as well */
-        val lineY = 10
+        protected val lineY = 10
 
-        val sx = -totalWidth / 2
-        val sy = -totalHeight / 2
+        protected val sx = -totalWidth / 2
+        protected val sy = -totalHeight / 2
 
-        val mainWidth = (totalWidth - (lineX + lineY * 2))
-        val mainHeight = totalHeight-lineY * 2
+        protected val mainWidth = (totalWidth - (lineX + lineY * 2))
+        protected val mainHeight = totalHeight - lineY * 2
 
-        val pageHeight by lazy { (mainHeight * 0.9 - (lineY * (2 + PageEntries.entries.size - 1))) / PageEntries.entries.size }
+        protected val pageHeight by lazy { (mainHeight * 0.9 - (lineY * (2 + PageEntries.entries.size - 1))) / PageEntries.entries.size }
 
         private val lastY by lazy { lineY + ((pageHeight + lineY) * PageEntries.entries.size) }
         private val lastHeight by lazy { totalHeight - lastY - lineY }
 
         private val pageWidth = lineX - lineY * 2
         private val pageCenter = lineY+pageWidth / 2
-        val mainX = (lineX+ot) + (lineY)
+        protected val mainX = (lineX + ot) + (lineY)
 
-        val mainCenterX = lineX + ot + lineY + mainWidth / 2
+        protected val mainCenterX = lineX + ot + lineY + mainWidth / 2
 
         // maybe overcomplicated but it works :)
-        inline val mouseX get() = ((getMouseX * ScaledResolution(mc).scaleFactor - mc.displayWidth / 2) * 1f / scale) - sx
-        inline val mouseY get() = ((getMouseY * ScaledResolution(mc).scaleFactor - mc.displayHeight / 2) * 1f / scale) - sy
+        protected inline val mouseX get() = ((getMouseX * ScaledResolution(mc).scaleFactor - mc.displayWidth / 2) * 1f / scale) - sx
+        protected inline val mouseY get() = ((getMouseY * ScaledResolution(mc).scaleFactor - mc.displayHeight / 2) * 1f / scale) - sy
 
         // todo make vertical button dsl for this
         fun preDraw() {

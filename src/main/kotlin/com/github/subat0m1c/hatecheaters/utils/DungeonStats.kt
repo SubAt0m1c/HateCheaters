@@ -1,12 +1,17 @@
 package com.github.subat0m1c.hatecheaters.utils
 
 import com.github.subat0m1c.hatecheaters.modules.dungeons.BetterPartyFinder.importantItems
+import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer.statsPv
+import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Profile.profile
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.formatted
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.chatConstructor
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorizeNumber
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.commas
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.secondsToMinutes
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.toastMessage
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.witherImpactRegex
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.colorName
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.maxMagicalPower
@@ -21,6 +26,7 @@ import me.odinmain.utils.round
 import me.odinmain.utils.skyblock.getChatBreak
 import me.odinmain.utils.skyblock.lore
 import me.odinmain.utils.skyblock.skyblockID
+import net.minecraft.item.ItemStack
 
 object DungeonStats {
     private inline val petSet get() = setOf("ENDER_DRAGON", "SPIRIT", "GOLDEN_DRAGON", "JELLYFISH")
@@ -37,18 +43,25 @@ object DungeonStats {
 
         val armor = currentProfile.inventory.invArmor.itemStacks.filterNotNull().reversed()
 
-        val pets = buildMap {
-            currentProfile.pets.pets.forEachIndexed { i, pet ->
-                if (pet.type in petMap) put(pet.colorName, pet.heldItem?.formatted)
+        val pets = buildList {
+            currentProfile.pets.pets.forEach { pet ->
+                if (pet.type !in petMap) return@forEach
+                add((pet.colorName + if (pet.type == "GOLDEN_DRAGON") " §8(${currentProfile.collection["GOLD_INGOT"]?.toString()?.length ?: 0})" else "") to pet.heldItem?.formatted)
             }
         }
 
-        val items = importantItems.toSet().map { Pair(it, it.replace(" ", "_").uppercase() in allItems.map { it.skyblockID } ) }
+        val formattedImportantItems = importantItems.toSet().map { it.replace(" ", "_").uppercase() }
+
+        val items = mutableSetOf<ItemStack>()
+        var hype: ItemStack? = null
+
+        allItems.forEach { item ->
+            if (item.skyblockID in formattedImportantItems) item?.let { items.add(it) }
+            if (item?.lore?.any { it.noControlCodes.matches(witherImpactRegex) } == true && hype == null) hype = item
+        }
 
         val mmComps = catacombs.dungeonTypes.mastermode.tierComps.without("total").values.sum()
         val floorComps = catacombs.dungeonTypes.catacombs.tierComps.without("total").values.sum()
-
-        val hype = allItems.find { it?.lore?.any { it.noControlCodes.matches(witherImpactRegex) } == true }
 
         val tunings = currentProfile.tunings
 
@@ -57,7 +70,7 @@ object DungeonStats {
 
             clickText(
                 "\n§3| §2Player: §b$name",
-                "/pv $name",
+                "/${if (statsPv) "hcpv" else "pv"} $name",
                 listOf("§e§lCLICK §r§ato open profile viewer for §b$name")
             )
 
@@ -111,8 +124,11 @@ object DungeonStats {
 
             if (pets.isNotEmpty()) { // this isnt string built to allow different hover texts
                 displayText("\n§3| ")
-                pets.entries.forEachIndexed { i, (pet, item) ->
-                    hoverText("${pet}${if (i != pets.entries.size - 1) ", " else "\n"}", listOf("§7Held Item: ${item ?: "§o§4None!"}"))
+                pets.forEachIndexed { i, (pet, item) ->
+                    hoverText(
+                        "${pet}${if (i != pets.size - 1) "§7, " else "\n"}",
+                        listOf("§7Held Item: ${item ?: "§o§4None!"}")
+                    )
                 }
             }
 
@@ -126,10 +142,12 @@ object DungeonStats {
                 mmpbs.map { "§cFloor ${it.first} §7| §2${it.second?.let { secondsToMinutes(it * 0.001) } ?: "§o§4None!"}" }
             )
 
-            if (importantItems.isNotEmpty() && currentProfile.inventoryApi) hoverText(
-                "\n\n§3| §5Important Items  §e§lHOVER",
-                items.map { "§b${it.first.capitalizeWords()} §7-> ${if (it.second) "§a✔" else "§4§l✖"}" }
-            )
+            displayText()
+
+            if (importantItems.isNotEmpty() && currentProfile.inventoryApi) {
+                displayText("\n§3| Items:")
+                items.forEach { hoverText(it.displayName, (listOf(it.displayName) + it.lore)) }
+            }
 
             displayText(getChatBreak())
         }.print()

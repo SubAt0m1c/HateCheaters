@@ -1,13 +1,15 @@
 package com.github.subat0m1c.hatecheaters.pvgui.v2
 
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
+import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer.invwalk
 import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer.scale
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.currentPage
 import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Overview.setPlayer
+import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.InvWalkInput
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.ProfileLazy
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerInfo
-import com.github.subat0m1c.hatecheaters.utils.apiutils.ParseUtils.getSkyblockProfile
+import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelApi.getProfile
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager.scale
@@ -45,10 +47,18 @@ object PVGui : GuiScreen() {
     override fun initGui() {
         currentPage = Pages.PageEntries.Overview
 
+        if (!invwalk) return
+        mc.thePlayer?.let { player ->
+            if (player.movementInput !is InvWalkInput) {
+                player.movementInput = InvWalkInput()
+            }
+        }
+
         super.initGui()
     }
 
     override fun onGuiClosed() {
+        mc.thePlayer.movementInput = MovementInputFromOptions(mc.gameSettings)
         loadText = "Loading..."
         playerData = null
         profileName = null
@@ -57,7 +67,7 @@ object PVGui : GuiScreen() {
     fun updateProfile(profile: String?) = playerData?.profileOrSelected(profile)?.cuteName?.let { profileName = it }
 
     fun loadPlayer(name: String?, profileName: String? = null) = launch {
-        getSkyblockProfile(name ?: mc.thePlayer.name).fold(
+        getProfile(name ?: mc.thePlayer.name).fold(
             onSuccess = {
                 playerData = it
                 setPlayer(it)

@@ -1,11 +1,14 @@
 package com.github.subat0m1c.hatecheaters.pvgui.v2.pages
 
+import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui.profileName
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.centeredText
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.profileLazy
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorizeNumber
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.commas
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.truncate
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.cappedSkillAverage
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.getSkillCap
@@ -34,6 +37,14 @@ object Profile: Pages.PVPage("Profile") {
         }
     }
 
+    private val otherText: List<String> by profileLazy {
+        listOf(
+            "§6Purse§7: §r${profile.currencies.coins.truncate(3)}",
+            "§6Bank§7: §r${player.profileOrSelected(profileName)?.banking?.balance?.truncate(3) ?: 0}${if (player.profileData.profiles?.size?.let { it > 1 } == true) " | ${profile.profile.bankAccount.truncate}" else ""}",
+            "§6Gold Collection§7: §r${profile.collection["GOLD_INGOT"]?.let { "${it.commas.colorizeNumber(100000000)} §8(${it.toString().length})" }}"
+        )
+    }
+
     private val skillEntryHeight: Double by profileLazy { (mainHeight- mainLineY-lineY-ot) / skillText.size }
 
     private val slayerText: List<Pair<String, String>> by profileLazy {
@@ -43,13 +54,18 @@ object Profile: Pages.PVPage("Profile") {
         }
     }
 
-    private val slayerEntryHeight: Double by profileLazy { mainHeight.toDouble() / slayerText.size }
+    private val middleY: Double = mainHeight / 2.0
+    private val halfHeight: Double = mainHeight - middleY - lineY
+
+    private val slayerEntryHeight: Double by profileLazy { halfHeight / slayerText.size }
+    private val otherEntryHeight: Double by profileLazy { halfHeight / otherText.size }
 
     override fun draw() {
         roundedRectangle(mainCenterX, lineY, ot, mainHeight, ct.line)
         centeredText(skillAverage, mainCenterX - mainWidth/4-lineY/3, lineY + mainLineY /2, 2.7, ct.font)
 
         roundedRectangle(mainX, mainLineY, lineWidth, ot, ct.line)
+        roundedRectangle(lineY + mainCenterX, lineY * 2 + halfHeight, lineWidth, ot, ct.line)
 
         skillText.forEachIndexed { i, text ->
             val y = (mainLineY + lineY + ot) + (skillEntryHeight*i) + skillEntryHeight/2 - getMCTextHeight()*2.5/2
@@ -59,6 +75,11 @@ object Profile: Pages.PVPage("Profile") {
         slayerText.forEachIndexed { i, text ->
             val y = lineY + slayerEntryHeight*i + slayerEntryHeight/2 - getMCTextHeight()*2.5/2
             mcText(text.second, mainCenterX + lineY + ot, y, 2.5, getSlayerColor(text.first), shadow = true, center = false)
+        }
+
+        otherText.forEachIndexed { i, text ->
+            val y = middleY + lineY + otherEntryHeight * i + otherEntryHeight / 2 - getMCTextHeight() * 2.5 / 2
+            mcText(text, mainCenterX + lineY + ot, y, 2.5, ct.font, shadow = true, center = false)
         }
     }
 }

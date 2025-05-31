@@ -12,17 +12,16 @@ object ExtraStatsHandler {
     private var expectingStats = false
     private var receivedStats = false
 
-    fun waitForOtherMods() {
-        runIn(15, true) {
-            if (receivedStats) return@runIn
-            expectingStats = true
-            sendCommand("showextrastats")
-            runIn(5, true) { expectingStats = false }
-        }
+    fun waitForOtherMods() = runIn(15, true) {
+        if (receivedStats || expectingStats) return@runIn
+        expectingStats = true
+        sendCommand("showextrastats")
+        runIn(5, true) { expectingStats = false }
     }
 
     @SubscribeEvent
     fun onWorldLoad(event: WorldEvent.Load) {
+        expectingStats = false
         receivedStats = false
     }
 

@@ -1,4 +1,4 @@
-package com.github.subat0m1c.hatecheaters.utils
+package com.github.subat0m1c.hatecheaters.utils.networkutils
 
 import com.github.subat0m1c.hatecheaters.HateCheaters
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
