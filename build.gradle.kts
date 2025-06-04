@@ -67,42 +67,14 @@ tasks.named("compileKotlin") {
     dependsOn("downloadOdin")
 }
 
+val devenvMod: Configuration by configurations.creating {
+    isTransitive = false
+    isVisible = false
+}
+
 // Toolchains:
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(8))
-}
-
-// Minecraft configuration:
-loom {
-    log4jConfigs.from(file("log4j2.xml"))
-    launchConfigs {
-        "client" {
-            property("mixin.debug", "true")
-            arg("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
-        }
-    }
-    runConfigs {
-        "client" {
-            if (SystemUtils.IS_OS_MAC_OSX) {
-                // This argument causes a crash on macOS
-                vmArgs.remove("-XstartOnFirstThread")
-            }
-        }
-        remove(getByName("server"))
-    }
-    forge {
-        pack200Provider.set(dev.architectury.pack200.java.Pack200Adapter())
-        // If you don't want mixins, remove this lines
-        mixinConfig("mixins.$modid.json")
-	    if (transformerFile.exists()) {
-			println("Installing access transformer")
-		    accessTransformer(transformerFile)
-	    }
-    }
-    // If you don't want mixins, remove these lines
-    mixin {
-        defaultRefmapName.set("mixins.$modid.refmap.json")
-    }
 }
 
 tasks.compileJava {
@@ -135,6 +107,7 @@ dependencies {
     forge("net.minecraftforge:forge:1.8.9-11.15.1.2318-1.8.9")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
     implementation(files("build/resources/Odin/${requiredOdin}"))
+    devenvMod(files("build/resources/Odin/${requiredOdin}"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
     shadowImpl("org.apache.logging.log4j:log4j-core:2.20.0")
@@ -158,6 +131,41 @@ dependencies {
     // If you don't want to log in with your real minecraft account, remove this line
     //runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.2.1")
 
+}
+
+
+// Minecraft configuration:
+loom {
+    log4jConfigs.from(file("log4j2.xml"))
+    launchConfigs {
+        "client" {
+            property("mixin.debug", "true")
+            arg("--tweakClass", "org.spongepowered.asm.launch.MixinTweaker")
+            arg("--mods", devenvMod.resolve().joinToString(",") { it.relativeTo(file("run")).path })
+        }
+    }
+    runConfigs {
+        "client" {
+            if (SystemUtils.IS_OS_MAC_OSX) {
+                // This argument causes a crash on macOS
+                vmArgs.remove("-XstartOnFirstThread")
+            }
+        }
+        remove(getByName("server"))
+    }
+    forge {
+        pack200Provider.set(dev.architectury.pack200.java.Pack200Adapter())
+        // If you don't want mixins, remove this lines
+        mixinConfig("mixins.$modid.json")
+        if (transformerFile.exists()) {
+            println("Installing access transformer")
+            accessTransformer(transformerFile)
+        }
+    }
+    // If you don't want mixins, remove these lines
+    mixin {
+        defaultRefmapName.set("mixins.$modid.refmap.json")
+    }
 }
 
 // Tasks:
