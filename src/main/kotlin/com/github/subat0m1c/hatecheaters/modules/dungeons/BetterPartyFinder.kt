@@ -211,7 +211,7 @@ object BetterPartyFinder : Module(
     ) { kickedList.clear() }.withDependency { kickCache }
 
     private val pfRegex =
-        Regex("^Party Finder > (?:\\[.{1,7}])? ?(.{1,16}) joined the dungeon group! \\(?:.*\\)$") //https://regex101.com/r/XYnAVm/1
+        Regex("^Party Finder > (?:\\[.{1,7}])? ?(.{1,16}) joined the dungeon group! \\(.*\\)$") //https://regex101.com/r/XYnAVm/2
     private val kickRegex = Regex("^(?:\\[.{1,7}])? ?(.{1,16}) has been removed from the party\\.$")
 
     private val kickedList = mutableListOf<String>()
