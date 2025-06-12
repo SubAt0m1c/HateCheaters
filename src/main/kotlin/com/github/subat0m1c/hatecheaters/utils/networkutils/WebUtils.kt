@@ -31,7 +31,7 @@ object WebUtils {
         ).onFailure { e -> Logger.warning("Failed to get input stream. Error: ${e.message}") }
 
     suspend fun getUUIDbyName(name: String): Result<MojangData> =
-        streamAndRead<MojangData>("https://api.mojang.com/users/profiles/minecraft/$name")
+        streamAndRead<MojangData>("https://api.minecraftservices.com/minecraft/profile/lookup/name/$name")
 
     private suspend fun clientCall(request: Request): Result<InputStream> = suspendCoroutine { cont ->
         client.newCall(request).enqueue(
