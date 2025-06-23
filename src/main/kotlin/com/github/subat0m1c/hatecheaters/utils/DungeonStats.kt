@@ -2,19 +2,14 @@ package com.github.subat0m1c.hatecheaters.utils
 
 import com.github.subat0m1c.hatecheaters.modules.dungeons.BetterPartyFinder.importantItems
 import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer.statsPv
-import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Profile.profile
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.formatted
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.chatConstructor
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorizeNumber
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.commas
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.secondsToMinutes
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.toastMessage
-import com.github.subat0m1c.hatecheaters.utils.ItemUtils.witherImpactRegex
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.colorName
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.maxMagicalPower
+import com.github.subat0m1c.hatecheaters.utils.ItemUtils.witherImpactRegex
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.cataLevel
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.classAverage
@@ -83,7 +78,7 @@ object DungeonStats {
 
             displayText("""
                 §3| §bSecrets: §f${catacombs.secrets.colorize(100000)} §8: §bAverage: §f${(catacombs.secrets.toDouble()/(mmComps + floorComps)).round(2).colorize(15.0)}
-                §3| §cBlood mobs: §f${(profileKills["watcher_summon_undead"] ?: 0) + (profileKills["master_watcher_summon_undead"] ?: 0)}
+                §3| §cBlood mobs: §f${(profileKills["watcher_summon_undead"] ?: 0f) + (profileKills["master_watcher_summon_undead"] ?: 0f)}
                 """.trimIndent()
             )
 

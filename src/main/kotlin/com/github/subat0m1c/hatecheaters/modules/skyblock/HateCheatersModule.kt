@@ -2,7 +2,6 @@ package com.github.subat0m1c.hatecheaters.modules.skyblock
 
 import com.github.subat0m1c.hatecheaters.utils.networkutils.CheckUpdate
 import com.github.subat0m1c.hatecheaters.utils.toasts.ToastRenderer
-import io.netty.buffer.Unpooled
 import me.odinmain.events.impl.PacketEvent
 import me.odinmain.features.Module
 import me.odinmain.features.settings.AlwaysActive
@@ -11,25 +10,7 @@ import me.odinmain.features.settings.impl.BooleanSetting
 import me.odinmain.features.settings.impl.SelectorSetting
 import me.odinmain.features.settings.impl.StringSetting
 import me.odinmain.utils.skyblock.modMessage
-import net.minecraft.entity.EntityLiving
-import net.minecraft.entity.ai.EntityAITasks.EntityAITaskEntry
-import net.minecraft.entity.ai.EntityAIWatchClosest
-import net.minecraft.entity.monster.EntityZombie
-import net.minecraft.entity.passive.EntityPig
-import net.minecraft.item.Item
-import net.minecraft.item.ItemStack
-import net.minecraft.network.EnumConnectionState
-import net.minecraft.network.EnumPacketDirection
-import net.minecraft.network.PacketBuffer
-import net.minecraft.network.play.server.S02PacketChat
-import net.minecraft.network.play.server.S14PacketEntity.S15PacketEntityRelMove
-import net.minecraft.network.play.server.S20PacketEntityProperties
-import net.minecraft.network.play.server.S2FPacketSetSlot
-import net.minecraft.network.play.server.S32PacketConfirmTransaction
-import net.minecraft.util.ChatComponentScore
-import net.minecraft.util.ChatComponentText
-import net.minecraft.util.IChatComponent
-import net.minecraft.util.Vec3
+import net.minecraft.network.play.server.S38PacketPlayerListItem
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 @AlwaysActive
@@ -100,22 +81,81 @@ object HateCheatersModule : Module(
 //        //println("sent packet: ${event.packet::class.java.simpleName} with id: ${packetId}: $testString")
 //    }
 //
-//    @SubscribeEvent
-//    fun onPacketReceive(event: PacketEvent.Receive) {
-//        val packet = event.packet as? S2FPacketSetSlot ?: return
-//        val windowId = packet.func_149175_c()
-//        val slot = packet.func_149173_d()
-//        val itemStack = packet.func_149174_e()
+    @SubscribeEvent
+    fun onPacketReceive(event: PacketEvent.Receive) {
+        val packet = event.packet as? S38PacketPlayerListItem ?: return
+        modMessage(
+            """
+            Player List Packet:
+            Action: ${packet.action}
+            Entries: ${
+                packet.entries.joinToString("\n") {
+                    """
+                    {
+                        name: ${it?.profile?.name},
+                        id: ${it?.profile?.id},
+                        gameMode: ${it?.gameMode},
+                        ping: ${it?.ping},
+                        displayName: ${it?.displayName}
+                        other: ${
+                        it?.profile?.properties?.entries()?.joinToString("\n") { (key, value) ->
+                            """
+                                {
+                                    key: $key
+                                    property: {
+                                        name: ${value.name}
+                                        value: ${value.value}
+                                        sig: ${value.signature}
+                                    }
+                                }
+                            """.trimIndent()
+                        }
+                    }
+                    }
+                """.trimIndent()
+                }
+            }
+        """.trimIndent()
+        )
+    }
+
+//        if (event.packet !is S3BPacketScoreboardObjective && event.packet !is S3CPacketUpdateScore && event.packet !is S3EPacketTeams) return
+//        if (event.packet is S3BPacketScoreboardObjective) {
+//            val packet = event.packet as? S3BPacketScoreboardObjective ?: return
 //
-//        val newPacket = S2FPacketSetSlot(
-//            windowId,
-//            slot ,
-//            itemStack
-//        )
+//            LogHandler.Logger.info("objective packet: scoreboard name: ${packet.func_149339_c()}, object value: ${packet.func_149337_d()}")
+//        }
+//
+//        if (event.packet is S3CPacketUpdateScore) {
+//            val packet = event.packet as? S3CPacketUpdateScore ?: return
+//
+//            LogHandler.Logger.info("Update score packet: score: ${packet.objectiveName} text: ${packet.playerName}")
+//        }
+//
+//        if (event.packet is S3EPacketTeams) {
+//            val packet = event.packet as? S3EPacketTeams ?: return
+//
+//            LogHandler.Logger.info("""
+//                Teams packet:
+//                team name: ${packet.name},
+//                display name: ${packet.displayName}
+//                suffix: ${packet.suffix},
+//                prefix: ${packet.prefix},
+//                action: ${packet.action},
+//                friendly fire: ${packet.friendlyFlags},
+//                name tag visibility: ${packet.nameTagVisibility},
+//                players: ${packet.players},
+//                color: ${packet.color}
+//            """.trimIndent())
+//        }
+
+//        val packet = event.packet as? S47PacketPlayerListHeaderFooter ?: return
+//        println("header: ${packet.header}, footer: ${packet.footer}")
+//        if (packet.action != S38PacketPlayerListItem.Action.ADD_PLAYER) return
 //
 //        val buf = PacketBuffer(Unpooled.buffer())
 //        val packetId = try {
-//            EnumConnectionState.PLAY.getPacketId(EnumPacketDirection.SERVERBOUND, event.packet)
+//            EnumConnectionState.PLAY.getPacketId(EnumPacketDirection.CLIENTBOUND, packet)
 //        } catch (e: NullPointerException) {
 //            println("${event.packet::class.java.simpleName} failed to get packet id")
 //            null
@@ -124,13 +164,19 @@ object HateCheatersModule : Module(
 //        packetId?.let {
 //            buf.writeVarIntToBuffer(it)
 //        }
-//        newPacket.writePacketData(buf)
+//        packet.writePacketData(buf)
+//
+//        val payload = PacketBuffer(Unpooled.buffer())
+//        payload.writeVarIntToBuffer(buf.readableBytes())
+//        payload.writeBytes(buf)
+//        println("readable bytes: ${payload.readableBytes()}")
 //
 //        val testString = StringBuilder()
-//        for (i in 0 until buf.readableBytes()) {
-//            testString.append(String.format("%02X ", buf.getByte(i)))
+//        for (i in 0 until payload.readableBytes()) {
+//            testString.append(String.format("%02X ", payload.getByte(i)))
 //        }
 //
+//        println("packet: $packet")
+//
 //        println("Recieved and made a packet: $testString")
-//    }
 }

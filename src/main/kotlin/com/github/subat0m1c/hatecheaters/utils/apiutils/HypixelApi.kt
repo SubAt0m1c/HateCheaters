@@ -2,17 +2,17 @@ package com.github.subat0m1c.hatecheaters.utils.apiutils
 
 import com.github.subat0m1c.hatecheaters.modules.skyblock.HateCheatersModule
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
-import com.github.subat0m1c.hatecheaters.utils.networkutils.WebUtils.getUUIDbyName
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerInfo
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.ProfilesData
 import com.github.subat0m1c.hatecheaters.utils.networkutils.WebUtils
+import com.github.subat0m1c.hatecheaters.utils.networkutils.WebUtils.getUUIDbyName
 import com.github.subat0m1c.hatecheaters.utils.networkutils.WebUtils.streamAndRead
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 object HypixelApi {
     private val url =
-        if (HateCheatersModule.server == "default") "https://subat0mic.click/" else "https://${HateCheatersModule.server}/"
+        if (HateCheatersModule.server == "default") "http://127.0.0.1:8000/" else "https://${HateCheatersModule.server}/"
 
     private fun getServer(endpoint: EndPoint, uuid: String): String = url + endpoint.name.lowercase() + "/" + uuid
 

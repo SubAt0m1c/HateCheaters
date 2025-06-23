@@ -1,21 +1,26 @@
 package com.github.subat0m1c.hatecheaters.modules.dungeons
 
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
-import com.github.subat0m1c.hatecheaters.utils.DungeonStats.displayDungeonData
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.formatted
+import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.secondsToMinutes
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.toastMessage
+import com.github.subat0m1c.hatecheaters.utils.DungeonStats.displayDungeonData
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.witherImpactRegex
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelApi.getProfile
 import me.odinmain.features.Module
 import me.odinmain.features.settings.Setting.Companion.withDependency
 import me.odinmain.features.settings.impl.*
-import me.odinmain.utils.*
-import me.odinmain.utils.skyblock.*
+import me.odinmain.utils.noControlCodes
+import me.odinmain.utils.round
+import me.odinmain.utils.runIn
+import me.odinmain.utils.skyblock.PlayerUtils
 import me.odinmain.utils.skyblock.PlayerUtils.alert
-import kotlin.collections.HashSet
+import me.odinmain.utils.skyblock.lore
+import me.odinmain.utils.skyblock.partyMessage
+import me.odinmain.utils.skyblock.sendCommand
 
 object BetterPartyFinder : Module(
     name = "Better Party Finder",
@@ -282,8 +287,9 @@ object BetterPartyFinder : Module(
                     if (it < (secretsreq * 1000)) kickedReasons.add("Did not meet secret req: ${it}/$secretsreq")
                 }
 
-                val mmComps = (currentProfile.dungeons.dungeonTypes.mastermode.tierComps.entries.sumOf { entry ->  entry.value.takeUnless { entry.key == "total" } ?: 0 })
-                val floorComps = (currentProfile.dungeons.dungeonTypes.catacombs.tierComps.entries.sumOf { entry ->  entry.value.takeUnless { entry.key == "total" } ?: 0 })
+                val mmComps = (currentProfile.dungeons.dungeonTypes.mastermode.tierComps.without("total")).values.sum()
+                val floorComps =
+                    (currentProfile.dungeons.dungeonTypes.mastermode.tierComps.without("total")).values.sum()
                 ((secretCount.toDouble()/(mmComps + floorComps).toDouble()).toFloat()).let {
                     if (!savgKick) return@let
                     if (it < savgreq) kickedReasons.add("Did not meet savg req: ${it.round(2)}/$savgreq")

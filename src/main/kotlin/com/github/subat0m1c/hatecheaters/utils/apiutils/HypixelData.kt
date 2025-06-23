@@ -148,11 +148,12 @@ object HypixelData {
 
     @Serializable
     data class PlayerStats(
-        val kills: Map<String, Int> = emptyMap(),
-        val deaths: Map<String, Int> = emptyMap(),
+        val kills: Map<String, Float> = emptyMap(),
+        val deaths: Map<String, Float> = emptyMap(),
     ) {
         @Transient
-        val bloodMobKills = (kills["watcher_summon_undead"] ?: 0) + (kills["master_watcher_summon_undead"] ?: 0)
+        val bloodMobKills =
+            ((kills["watcher_summon_undead"] ?: 0f) + (kills["master_watcher_summon_undead"] ?: 0f)).toInt()
     }
 
     @Serializable
@@ -415,25 +416,25 @@ object HypixelData {
         val timesPlayed: Map<String, Double>? = null,
         val experience: Double = 0.0,
         @SerialName("tier_completions")
-        val tierComps: Map<String, Int> = emptyMap(),
+        val tierComps: Map<String, Float> = emptyMap(),
         @SerialName("milestone_completions")
-        val milestoneComps: Map<String, Int> = emptyMap(),
+        val milestoneComps: Map<String, Float> = emptyMap(),
         @SerialName("fastest_time")
-        val fastestTimes: Map<String, Long> = emptyMap(),
+        val fastestTimes: Map<String, Float> = emptyMap(),
         @SerialName("best_runs")
         val bestRuns: Map<String, List<BestRun>> = emptyMap(),
         @SerialName("best_score")
-        val bestScore: Map<String, Int> = emptyMap(),
+        val bestScore: Map<String, Float> = emptyMap(),
         @SerialName("mobs_killed")
-        val mobsKilled: Map<String, Int> = emptyMap(),
+        val mobsKilled: Map<String, Float> = emptyMap(),
         @SerialName("most_mobs_killed")
-        val mostMobsKilled: Map<String, Int> = emptyMap(),
+        val mostMobsKilled: Map<String, Float> = emptyMap(),
         @SerialName("most_damage_berserk")
         val mostDamageBers: Map<String, Double> = emptyMap(),
         @SerialName("most_healing")
         val mostHealing: Map<String, Double> = emptyMap(),
         @SerialName("watcher_kills")
-        val watcherKills: Map<String, Int> = emptyMap(),
+        val watcherKills: Map<String, Float> = emptyMap(),
         @SerialName("highest_tier_completed")
         val highestTierComp: Int = 0,
         @SerialName("most_damage_tank")
@@ -441,11 +442,11 @@ object HypixelData {
         @SerialName("most_damage_healer")
         val mostDamageHealer: Map<String, Double> = emptyMap(),
         @SerialName("fastest_time_s")
-        val fastestTimeS: Map<String, Long> = emptyMap(),
+        val fastestTimeS: Map<String, Double> = emptyMap(),
         @SerialName("most_damage_mage")
         val mostDamageMage: Map<String, Double> = emptyMap(),
         @SerialName("fastest_time_s_plus")
-        val fastestTimeSPlus: Map<String, Long> = emptyMap(),
+        val fastestTimeSPlus: Map<String, Double> = emptyMap(),
         @SerialName("most_damage_Archer")
         val mostDamageArcher: Map<String, Double> = emptyMap(),
     ) {

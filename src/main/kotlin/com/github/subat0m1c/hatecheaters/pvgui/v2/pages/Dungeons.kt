@@ -2,7 +2,6 @@ package com.github.subat0m1c.hatecheaters.pvgui.v2.pages
 
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.centeredText
-import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Dungeons.ct
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.profileLazy
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorClass
@@ -25,13 +24,17 @@ object Dungeons: Pages.PVPage("Dungeons") {
     private val cataCenter = mainCenterX - mainWidth / 4
     private val cataLineY = mainHeight * 0.1
 
-    private val mmComps: Int by profileLazy { (profile.dungeons.dungeonTypes.mastermode.tierComps.without("total")).values.sum() }
-    private val floorComps: Int by profileLazy { (profile.dungeons.dungeonTypes.catacombs.tierComps.without("total")).values.sum() }
+    private val mmComps: Float by profileLazy { (profile.dungeons.dungeonTypes.mastermode.tierComps.without("total")).values.sum() }
+    private val floorComps: Float by profileLazy { (profile.dungeons.dungeonTypes.catacombs.tierComps.without("total")).values.sum() }
 
     private val text: List<String> by profileLazy {
         listOf(
             "§bSecrets§7: ${profile.dungeons.secrets.commas.colorizeNumber(100000)}",
-            "§dAverage Secret Count§7: ${(profile.dungeons.secrets.toDouble()/(mmComps + floorComps)).round(2).colorize(15.0)}",
+            "§dAverage Secret Count§7: ${
+                (profile.dungeons.secrets.toDouble() / (mmComps + floorComps).toDouble()).round(
+                    2
+                ).colorize(15.0)
+            }",
             "§cBlood Mob Kills§7: ${profile.playerStats.bloodMobKills.commas}",
             "§7Spirit Pet: ${if (profile.pets.pets.any { it.type == "SPIRIT" && it.tier == "LEGENDARY" }) "§l§2Found!" else "§o§4Missing!"}",
         )
