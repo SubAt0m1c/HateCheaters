@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 
 object HypixelApi {
     private val url =
-        if (HateCheatersModule.server == "default") "http://127.0.0.1:8000/" else "https://${HateCheatersModule.server}/"
+        if (HateCheatersModule.server == "default") "https://subat0mic.click/" else "https://${HateCheatersModule.server}/"
 
     private fun getServer(endpoint: EndPoint, uuid: String): String = url + endpoint.name.lowercase() + "/" + uuid
 
