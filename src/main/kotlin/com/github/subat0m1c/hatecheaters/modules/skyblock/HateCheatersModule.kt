@@ -2,16 +2,12 @@ package com.github.subat0m1c.hatecheaters.modules.skyblock
 
 import com.github.subat0m1c.hatecheaters.utils.networkutils.CheckUpdate
 import com.github.subat0m1c.hatecheaters.utils.toasts.ToastRenderer
-import me.odinmain.events.impl.PacketEvent
 import me.odinmain.features.Module
 import me.odinmain.features.settings.AlwaysActive
 import me.odinmain.features.settings.Setting.Companion.withDependency
 import me.odinmain.features.settings.impl.BooleanSetting
 import me.odinmain.features.settings.impl.SelectorSetting
 import me.odinmain.features.settings.impl.StringSetting
-import me.odinmain.utils.skyblock.modMessage
-import net.minecraft.network.play.server.S38PacketPlayerListItem
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 @AlwaysActive
 object HateCheatersModule : Module(
@@ -81,43 +77,43 @@ object HateCheatersModule : Module(
 //        //println("sent packet: ${event.packet::class.java.simpleName} with id: ${packetId}: $testString")
 //    }
 //
-    @SubscribeEvent
-    fun onPacketReceive(event: PacketEvent.Receive) {
-        val packet = event.packet as? S38PacketPlayerListItem ?: return
-        modMessage(
-            """
-            Player List Packet:
-            Action: ${packet.action}
-            Entries: ${
-                packet.entries.joinToString("\n") {
-                    """
-                    {
-                        name: ${it?.profile?.name},
-                        id: ${it?.profile?.id},
-                        gameMode: ${it?.gameMode},
-                        ping: ${it?.ping},
-                        displayName: ${it?.displayName}
-                        other: ${
-                        it?.profile?.properties?.entries()?.joinToString("\n") { (key, value) ->
-                            """
-                                {
-                                    key: $key
-                                    property: {
-                                        name: ${value.name}
-                                        value: ${value.value}
-                                        sig: ${value.signature}
-                                    }
-                                }
-                            """.trimIndent()
-                        }
-                    }
-                    }
-                """.trimIndent()
-                }
-            }
-        """.trimIndent()
-        )
-    }
+//    @SubscribeEvent
+//    fun onPacketReceive(event: PacketEvent.Receive) {
+//        val packet = event.packet as? S38PacketPlayerListItem ?: return
+//        modMessage(
+//            """
+//            Player List Packet:
+//            Action: ${packet.action}
+//            Entries: ${
+//                packet.entries.joinToString("\n") {
+//                    """
+//                    {
+//                        name: ${it?.profile?.name},
+//                        id: ${it?.profile?.id},
+//                        gameMode: ${it?.gameMode},
+//                        ping: ${it?.ping},
+//                        displayName: ${it?.displayName}
+//                        other: ${
+//                        it?.profile?.properties?.entries()?.joinToString("\n") { (key, value) ->
+//                            """
+//                                {
+//                                    key: $key
+//                                    property: {
+//                                        name: ${value.name}
+//                                        value: ${value.value}
+//                                        sig: ${value.signature}
+//                                    }
+//                                }
+//                            """.trimIndent()
+//                        }
+//                    }
+//                    }
+//                """.trimIndent()
+//                }
+//            }
+//        """.trimIndent()
+//        )
+//    }
 
 //        if (event.packet !is S3BPacketScoreboardObjective && event.packet !is S3CPacketUpdateScore && event.packet !is S3EPacketTeams) return
 //        if (event.packet is S3BPacketScoreboardObjective) {
