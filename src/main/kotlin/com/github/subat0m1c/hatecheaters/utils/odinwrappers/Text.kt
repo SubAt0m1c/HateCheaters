@@ -2,6 +2,7 @@ package com.github.subat0m1c.hatecheaters.utils.odinwrappers
 
 import me.odinmain.utils.minus
 import me.odinmain.utils.noControlCodes
+import me.odinmain.utils.plus
 import me.odinmain.utils.ui.rendering.NVGRenderer
 
 object Text {

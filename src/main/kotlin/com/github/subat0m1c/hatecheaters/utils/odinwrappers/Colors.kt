@@ -1,6 +1,5 @@
 package com.github.subat0m1c.hatecheaters.utils.odinwrappers
 
-import me.odinmain.utils.render.Color
 import me.odinmain.utils.render.RenderUtils.bind
 import me.odinmain.utils.render.Color as OdinColor
 import me.odinmain.utils.render.Colors as OdinColors
