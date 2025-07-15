@@ -18,9 +18,9 @@ import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.getSlayerCap
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.getSlayerColor
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.getSlayerSkillLevel
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.skillAverage
-import me.odinmain.utils.render.getMCTextHeight
-import me.odinmain.utils.render.mcText
-import me.odinmain.utils.render.roundedRectangle
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Shaders
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Text
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.hc
 import me.odinmain.utils.round
 
 object Profile: Pages.PVPage("Profile") {
@@ -40,7 +40,7 @@ object Profile: Pages.PVPage("Profile") {
     private val otherText: List<String> by profileLazy {
         listOf(
             "§6Purse§7: §r${profile.currencies.coins.truncate(3)}",
-            "§6Bank§7: §r${player.profileOrSelected(profileName)?.banking?.balance?.truncate(3) ?: 0}${if (player.profileData.profiles?.size?.let { it > 1 } == true) " | ${profile.profile.bankAccount.truncate}" else ""}",
+            "§6Bank§7: §r${player.profileOrSelected(profileName)?.banking?.balance?.truncate(3) ?: 0}${if (player.profileData.profiles.size?.let { it > 1 } == true) " | ${profile.profile.bankAccount.truncate}" else ""}",
             "§6Gold Collection§7: §r${profile.collection["GOLD_INGOT"]?.let { "${it.commas.colorizeNumber(100000000)} §8(${it.toString().length})" }}"
         )
     }
@@ -61,25 +61,25 @@ object Profile: Pages.PVPage("Profile") {
     private val otherEntryHeight: Double by profileLazy { halfHeight / otherText.size }
 
     override fun draw() {
-        roundedRectangle(mainCenterX, lineY, ot, mainHeight, ct.line)
-        centeredText(skillAverage, mainCenterX - mainWidth/4-lineY/3, lineY + mainLineY /2, 2.7, ct.font)
+        Shaders.rect(mainCenterX, lineY, ot, mainHeight, color = ct.line.hc())
+        centeredText(skillAverage, mainCenterX - mainWidth / 4 - lineY / 3, lineY + mainLineY / 2, 2.7f, ct.font.hc())
 
-        roundedRectangle(mainX, mainLineY, lineWidth, ot, ct.line)
-        roundedRectangle(lineY + mainCenterX, lineY * 2 + halfHeight, lineWidth, ot, ct.line)
+        Shaders.rect(mainX, mainLineY, lineWidth, ot, color = ct.line.hc())
+        Shaders.rect(lineY + mainCenterX, lineY * 2 + halfHeight, lineWidth, ot, color = ct.line.hc())
 
         skillText.forEachIndexed { i, text ->
-            val y = (mainLineY + lineY + ot) + (skillEntryHeight*i) + skillEntryHeight/2 - getMCTextHeight()*2.5/2
-            mcText(text.second, mainX, y, 2.5, getSkillColor(text.first), shadow = true, center = false)
+            val y = (mainLineY + lineY + ot) + (skillEntryHeight * i) + skillEntryHeight / 2 - Text.textHeight(2.5) / 2
+            Text.text(text.second, mainX, y, 2.5f, getSkillColor(text.first), center = false)
         }
 
         slayerText.forEachIndexed { i, text ->
-            val y = lineY + slayerEntryHeight*i + slayerEntryHeight/2 - getMCTextHeight()*2.5/2
-            mcText(text.second, mainCenterX + lineY + ot, y, 2.5, getSlayerColor(text.first), shadow = true, center = false)
+            val y = lineY + slayerEntryHeight * i + slayerEntryHeight / 2 - Text.textHeight(2.5) / 2
+            Text.text(text.second, mainCenterX + lineY + ot, y, 2.5f, getSlayerColor(text.first), center = false)
         }
 
         otherText.forEachIndexed { i, text ->
-            val y = middleY + lineY + otherEntryHeight * i + otherEntryHeight / 2 - getMCTextHeight() * 2.5 / 2
-            mcText(text, mainCenterX + lineY + ot, y, 2.5, ct.font, shadow = true, center = false)
+            val y = middleY + lineY + otherEntryHeight * i + otherEntryHeight / 2 - Text.textHeight(2.5) / 2
+            Text.text(text, mainCenterX + lineY + ot, y, 2.5f, ct.font.hc(), center = false)
         }
     }
 }

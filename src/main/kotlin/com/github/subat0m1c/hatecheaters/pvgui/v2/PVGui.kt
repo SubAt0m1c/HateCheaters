@@ -8,12 +8,13 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Overview.setPlayer
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.InvWalkInput
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.ProfileLazy
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
-import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerInfo
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelApi.getProfile
+import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerInfo
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Shaders
+import me.odinmain.OdinMain
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.gui.ScaledResolution
-import net.minecraft.client.renderer.GlStateManager.scale
-import net.minecraft.client.renderer.GlStateManager.translate
+import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.util.MovementInputFromOptions
 
 object PVGui : GuiScreen() {
@@ -27,15 +28,24 @@ object PVGui : GuiScreen() {
 
     var loadText = "Loading..."
 
+    private val sr get() = ScaledResolution(OdinMain.mc)
+
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        val sr = ScaledResolution(mc)
-        scale(1.0 / sr.scaleFactor, 1.0 / sr.scaleFactor, 1.0)
-        translate(mc.displayWidth / 2.0, mc.displayHeight / 2.0, 1.0)
-        scale(scale, scale, 1.0)
+        Shaders.startDraw()
+        Shaders.pushMatrix()
+        Shaders.center()
+        Shaders.scale(scale.toFloat())
+
+        GlStateManager.scale(1.0 / sr.scaleFactor, 1.0 / sr.scaleFactor, 1.0)
+        GlStateManager.translate(OdinMain.mc.displayWidth / 2.0, OdinMain.mc.displayHeight / 2.0, 0.0)
+        GlStateManager.scale(scale, scale, 1.0)
+
         currentPage.page.preDraw()
-        scale(1f / scale, 1f / scale, 1.0)
-        translate(-mc.displayWidth / 2.0, -mc.displayHeight / 2.0, -1.0)
-        scale(sr.scaleFactor.toDouble(), sr.scaleFactor.toDouble(), 1.0)
+        Shaders.popMatrix()
+        Shaders.stopDraw()
+//        scale(1f / scale, 1f / scale, 1.0)
+//        translate(-mc.displayWidth / 2.0, -mc.displayHeight / 2.0, -1.0)
+//        scale(sr.scaleFactor.toDouble(), sr.scaleFactor.toDouble(), 1.0)
         super.drawScreen(mouseX, mouseY, partialTicks)
     }
 

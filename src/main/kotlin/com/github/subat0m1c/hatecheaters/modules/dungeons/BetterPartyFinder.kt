@@ -10,9 +10,9 @@ import com.github.subat0m1c.hatecheaters.utils.DungeonStats.displayDungeonData
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.witherImpactRegex
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelApi.getProfile
+import me.odinmain.clickgui.settings.Setting.Companion.withDependency
+import me.odinmain.clickgui.settings.impl.*
 import me.odinmain.features.Module
-import me.odinmain.features.settings.Setting.Companion.withDependency
-import me.odinmain.features.settings.impl.*
 import me.odinmain.utils.noControlCodes
 import me.odinmain.utils.round
 import me.odinmain.utils.runIn
@@ -24,7 +24,7 @@ import me.odinmain.utils.skyblock.sendCommand
 
 object BetterPartyFinder : Module(
     name = "Better Party Finder",
-    desc = "Provides stats when a player joins your party. Includes autokick functionality. /hcitems to configure important items list.",
+    description = "Provides stats when a player joins your party. Includes autokick functionality. /hcitems to configure important items list.",
 ) {
     private val defaultSounds = arrayListOf("note.pling", "random.pop", "random.orb", "random.break", "mob.guardian.land.hit", "Custom")
 
@@ -73,7 +73,6 @@ object BetterPartyFinder : Module(
     val reset by ActionSetting(
         "Play click sound",
         desc = "Plays the sound with the current settings.",
-        false,
         ::playCustomSound
     ).withDependency { joinSound && soundDropdown }
 
@@ -86,7 +85,7 @@ object BetterPartyFinder : Module(
     private val floors = arrayListOf("Entrance", "Floor 1", "Floor 2", "Floor 3", "Floor 4", "Floor 5", "Floor 6", "Floor 7")
     private val floor by SelectorSetting(
         "Floor",
-        defaultSelected = "Floor 7",
+        default = "Floor 7",
         floors,
         desc = "Determines which floor to check pb."
     )

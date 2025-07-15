@@ -1,6 +1,6 @@
 package com.github.subat0m1c.hatecheaters.utils.toasts
 
-import me.odinmain.utils.render.getMCTextHeight
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Text
 import com.github.subat0m1c.hatecheaters.utils.toasts.ToastRenderer.wrapText
 
 class Toast(
@@ -33,10 +33,10 @@ class Toast(
             var messageHeight: Float
 
             wrapText(title, (width - 30).toInt(), textScale * 1.5f).size.let { size ->
-                titleHeight = (size * 10) + (size * getMCTextHeight() * textScale * 1.5f)
+                titleHeight = (size * 10) + (size * Text.textHeight(textScale * 1.5f))
             }
             wrapText(message, (width - 30).toInt(), textScale).size.let { size ->
-                messageHeight = (size * 10) + (size * getMCTextHeight() * textScale)
+                messageHeight = (size * 10) + (size * Text.textHeight(textScale))
             }
             this.titleHeight = titleHeight
             this.messageHeight = messageHeight

@@ -6,8 +6,9 @@ import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.ClassData
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.DungeonTypes
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.DungeonsData
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerData
-import me.odinmain.utils.render.Color
-import me.odinmain.utils.ui.Colors
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Color
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Colors
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.hc
 
 object LevelUtils {
     /**
@@ -99,18 +100,18 @@ object LevelUtils {
         }
 
     fun getSkillColor(skill: String): Color = when (skill) {
-        "taming"       -> ProfileViewer.currentTheme.font
-        "mining"       -> Colors.MINECRAFT_GRAY
-        "foraging"     -> Colors.MINECRAFT_DARK_GREEN
+        "taming" -> ProfileViewer.currentTheme.font.hc()
+        "mining" -> Colors.GRAY
+        "foraging" -> Colors.DARKGREEN
         "enchanting"   -> Color(170, 0, 170)
         "carpentry"    -> Color("A52A2AFF")
-        "farming"      -> Colors.MINECRAFT_GREEN
-        "combat"       -> Colors.MINECRAFT_RED
-        "fishing"      -> Colors.MINECRAFT_BLUE
-        "alchemy"      -> Colors.MINECRAFT_YELLOW
-        "runecrafting" -> Colors.MINECRAFT_LIGHT_PURPLE
-        "social"       -> Colors.MINECRAFT_GREEN
-        else           -> ProfileViewer.currentTheme.font
+        "farming" -> Colors.GREEN
+        "combat" -> Colors.RED
+        "fishing" -> Colors.BLUE
+        "alchemy" -> Colors.YELLOW
+        "runecrafting" -> Colors.MAGENTA
+        "social" -> Colors.GREEN
+        else -> ProfileViewer.currentTheme.font.hc()
     }
 
     private val skillLevels: Array<Long> = arrayOf(
@@ -132,13 +133,13 @@ object LevelUtils {
             getSlayerCap(slayer).toDouble())
 
     fun getSlayerColor(slayer: String): Color = when (slayer) {
-        "wolf"     -> ProfileViewer.currentTheme.font
-        "zombie"   -> Colors.MINECRAFT_DARK_GREEN
+        "wolf" -> ProfileViewer.currentTheme.font.hc()
+        "zombie" -> Colors.GREEN
         "enderman" -> Color(170, 0, 170)
-        "vampire"  -> Colors.MINECRAFT_RED
-        "blaze"    -> Colors.MINECRAFT_GOLD
+        "vampire" -> Colors.RED
+        "blaze" -> Colors.ORANGE
         "spider"   -> Colors.BLACK
-        else       -> ProfileViewer.currentTheme.font
+        else -> ProfileViewer.currentTheme.font.hc()
     }
 
     private val slayerLevels: Array<Long> = arrayOf(5, 10, 185, 800, 4000, 15000, 80000, 300000, 600000)

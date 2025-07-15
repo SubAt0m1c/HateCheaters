@@ -8,18 +8,15 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui.profileName
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getMouseX
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getMouseY
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.isObjectHovered
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.mcWidth
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.MemberData
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerInfo
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerInfo.Companion.dummyPlayer
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.*
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.minus
-import me.odinmain.utils.render.*
 import me.odinmain.utils.skyblock.PlayerUtils.playLoudSound
-import me.odinmain.utils.ui.Colors
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.client.renderer.GlStateManager.translate
 
 object Pages {
 
@@ -72,27 +69,44 @@ object Pages {
         protected inline val mouseX get() = ((getMouseX * ScaledResolution(mc).scaleFactor - mc.displayWidth / 2) * 1f / scale) - sx
         protected inline val mouseY get() = ((getMouseY * ScaledResolution(mc).scaleFactor - mc.displayHeight / 2) * 1f / scale) - sy
 
+//        protected inline val mouseX: Double get() = getMouseX
+//        protected inline val mouseY: Double get() = getMouseY
+
         // todo make vertical button dsl for this
         fun preDraw() {
-            GlStateManager.pushMatrix()
-            translate(sx.toDouble(), sy.toDouble(), 0.0)
-            roundedRectangle(0, 0, totalWidth, totalHeight, ct.main, ct.roundness, 1f)
+            Shaders.pushMatrix()
+            Shaders.translate(sx.toFloat(), sy.toFloat())
+            GlStateManager.translate(sx.toDouble(), sy.toDouble(), 0.0)
+            Shaders.rect(0, 0, totalWidth, totalHeight, ct.roundness, ct.main.hc())
 
-            roundedRectangle(lineX, lineY, ot, totalHeight-lineY*2, ct.line)
+            Shaders.rect(lineX, lineY, ot, totalHeight - lineY * 2, 0f, ct.line.hc())
 
             PageEntries.entries.forEachIndexed { i, page ->
                 val pageY = lineY + ((pageHeight + lineY) * i)
-                if (currentPage == page) roundedRectangle(lineY, pageY, pageWidth, pageHeight, ct.selected, radius = ct.roundness, edgeSoftness = 1f)
-                else roundedRectangle(lineY, pageY, pageWidth, pageHeight, ct.button, radius = ct.roundness, edgeSoftness = 1f)
+                if (currentPage == page) Shaders.rect(
+                    lineY,
+                    pageY,
+                    pageWidth,
+                    pageHeight,
+                    ct.roundness,
+                    ct.selected.hc()
+                )
+                else Shaders.rect(lineY, pageY, pageWidth, pageHeight, ct.roundness, ct.button.hc())
                 val centerY = lineY + (pageHeight / 2 + ((pageHeight + lineY) * i))
-                centeredText(page.name, pageCenter, centerY, color = ct.font, scale = 3.5)
+                centeredText(page.name, pageCenter, centerY, color = ct.font.hc(), scale = 3.5f)
             }
 
-            roundedRectangle(lineY, lastY, pageWidth, lastHeight, ct.button, radius = ct.roundness, edgeSoftness = 1f)
+            Shaders.rect(lineY, lastY, pageWidth, lastHeight, ct.roundness, ct.button.hc())
             val betaText = if (currentPage != PageEntries.Overview) player.name else "HCPV 0.0.1"
-            centeredText(betaText, pageCenter, lastY + lastHeight / 2, color = ct.font, scale = if (betaText.length >= 8) 3 else 3.5)
+            centeredText(
+                betaText,
+                pageCenter,
+                lastY + lastHeight / 2,
+                color = ct.font.hc(),
+                scale = if (betaText.length >= 8) 3f else 3.5f
+            )
             if (playerData != null) draw() else centeredText(loadText, mainCenterX, totalHeight / 2, 7f)
-            GlStateManager.popMatrix()
+            Shaders.popMatrix()
         }
 
         fun handleClick(x: Int, y: Int, button: Int) {
@@ -116,8 +130,8 @@ object Pages {
     /**
      * The "Centered" parameter in [mcText()] does not center vertically, thus this should be used instead.
      */
-    fun centeredText(text: String, x: Number, y: Number, scale: Number = 1f, color: Color = Colors.WHITE, shadow: Boolean = true) =
-        mcText(text, x - (text.mcWidth * scale.toDouble() / 2), y - (getMCTextHeight() * scale.toDouble()) / 2, scale, color, shadow, false)
+    fun centeredText(text: String, x: Number, y: Number, scale: Float = 1f, color: Color = Colors.WHITE) =
+        Text.text(text, x, y - Text.textHeight(scale) / 2, scale, color)
 
     fun playClickSound() = playLoudSound("gui.button.press", 0.5f, 1.1f)
 }

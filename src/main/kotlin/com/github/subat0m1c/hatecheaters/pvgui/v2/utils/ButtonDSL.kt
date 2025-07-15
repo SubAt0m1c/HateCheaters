@@ -1,16 +1,11 @@
 package com.github.subat0m1c.hatecheaters.pvgui.v2.utils
 
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.centeredText
-import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Inventory.EnderChest.lineY
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.isObjectHovered
-import me.odinmain.utils.div
-import me.odinmain.utils.minus
-import me.odinmain.utils.plus
-import me.odinmain.utils.render.Box
-import me.odinmain.utils.render.Color
-import me.odinmain.utils.render.roundedRectangle
-import me.odinmain.utils.times
-import me.odinmain.utils.ui.Colors
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Box
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Color
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Colors
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Shaders
 
 fun <T> buttons(
     box: Box,
@@ -57,9 +52,9 @@ class ButtonDSL<T>(
         options.forEachIndexed { i, option ->
             val y = if (!vertical) box.y else box.y + (buttonHeight + lineY) * i
             val x = if (!vertical) box.x + (buttonWidth + lineY) * i else box.x
-            if (option == selected) roundedRectangle(x, y, buttonWidth, box.h, accent, radius, edgeSoftness)
-            else roundedRectangle(x, y, buttonWidth, box.h, color, radius, edgeSoftness)
-            centeredText(option.toString(), x + buttonWidth / 2, box.y + box.h / 2, textScale, Colors.WHITE, shadow = true)
+            if (option == selected) Shaders.rect(x, y, buttonWidth, box.h, radius, accent)
+            else Shaders.rect(x, y, buttonWidth, box.h, radius, color)
+            centeredText(option.toString(), x + buttonWidth / 2, box.y + box.h / 2, textScale.toFloat(), Colors.WHITE)
         }
     }
 

@@ -9,7 +9,7 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.itemGrid
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.profileLazy
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.createCustomSkull
-import me.odinmain.utils.ui.Colors
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Colors
 
 object Test : Pages.PVPage("Test") {
     private val centerY by lazy { startY + (mainHeight - ((separatorLineY)))/2 }

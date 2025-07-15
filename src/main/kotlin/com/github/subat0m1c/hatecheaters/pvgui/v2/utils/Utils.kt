@@ -1,10 +1,10 @@
 package com.github.subat0m1c.hatecheaters.pvgui.v2.utils
 
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Box
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Colors
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Shaders
 import me.odinmain.OdinMain.mc
-import me.odinmain.utils.render.Box
-import me.odinmain.utils.render.RenderUtils.bind
-import me.odinmain.utils.ui.Colors
 import net.minecraft.client.gui.inventory.GuiInventory.drawEntityOnScreen
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.GlStateManager.translate
@@ -55,15 +55,19 @@ object Utils {
         (mouseX.toDouble() in box.x.toDouble()..box.x.toDouble() + box.w.toDouble() && mouseY.toDouble() in box.y.toDouble()..box.y.toDouble()+box.h.toDouble())
 
     inline val getMouseX: Double get() = Mouse.getX() * mc.currentScreen.width.toDouble() / mc.displayWidth
-
     inline val getMouseY: Double get() = mc.currentScreen.height - Mouse.getY() * mc.currentScreen.height.toDouble() / mc.displayHeight - 1
 
+//    inline val getMouseX: Double get() = Mouse.getX().toDouble()
+//    inline val getMouseY: Double get() = Mouse.getY().toDouble()
+
     fun drawPlayerOnScreen(x: Double, y: Double, scale: Int, mouseX: Int, mouseY: Int, renderPlayer: EntityLivingBase) {
+        Shaders.stopDraw()
         GlStateManager.pushMatrix()
-        Colors.WHITE.bind()
+        Colors.WHITE
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
         translate(x, y, 200.0)
         drawEntityOnScreen(0, 0, scale, ((x*2)-mouseX).toFloat(), (mouseY-y).toFloat(), renderPlayer)
         GlStateManager.popMatrix()
+        Shaders.startDraw()
     }
 }

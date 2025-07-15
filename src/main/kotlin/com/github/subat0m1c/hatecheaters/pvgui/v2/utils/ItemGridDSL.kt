@@ -4,15 +4,16 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getMouseX
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.getMouseY
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.isObjectHovered
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Box
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Color
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Colors
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Shaders
 import me.odinmain.OdinMain.mc
-import me.odinmain.utils.render.*
 import me.odinmain.utils.render.RenderUtils.bind
 import me.odinmain.utils.skyblock.lore
-import me.odinmain.utils.ui.Colors
 import net.minecraft.client.gui.FontRenderer
+import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.client.renderer.GlStateManager.translate
-import net.minecraft.client.renderer.GlStateManager.scale
 import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.item.ItemStack
 import net.minecraftforge.client.event.GuiScreenEvent
@@ -20,6 +21,7 @@ import net.minecraftforge.fml.client.config.GuiUtils
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.math.ceil
 
+//todo: add scale here instead of using the one from PVGui
 fun itemGrid(
     items: List<GridItems>,
     radius: Float = 0f,
@@ -37,13 +39,17 @@ class ItemGridDSL(
     private var tooltipHandler: (ItemStack) -> List<String> = { listOf(it.displayName) + it.lore }
     private var colorHandler: (index: Int, ItemStack?) -> Color = { _, _ -> Colors.WHITE }
 
+    // this gets translated with sx and sy before called since it doesnt have access to those values and i dont want to refactor it to add them. This kinda sucks for readability but its ok i think
     fun draw(mouseX: Int, mouseY: Int) {
         GlStateManager.pushMatrix()
 
         Colors.WHITE.bind()
         GlStateManager.enableRescaleNormal()
+        RenderHelper.enableStandardItemLighting()
         RenderHelper.enableGUIStandardItemLighting()
 
+        mc.renderItem.zLevel = 200f
+        val toDraw = mutableListOf<DrawItem>()
         items.forEach { gridItems ->
             val itemWidth = (gridItems.width - (gridItems.columns - 1) * padding) / gridItems.columns.coerceAtLeast(1)
 
@@ -52,20 +58,21 @@ class ItemGridDSL(
                 val height = ceil(gridItems.items.size.toDouble() / gridItems.columns) * (itemWidth + padding)
                 val y = gridItems.centerY - (height / 2) + (index / gridItems.columns) * (itemWidth + padding)
 
-                roundedRectangle(x, y, itemWidth, itemWidth, colorHandler(index, itemStack), radius, edgeSoftness)
+                Shaders.rect(x, y, itemWidth, itemWidth, radius, colorHandler(index, itemStack))
 
-                if (itemStack != null) {
-                    GlStateManager.pushMatrix()
-                    translate(x, y.toFloat(), 0f)
-                    scale(itemWidth / 16f, itemWidth / 16f, 1f)
-                    mc.renderItem.renderItemIntoGUI(itemStack, 0, 0)
-                    mc.renderItem.renderItemOverlayIntoGUI(fontRenderer, itemStack, 0, 0, null)
-                    GlStateManager.popMatrix()
-                }
+                if (itemStack != null) toDraw.add(DrawItem(itemStack, x, y.toFloat(), itemWidth))
 
                 if (isObjectHovered(Box(x, y, itemWidth, itemWidth), mouseX, mouseY)) hoveredItem = itemStack?.let { HoverItem(it, tooltipHandler) }
             }
         }
+
+        Shaders.stopDraw()
+
+        for (item in toDraw) {
+            item.draw(fontRenderer)
+        }
+
+        Shaders.startDraw()
 
         RenderHelper.disableStandardItemLighting()
         GlStateManager.disableRescaleNormal()
@@ -79,6 +86,7 @@ class ItemGridDSL(
 
     companion object {
         private val fontRenderer: FontRenderer = mc.fontRendererObj
+        private val sr get() = ScaledResolution(mc)
         private var hoveredItem: HoverItem? = null
 
         @SubscribeEvent
@@ -93,5 +101,15 @@ class ItemGridDSL(
     }
 }
 
+data class DrawItem(val item: ItemStack, val x: Float, val y: Float, val size: Float) {
+    fun draw(font: FontRenderer) {
+        GlStateManager.pushMatrix()
+        GlStateManager.translate(x, y, 0f)
+        GlStateManager.scale(size / 16f, size / 16f, 1f)
+        mc.renderItem.renderItemIntoGUI(item, 0, 0)
+        mc.renderItem.renderItemOverlayIntoGUI(font, item, 0, 0, null)
+        GlStateManager.popMatrix()
+    }
+}
 data class HoverItem(val item: ItemStack, val tooltipHandler: (ItemStack) -> List<String>)
 data class GridItems(var items: List<ItemStack?>, val x: Int, val centerY: Int, val width: Int, val columns: Int)

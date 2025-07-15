@@ -8,8 +8,8 @@ import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.ExtraStatsHandler
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelApi.getSecrets
 import kotlinx.coroutines.*
+import me.odinmain.clickgui.settings.impl.BooleanSetting
 import me.odinmain.features.Module
-import me.odinmain.features.settings.impl.BooleanSetting
 import me.odinmain.utils.noControlCodes
 import me.odinmain.utils.runIn
 import me.odinmain.utils.skyblock.dungeon.DungeonPlayer
@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object ClearSecrets : Module(
     "Clear Secrets",
-    desc = "Displays each team members secrets on run complete.",
+    description = "Displays each team members secrets on run complete.",
 ) {
     private val compactMessage by BooleanSetting(
         "Compact Message",

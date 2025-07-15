@@ -146,6 +146,7 @@ loom {
     }
     runConfigs {
         "client" {
+            property("fml.coreMods.load", "me.odinmain.lwjgl.plugin.LWJGLLoadingPlugin")
             if (SystemUtils.IS_OS_MAC_OSX) {
                 // This argument causes a crash on macOS
                 vmArgs.remove("-XstartOnFirstThread")

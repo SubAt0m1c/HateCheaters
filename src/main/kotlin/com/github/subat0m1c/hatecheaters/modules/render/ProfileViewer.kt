@@ -3,16 +3,15 @@ package com.github.subat0m1c.hatecheaters.modules.render
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.screen
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui.loadPlayer
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.setHover
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
+import me.odinmain.clickgui.settings.AlwaysActive
+import me.odinmain.clickgui.settings.Setting.Companion.withDependency
+import me.odinmain.clickgui.settings.impl.*
 import me.odinmain.features.Module
-import me.odinmain.features.settings.AlwaysActive
-import me.odinmain.features.settings.Setting.Companion.withDependency
-import me.odinmain.features.settings.impl.*
 import me.odinmain.utils.render.Color
-import me.odinmain.utils.ui.Colors
-import me.odinmain.utils.ui.clickgui.util.ColorUtil.withAlpha
+import me.odinmain.utils.render.Color.Companion.withAlpha
+import me.odinmain.utils.render.Colors
 import net.minecraft.event.ClickEvent
 import net.minecraftforge.client.event.ClientChatReceivedEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -20,7 +19,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 @AlwaysActive
 object ProfileViewer : Module(
     name = "Profile Viewer",
-    desc = "Lets you view profiles. /pv name or /hcpv name",
+    description = "Lets you view profiles. /pv name or /hcpv name",
 ) {
     val pvCommand by BooleanSetting(
         "PV Command",
@@ -37,7 +36,11 @@ object ProfileViewer : Module(
         default = false,
         desc = "Runs /pv when you click a name in chat. might have lots of compatibility issues."
     )
-    val invwalk by BooleanSetting("GUI Move", default = false, desc = "Lets you move in the gui.")
+    val invwalk by BooleanSetting(
+        "GUI Move",
+        default = false,
+        desc = "Lets you move in the gui. USE AT YOUR OWN RISK. It should be fine in theory but hypixel is funky."
+    )
     val scale by NumberSetting(
         "Scale",
         default = 1.5,
@@ -55,7 +58,7 @@ object ProfileViewer : Module(
         desc = "Maximum number of rows that can be displayed in the talisman page. Lower will give more performance, but will render less items."
     )
     private val themesList = arrayListOf("Classic", "Midnight", "Light", "Sunrise", "Custom")
-    val themes by SelectorSetting("Theme", defaultSelected = "Classic", themesList, desc = "Preferred theme")
+    val themes by SelectorSetting("Theme", default = "Classic", themesList, desc = "Preferred theme")
     val main by ColorSetting(
         "Main",
         default = Colors.MINECRAFT_DARK_GRAY,
@@ -145,14 +148,14 @@ object ProfileViewer : Module(
     val themeEntries = listOf(
         Theme(
             "Classic",
-            Colors.MINECRAFT_DARK_GRAY,
+            Color("555555"),
             Colors.MINECRAFT_BLUE,
             Colors.WHITE,
             Colors.MINECRAFT_GRAY,
             Colors.WHITE,
             "f",
             Colors.MINECRAFT_DARK_AQUA.withAlpha(0.8f),
-            Colors.MINECRAFT_DARK_GRAY,
+            Color("555555"),
             10f,
             0f,
         ),

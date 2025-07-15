@@ -3,12 +3,7 @@ package com.github.subat0m1c.hatecheaters.pvgui.v2.utils
 
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.isObjectHovered
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
-import me.odinmain.utils.div
-import me.odinmain.utils.minus
-import me.odinmain.utils.plus
-import me.odinmain.utils.render.*
-import me.odinmain.utils.times
-import me.odinmain.utils.ui.Colors
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.*
 
 fun <T> dropDownMenu(
     box: Box,
@@ -58,12 +53,24 @@ class DropDownDSL <T> (
     fun selectedText(init: (T) -> String) { selectedText = init }
 
     fun draw() {
-        roundedRectangle(box.x, box.y, box.w, box.h, color, radius, edgeSoftness)
-        mcText(selectedText(selected), (box.x + box.w/2), (box.y + (box.h/2))-(getMCTextHeight() *textScale)/2, textScale.toFloat(), Colors.WHITE)
+        Shaders.rect(box.x, box.y, box.w, box.h, radius, color)
+        Text.text(
+            selectedText(selected),
+            (box.x + box.w / 2),
+            (box.y + (box.h / 2)) - Text.textHeight(textScale) / 2,
+            textScale.toFloat(),
+            Colors.WHITE
+        )
         trueOptions.takeIf { extended }?.forEachIndexed { i, entry ->
             val y = box.y + ((box.h+box.h/8) * (i+1)) + (box.h/8)
-            roundedRectangle(box.x, y, box.w, box.h, color, radius, edgeSoftness)
-            mcText(displayText(entry), (box.x + box.w/2), (y + (box.h/2))-(getMCTextHeight() *textScale)/2, textScale.toFloat(), Colors.WHITE)
+            Shaders.rect(box.x, y, box.w, box.h, radius, color)
+            Text.text(
+                displayText(entry),
+                (box.x + box.w / 2),
+                (y + (box.h / 2)) - Text.textHeight(textScale) / 2,
+                textScale.toFloat(),
+                Colors.WHITE
+            )
         }
     }
 

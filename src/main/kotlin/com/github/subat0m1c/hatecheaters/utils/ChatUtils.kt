@@ -3,13 +3,12 @@ package com.github.subat0m1c.hatecheaters.utils
 import com.github.subat0m1c.hatecheaters.modules.skyblock.HateCheatersModule.debugMessages
 import com.github.subat0m1c.hatecheaters.modules.skyblock.HateCheatersModule.toasts
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Text
+import com.github.subat0m1c.hatecheaters.utils.toasts.ToastManager.toaster
 import me.odinmain.OdinMain.mc
-import me.odinmain.utils.skyblock.modMessage as odinModMessage
-import me.odinmain.utils.render.getMCTextWidth
 import me.odinmain.utils.runOnMCThread
 import me.odinmain.utils.skyblock.createClickStyle
 import me.odinmain.utils.toFixed
-import com.github.subat0m1c.hatecheaters.utils.toasts.ToastManager.toaster
 import net.minecraft.event.ClickEvent
 import net.minecraft.event.HoverEvent
 import net.minecraft.util.ChatComponentText
@@ -18,6 +17,7 @@ import net.minecraft.util.IChatComponent
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.floor
+import me.odinmain.utils.skyblock.modMessage as odinModMessage
 
 object ChatUtils {
 
@@ -92,7 +92,7 @@ object ChatUtils {
 
     fun Number.colorize(max: Number): String = "${this.colorCode(max)}$this"
 
-    inline val String.mcWidth get() = getMCTextWidth(this)
+    inline val String.textWidth get() = Text.getWidth(this)
 
     inline val String.colorClass: String get() =
         when (this.lowercase()) {

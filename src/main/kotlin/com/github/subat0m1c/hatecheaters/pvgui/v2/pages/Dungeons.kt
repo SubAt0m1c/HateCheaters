@@ -13,10 +13,10 @@ import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.cataLevel
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.classAverage
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.classLevel
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Shaders
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Text
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.hc
 import me.odinmain.utils.capitalizeFirst
-import me.odinmain.utils.render.getMCTextHeight
-import me.odinmain.utils.render.mcText
-import me.odinmain.utils.render.roundedRectangle
 import me.odinmain.utils.round
 
 object Dungeons: Pages.PVPage("Dungeons") {
@@ -58,36 +58,36 @@ object Dungeons: Pages.PVPage("Dungeons") {
     private val mmHeight: Int by profileLazy { (mainHeight/2 - lineY) / mmData.size }
 
     override fun draw() {
-        roundedRectangle(mainCenterX, lineY, ot, mainHeight, ct.line)
-        centeredText(cataText, cataCenter, lineY + cataLineY/2, 4, ct.font)
+        Shaders.rect(mainCenterX, lineY, ot, mainHeight, color = ct.line.hc())
+        centeredText(cataText, cataCenter, lineY + cataLineY / 2, 4f, ct.font.hc())
 
         text.forEachIndexed { i, text ->
-            val y = ((cataLineY + lineY) + textEntryHeight*i + textEntryHeight/2) - (getMCTextHeight()*2.5)/2
-            mcText(text, mainX, y, 2.5, ct.font, shadow = true, center = false)
+            val y = ((cataLineY + lineY) + textEntryHeight * i + textEntryHeight / 2) - Text.textHeight(2.5) / 2
+            Text.text(text, mainX, y, 2.5f, ct.font.hc(), center = false)
         }
 
-        centeredText(classAverageText, cataCenter, mainHeight/2 + cataLineY/2, 3.5, ct.font)
-        roundedRectangle(mainX, mainHeight/2 - lineY + cataLineY, cataLineWidth, ot, ct.line)
+        centeredText(classAverageText, cataCenter, mainHeight / 2 + cataLineY / 2, 3.5f, ct.font.hc())
+        Shaders.rect(mainX, mainHeight / 2 - lineY + cataLineY, cataLineWidth, ot, color = ct.line.hc())
 
         classEntryText.forEachIndexed { i, text ->
             val y = mainHeight/2 + cataLineY - lineY + classEntrySize*i + classEntrySize/2
-            if (i == 0) centeredText(text, cataCenter, y, 2.5, ct.font)
-            else mcText(text, mainX, y-(getMCTextHeight()*2.5)/2, 2.5, ct.font, shadow = true, center = false)
+            if (i == 0) centeredText(text, cataCenter, y, 2.5f, ct.font.hc())
+            else Text.text(text, mainX, y - Text.textHeight(2.5) / 2, 2.5f, ct.font.hc(), center = false)
         }
 
-        roundedRectangle(mainX, cataLineY, cataLineWidth, ot, ct.line)
+        Shaders.rect(mainX, cataLineY, cataLineWidth, ot, color = ct.line.hc())
 
         floorData.forEachIndexed { i, text ->
-            val y = lineY + (floorHeight*i) + mmHeight/2 - getMCTextHeight()
-            mcText(text, mainCenterX + ot + lineY, y, 2, ct.font, shadow = true, center = false)
+            val y = lineY + (floorHeight * i) + mmHeight / 2 - Text.textHeight(1f)
+            Text.text(text, mainCenterX + ot + lineY, y, 2f, ct.font.hc(), center = false)
         }
 
         mmData.forEachIndexed { i, text ->
-            val y = lineY + mainHeight/2 + lineY + mmHeight*i + mmHeight/2 - getMCTextHeight()
-            mcText(text, mainCenterX + ot + lineY, y, 2, ct.font, shadow = true, center = false)
+            val y = lineY + mainHeight / 2 + lineY + mmHeight * i + mmHeight / 2 - Text.textHeight(1f)
+            Text.text(text, mainCenterX + ot + lineY, y, 2f, ct.font.hc(), center = false)
         }
 
-        roundedRectangle(mainCenterX + ot + lineY, lineY + mainHeight/2, cataLineWidth, ot, ct.line)
+        Shaders.rect(mainCenterX + ot + lineY, lineY + mainHeight / 2, cataLineWidth, ot, color = ct.line.hc())
     }
 
     private fun HypixelData.DungeonTypeData.floorStats(floor: String): String =

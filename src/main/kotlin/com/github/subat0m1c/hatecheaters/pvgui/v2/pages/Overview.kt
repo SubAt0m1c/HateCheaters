@@ -14,7 +14,7 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.profileLazy
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorizeNumber
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.commas
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.mcWidth
+import com.github.subat0m1c.hatecheaters.utils.ChatUtils.textWidth
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.colorName
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.maxMagicalPower
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.petItem
@@ -23,16 +23,11 @@ import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.PlayerInfo
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.cappedSkillAverage
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.cataLevel
 import com.github.subat0m1c.hatecheaters.utils.apiutils.LevelUtils.skillAverage
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.*
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.minecraft.MinecraftProfileTexture
 import me.odinmain.OdinMain.mc
-import me.odinmain.utils.render.Box
-import me.odinmain.utils.render.Color
-import me.odinmain.utils.render.getMCTextHeight
-import me.odinmain.utils.render.roundedRectangle
 import me.odinmain.utils.round
-import me.odinmain.utils.ui.Colors
-import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.client.resources.DefaultPlayerSkin
 import net.minecraft.entity.EntityLivingBase
@@ -44,13 +39,18 @@ import kotlin.math.floor
 object Overview: Pages.PVPage("Overview") {
     private val dropDown: DropDownDSL<String> by profileLazy {
         val profiles = player.profileOrSelected(profileName)
-        val options = player.profileList.map { "§a${it.first}§7 §8(§7${it.second}§8)" }
-        val longest = floor(options.maxByOrNull { it.mcWidth }?.mcWidth?.times(3.5) ?: 0.0).toInt()
+        val options = player.profileList.map { "§a${it.first}§r §8(§7${it.second}§8)" }
+        val longest = floor(options.maxByOrNull { it.textWidth }?.textWidth?.times(3.5) ?: 0.0).toInt()
         val default = "§a${profiles?.cuteName}§7 §8(§7${profiles?.gameMode}§8)"
-        val dropDownBox = Box(mainCenterX - lineY - ((longest)/2), mainHeight * 0.1 + lineY, longest + lineY*2, floor(getMCTextHeight()*3.5 + lineY*2))
-        dropDownMenu(dropDownBox, ot, default, options, 3.5, ct.button, ct.accent, ct.roundness, 1f) {
+        val dropDownBox = Box(
+            mainCenterX - lineY - ((longest) / 2),
+            mainHeight * 0.1 + lineY,
+            longest + lineY * 2,
+            floor(Text.textHeight(3.5) + lineY * 2)
+        )
+        dropDownMenu(dropDownBox, ot, default, options, 3.5, ct.button.hc(), ct.accent.hc(), ct.roundness, 1f) {
             onSelect { selected ->
-                updateProfile(selected.substringAfter("§a").substringBefore("§7 "))
+                updateProfile(selected.substringAfter("§a").substringBefore("§r "))
                 playClickSound()
             }
 
@@ -73,7 +73,13 @@ object Overview: Pages.PVPage("Overview") {
         )
     }
 
-    private val entryHeight by profileLazy {( mainHeight * 0.9 - getMCTextHeight() * 2.5 - lineY -floor(getMCTextHeight() * 3.5 + lineY * 2)) / data.size }
+    private val entryHeight by profileLazy {
+        (mainHeight * 0.9 - Text.textHeight(2.5) - lineY - floor(
+            Text.textHeight(
+                3.5
+            ) + lineY * 2
+        )) / data.size
+    }
 
     private var playerEntity: EntityLivingBase? = null
 
@@ -82,17 +88,19 @@ object Overview: Pages.PVPage("Overview") {
     private val textCenterY = ((mainHeight * 0.1) + lineY) / 2
 
     override fun draw() {
-        roundedRectangle(mainCenterX-((mainWidth*0.8) / 2), mainHeight * 0.1, mainWidth * 0.8, ot, ct.line)
+        Shaders.rect(mainCenterX - ((mainWidth * 0.8) / 2), mainHeight * 0.1, mainWidth * 0.8, ot, color = ct.line.hc())
 
-        centeredText(player.name, mainCenterX, textCenterY, scale = 5, color = Colors.WHITE)
+        centeredText(player.name, mainCenterX, textCenterY, scale = 5f, color = Colors.WHITE)
 
         data.forEachIndexed { i, text ->
-            val y = (mainHeight * 0.1 + lineY)+floor(getMCTextHeight()*3.5 + lineY*2) + entryHeight*i + entryHeight/2
-            centeredText(text, mainX + mainWidth/3, y, 2.5, ct.font)
+            val y =
+                (mainHeight * 0.1 + lineY) + floor(Text.textHeight(3.5) + lineY * 2) + entryHeight * i + entryHeight / 2
+            centeredText(text, mainX + mainWidth / 3, y, 2.5f, ct.font.hc())
         }
 
-        playerEntity?.let { drawPlayerOnScreen(playerX.toDouble(), lineY + mainHeight / 2.0 + 175, 175, Mouse.getX() + 325, Mouse.getY() - 225, it) }
         dropDown.draw()
+
+        playerEntity?.let { drawPlayerOnScreen(playerX.toDouble(), lineY + mainHeight / 2.0 + 175, 175, Mouse.getX() + 325, Mouse.getY() - 225, it) }
     }
 
     override fun mouseClick(x: Int, y: Int, button: Int) {

@@ -8,8 +8,9 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.buttons
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.profileLazy
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.colorName
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.petItem
-import me.odinmain.utils.render.Box
-import me.odinmain.utils.render.roundedRectangle
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Box
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Shaders
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.hc
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -24,7 +25,7 @@ object Pets: Pages.PVPage("Pets") {
         buttons(
             Box(mainX, mainLineY+lineY, mainWidth, buttonHeight), lineY, ot, 1,
             (1..<ceil(profile.pets.pets.size / 20.0).toInt()).toList(), 3f,
-            ct.button, ct.selected, ct.roundness, 1f, false
+            ct.button.hc(), ct.selected.hc(), ct.roundness, 1f, false
         ) { onSelect { playClickSound() } }
     }
 
@@ -37,8 +38,8 @@ object Pets: Pages.PVPage("Pets") {
     }
 
     override fun draw() {
-        roundedRectangle(mainX, mainLineY, mainWidth, ot, ct.line)
-        centeredText(activePet, mainCenterX, lineY + mainLineY / 2, 3, ct.font)
+        Shaders.rect(mainX, mainLineY, mainWidth, ot, color = ct.line.hc())
+        centeredText(activePet, mainCenterX, lineY + mainLineY / 2, 3f, ct.font.hc())
 
         buttons.draw()
 
@@ -51,7 +52,7 @@ object Pets: Pages.PVPage("Pets") {
                 else -> mainCenterX.toDouble()
             }
             val y = (mainLineY + buttonHeight + lineY * 2) + (entryHeight * floor(i / 2.0)) + entryHeight / 2
-            centeredText(pet, mainX + x, y, 2)
+            centeredText(pet, mainX + x, y, 2f)
         }
     }
 

@@ -2,17 +2,17 @@ package com.github.subat0m1c.hatecheaters.modules.skyblock
 
 import com.github.subat0m1c.hatecheaters.utils.networkutils.CheckUpdate
 import com.github.subat0m1c.hatecheaters.utils.toasts.ToastRenderer
+import me.odinmain.clickgui.settings.AlwaysActive
+import me.odinmain.clickgui.settings.Setting.Companion.withDependency
+import me.odinmain.clickgui.settings.impl.BooleanSetting
+import me.odinmain.clickgui.settings.impl.SelectorSetting
+import me.odinmain.clickgui.settings.impl.StringSetting
 import me.odinmain.features.Module
-import me.odinmain.features.settings.AlwaysActive
-import me.odinmain.features.settings.Setting.Companion.withDependency
-import me.odinmain.features.settings.impl.BooleanSetting
-import me.odinmain.features.settings.impl.SelectorSetting
-import me.odinmain.features.settings.impl.StringSetting
 
 @AlwaysActive
 object HateCheatersModule : Module(
     name = "Hate Cheaters",
-    desc = "Hate cheaters nonsense",
+    description = "Hate cheaters nonsense",
 ) {
     val toasts by BooleanSetting("Toasts", default = false, desc = "Enable toasts for various notifications.")
     val toastCorner by SelectorSetting(
@@ -36,7 +36,6 @@ object HateCheatersModule : Module(
     val server by StringSetting(
         "Api Server",
         default = "default",
-        hidden = false,
         desc = "Server to be used to connect to the api. set to \"default\" to use the default. Only change if you know what you're doing. format: \"subdomain.domain.tld\""
     )
 
@@ -80,38 +79,10 @@ object HateCheatersModule : Module(
 //    @SubscribeEvent
 //    fun onPacketReceive(event: PacketEvent.Receive) {
 //        val packet = event.packet as? S38PacketPlayerListItem ?: return
-//        modMessage(
-//            """
-//            Player List Packet:
+//        LogHandler.Logger.info("""
 //            Action: ${packet.action}
-//            Entries: ${
-//                packet.entries.joinToString("\n") {
-//                    """
-//                    {
-//                        name: ${it?.profile?.name},
-//                        id: ${it?.profile?.id},
-//                        gameMode: ${it?.gameMode},
-//                        ping: ${it?.ping},
-//                        displayName: ${it?.displayName}
-//                        other: ${
-//                        it?.profile?.properties?.entries()?.joinToString("\n") { (key, value) ->
-//                            """
-//                                {
-//                                    key: $key
-//                                    property: {
-//                                        name: ${value.name}
-//                                        value: ${value.value}
-//                                        sig: ${value.signature}
-//                                    }
-//                                }
-//                            """.trimIndent()
-//                        }
-//                    }
-//                    }
-//                """.trimIndent()
-//                }
-//            }
-//        """.trimIndent()
+//            entries: ${packet.entries.joinToString("\n") { "display name: ${it.displayName}" } }
+//            """.trimIndent()
 //        )
 //    }
 

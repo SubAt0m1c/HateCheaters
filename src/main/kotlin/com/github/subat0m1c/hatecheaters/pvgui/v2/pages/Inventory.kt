@@ -12,10 +12,9 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.insertItemsAtIndex
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.colorize
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.getMagicalPower
-import me.odinmain.utils.render.*
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.*
 import me.odinmain.utils.skyblock.getRarity
 import me.odinmain.utils.skyblock.lore
-import me.odinmain.utils.ui.Colors
 import net.minecraft.item.ItemStack
 import kotlin.math.ceil
 import kotlin.math.floor
@@ -40,14 +39,14 @@ object Inventory: Pages.PVPage("Inventory") {
 
         buttons(
             Box(mainX, lineY, mainWidth, inventoryPageHeight), lineY, ot, default = "Basic",
-            InventoryPages.entries.map { it.name }, 2, ct.button,
-            ct.selected, ct.roundness, 1f,
+            InventoryPages.entries.map { it.name }, 2, ct.button.hc(),
+            ct.selected.hc(), ct.roundness, 1f,
         ) { onSelect { playClickSound() } }
     }
 
     override fun draw() {
-        if (!inventoryAPI) return centeredText("Inventory API disabled!", mainCenterX, mainHeight/2, 4f, Colors.MINECRAFT_RED, true)
-        roundedRectangle(mainX, separatorLineY, mainWidth, ot, ct.line)
+        if (!inventoryAPI) return centeredText("Inventory API disabled!", mainCenterX, mainHeight / 2, 4f, Colors.RED)
+        Shaders.rect(mainX, separatorLineY, mainWidth, ot, color = ct.line.hc())
 
         buttons.draw()
 
@@ -80,8 +79,8 @@ object Inventory: Pages.PVPage("Inventory") {
                 colorHandler { i, item ->
                     when {
                         i == 4 -> Colors.TRANSPARENT // this should be replaced by separate inventory grids at some point
-                        rarityBackgrounds -> item?.lore?.let { getRarity(it) }?.color ?: ct.items
-                        else -> ct.items
+                        rarityBackgrounds -> item?.lore?.let { getRarity(it) }?.color?.hc() ?: ct.items.hc()
+                        else -> ct.items.hc()
                     }
                 }
             }
@@ -114,7 +113,7 @@ object Inventory: Pages.PVPage("Inventory") {
 
         private val itemGrid by profileLazy {
             itemGrid(gridItems, ct.roundness, 1f, lineY.toFloat()) {
-                colorHandler { _, item -> if (item in invArmor.toSet()) Colors.MINECRAFT_BLUE else ct.items }
+                colorHandler { _, item -> if (item in invArmor.toSet()) Colors.BLUE else ct.items.hc() }
             }
         }
 
@@ -122,7 +121,7 @@ object Inventory: Pages.PVPage("Inventory") {
             buttons(
                 Box(mainX, startY, mainWidth, buttonHeight), lineY, ot, default = 1,
                 (1..ceil(wardrobe.size.toDouble() / 36).toInt()).toList(), 2,
-                ct.button, ct.selected, ct.roundness, 1f,
+                ct.button.hc(), ct.selected.hc(), ct.roundness, 1f,
             ) {
                 onSelect {
                     itemGrid.updateItems(getSubset(inventoryWithArmor, selectedButtonIndex))
@@ -158,7 +157,8 @@ object Inventory: Pages.PVPage("Inventory") {
         private val itemGrid by profileLazy {
             itemGrid(gridItems, ct.roundness, 1f, lineY.toFloat()) {
                 colorHandler { _, item ->
-                    if (rarityBackgrounds) item?.lore?.let { getRarity(it) }?.color ?: ct.items else ct.items
+                    if (rarityBackgrounds) item?.lore?.let { getRarity(it) }?.color?.hc()
+                        ?: ct.items.hc() else ct.items.hc()
                 }
 
                 tooltipHandler { listOf("${it.displayName} §7(${it.getMagicalPower.colorize(22)}§7)") + it.lore }
@@ -168,8 +168,8 @@ object Inventory: Pages.PVPage("Inventory") {
         private val buttons: ButtonDSL<Int> by profileLazy {
             buttons(
                 Box(separatorX + lineY, startY, width, buttonHeight), lineY, ot, default = 1,
-                (1..pages).toList(), 2, ct.button,
-                ct.selected, ct.roundness, 1f,
+                (1..pages).toList(), 2, ct.button.hc(),
+                ct.selected.hc(), ct.roundness, 1f,
             ) {
                 onSelect {
                     itemGrid.updateItems(getSubset(talis, buttons.getSelected - 1, maxRows*9))
@@ -181,12 +181,19 @@ object Inventory: Pages.PVPage("Inventory") {
         private val entryHeight by profileLazy { (mainHeight - startY + lineY)/textList.size }
 
         override fun draw() {
-            roundedRectangle(separatorX, startY, ot, mainHeight - startY + lineY, ct.line)
+            Shaders.rect(separatorX, startY, ot, mainHeight - startY + lineY, color = ct.line.hc())
 
             buttons.draw()
 
             textList.forEachIndexed { i, text ->
-                mcText(text, mainX, (startY + (entryHeight * i) + entryHeight/2) - ((getMCTextHeight() * 2)/2), 2, ct.font, shadow = true, center = false)
+                Text.text(
+                    text,
+                    mainX,
+                    (startY + (entryHeight * i) + entryHeight / 2) - ((Text.textHeight(2)) / 2),
+                    2f,
+                    ct.font.hc(),
+                    center = false
+                )
             }
 
             itemGrid.draw(mouseX.toInt(), mouseY.toInt())
@@ -205,7 +212,7 @@ object Inventory: Pages.PVPage("Inventory") {
             buttons(
                 Box(mainX, startY, mainWidth, buttonHeight), lineY, ot, default = 1,
                 profile.inventory.backpackContents.keys.mapNotNull { it.toIntOrNull()?.plus(1) }.sorted(), 2, // adding and subtracting so the display matches the game menu instead of index.
-                ct.button, ct.selected, ct.roundness, 1f,
+                ct.button.hc(), ct.selected.hc(), ct.roundness, 1f,
             ) {
                 onSelect {
                     itemGrid.updateItems(inventory)
@@ -216,7 +223,10 @@ object Inventory: Pages.PVPage("Inventory") {
 
         private val itemGrid by profileLazy {
             itemGrid(gridItems, ct.roundness, 1f, lineY.toFloat()) {
-                colorHandler { _, item -> if (rarityBackgrounds) item?.lore?.let { getRarity(it) }?.color ?: ct.items else ct.items }
+                colorHandler { _, item ->
+                    if (rarityBackgrounds) item?.lore?.let { getRarity(it) }?.color?.hc()
+                        ?: ct.items.hc() else ct.items.hc()
+                }
             }
         }
 
@@ -238,8 +248,8 @@ object Inventory: Pages.PVPage("Inventory") {
         private val buttons: ButtonDSL<Int> by profileLazy {
             buttons(
                 Box(mainX, startY, mainWidth, buttonHeight), lineY, ot, default = 1,
-                (1..pages).toList(), 2, ct.button,
-                ct.selected, ct.roundness, 1f,
+                (1..pages).toList(), 2, ct.button.hc(),
+                ct.selected.hc(), ct.roundness, 1f,
             ) {
                 onSelect {
                     itemGrid.updateItems(getSubset(items, buttons.getSelected - 1, 45))
@@ -250,7 +260,10 @@ object Inventory: Pages.PVPage("Inventory") {
 
         private val itemGrid: ItemGridDSL by profileLazy {
             itemGrid(gridItems, ct.roundness, 1f, lineY.toFloat()) {
-                colorHandler { _, item -> if (rarityBackgrounds) item?.lore?.let { getRarity(it) }?.color ?: ct.items else ct.items }
+                colorHandler { _, item ->
+                    if (rarityBackgrounds) item?.lore?.let { getRarity(it) }?.color?.hc()
+                        ?: ct.items.hc() else ct.items.hc()
+                }
             }
         }
 
