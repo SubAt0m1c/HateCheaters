@@ -31,7 +31,7 @@ object Text {
                 if (char == 'r') {
                     bold = false
                 }
-                val colorCode = "0123456789abcdefr".indexOf(text.lowercase()[i + 1])
+                val colorCode = "0123456789abcdefr".indexOf(text.lowercase()[i + 1]).takeUnless { it == -1 } ?: 16
                 color = colorCodes[colorCode]
                 i += 2
                 continue

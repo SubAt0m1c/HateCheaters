@@ -79,17 +79,19 @@ object PVGui : GuiScreen() {
     fun loadPlayer(name: String?, profileName: String? = null) = launch {
         getProfile(name ?: mc.thePlayer.name).fold(
             onSuccess = {
+                if (it.profileData.profiles.isEmpty()) {
+                    loadText = "No profiles found for ${name}."
+                    return@launch
+                }
                 playerData = it
                 setPlayer(it)
                 updateProfile(profileName)
             }, onFailure = {
                 modMessage(it.message)
-                failed()
+                loadText = "Failed to grab profile data."
             }
         )
     }
-
-    private fun failed() { loadText = "Failed to grab profile data." }
 
     override fun doesGuiPauseGame(): Boolean = false
 }

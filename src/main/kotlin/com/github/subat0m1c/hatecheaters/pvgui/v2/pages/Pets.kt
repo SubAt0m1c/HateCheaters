@@ -30,7 +30,8 @@ object Pets: Pages.PVPage("Pets") {
     }
 
     private val pets by profileLazy {
-        profile.pets.pets.map { pet -> "${pet.colorName}${pet.petItem?.let { " §7(§${ct.fontCode}${it}§7)" } ?: ""}" }
+        profile.pets.pets.sortedByDescending { it.exp }
+            .map { pet -> "${pet.colorName}${pet.petItem?.let { " §7(§${ct.fontCode}${it}§7)" } ?: ""}" }
     }
 
     private val entryHeight by profileLazy {

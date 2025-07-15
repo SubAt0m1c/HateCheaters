@@ -42,6 +42,8 @@ object Colors {
     val TRANSPARENT = Color(OdinColors.TRANSPARENT)
 }
 
+inline val OdinGray get() = OdinColor(35, 35, 35)
+
 /**
  * this is so we can use odin's ColorSetting with our own wrapped class.
  */
