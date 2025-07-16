@@ -97,7 +97,7 @@ object Pages {
             }
 
             Shaders.rect(lineY, lastY, pageWidth, lastHeight, ct.roundness, ct.button.hc())
-            val betaText = if (currentPage != PageEntries.Overview) player.name else "HCPV 0.0.1"
+            val betaText = if (currentPage != PageEntries.Overview) player.name else "HCPV 0.0.2"
             centeredText(
                 betaText,
                 pageCenter,
@@ -105,7 +105,7 @@ object Pages {
                 color = ct.font.hc(),
                 scale = if (betaText.length >= 8) 3f else 3.5f
             )
-            if (playerData != null) draw() else centeredText(loadText, mainCenterX, totalHeight / 2, 7f)
+            if (playerData != null) draw() else centeredText(loadText, mainCenterX, totalHeight / 2, 5f)
             Shaders.popMatrix()
         }
 

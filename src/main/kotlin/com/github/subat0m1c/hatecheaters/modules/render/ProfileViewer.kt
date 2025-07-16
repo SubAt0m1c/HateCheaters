@@ -5,6 +5,7 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui.loadPlayer
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.setHover
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.OdinGray
 import me.odinmain.clickgui.settings.AlwaysActive
 import me.odinmain.clickgui.settings.Setting.Companion.withDependency
 import me.odinmain.clickgui.settings.impl.*
@@ -148,14 +149,14 @@ object ProfileViewer : Module(
     val themeEntries = listOf(
         Theme(
             "Classic",
-            Color("555555FF"),
+            OdinGray,
             Colors.MINECRAFT_BLUE,
             Colors.WHITE,
             Colors.MINECRAFT_GRAY,
             Colors.WHITE,
             "f",
             Colors.MINECRAFT_DARK_AQUA.withAlpha(0.8f),
-            Color("555555FF"),
+            Color(75, 75, 75),
             10f,
             0f,
         ),
