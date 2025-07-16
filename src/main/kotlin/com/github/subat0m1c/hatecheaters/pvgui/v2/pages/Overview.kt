@@ -83,7 +83,7 @@ object Overview: Pages.PVPage("Overview") {
 
     private var playerEntity: EntityLivingBase? = null
 
-    private val playerX = mainX + mainWidth * 5 / 6
+    private val playerX = mainX + mainWidth * 5 / 9 - 20
 
     private val textCenterY = ((mainHeight * 0.1) + lineY) / 2
 
@@ -100,7 +100,7 @@ object Overview: Pages.PVPage("Overview") {
 
         dropDown.draw()
 
-        playerEntity?.let { drawPlayerOnScreen(playerX.toDouble(), lineY + mainHeight / 2.0 + 175, 175, Mouse.getX() + 325, Mouse.getY() - 225, it) }
+        playerEntity?.let { drawPlayerOnScreen(playerX.toDouble(), lineY + mainHeight / 2.0 + 100, 100, Mouse.getX(), Mouse.getY() - 200, it) }
     }
 
     override fun mouseClick(x: Int, y: Int, button: Int) {
@@ -108,6 +108,8 @@ object Overview: Pages.PVPage("Overview") {
     }
 
     fun setPlayer(player: PlayerInfo) = launch {
+        mc.theWorld.playerEntities.forEach { it -> if (it.name == player.name) { playerEntity = it; return@launch } }
+
         val gameProfile = mc.sessionService.fillProfileProperties(GameProfile(getDashedUUID(player.uuid), player.name), true)
 
         var playerLocationCape: ResourceLocation? = null

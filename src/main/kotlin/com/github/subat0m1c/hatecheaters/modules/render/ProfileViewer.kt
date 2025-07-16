@@ -148,14 +148,14 @@ object ProfileViewer : Module(
     val themeEntries = listOf(
         Theme(
             "Classic",
-            Color("555555"),
+            Color("555555FF"),
             Colors.MINECRAFT_BLUE,
             Colors.WHITE,
             Colors.MINECRAFT_GRAY,
             Colors.WHITE,
             "f",
             Colors.MINECRAFT_DARK_AQUA.withAlpha(0.8f),
-            Color("555555"),
+            Color("555555FF"),
             10f,
             0f,
         ),

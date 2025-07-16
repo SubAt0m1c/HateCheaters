@@ -36,7 +36,7 @@ object Dungeons: Pages.PVPage("Dungeons") {
                 ).colorize(15.0)
             }",
             "§cBlood Mob Kills§7: ${profile.playerStats.bloodMobKills.commas}",
-            "§7Spirit Pet: ${if (profile.pets.pets.any { it.type == "SPIRIT" && it.tier == "LEGENDARY" }) "§l§2Found!" else "§o§4Missing!"}",
+            "§7Spirit Pet: ${if (profile.pets.pets.any { it.type == "SPIRIT" && it.tier == "LEGENDARY" }) "§l§2Found!" else "§l§4Missing!"}",
         )
     }
 
