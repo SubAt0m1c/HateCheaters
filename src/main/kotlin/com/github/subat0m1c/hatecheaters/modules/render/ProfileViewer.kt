@@ -5,13 +5,11 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui.loadPlayer
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.setHover
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
-import com.github.subat0m1c.hatecheaters.utils.odinwrappers.OdinGray
 import me.odinmain.clickgui.settings.AlwaysActive
 import me.odinmain.clickgui.settings.Setting.Companion.withDependency
 import me.odinmain.clickgui.settings.impl.*
 import me.odinmain.features.Module
 import me.odinmain.utils.render.Color
-import me.odinmain.utils.render.Color.Companion.withAlpha
 import me.odinmain.utils.render.Colors
 import net.minecraft.event.ClickEvent
 import net.minecraftforge.client.event.ClientChatReceivedEvent
@@ -58,19 +56,13 @@ object ProfileViewer : Module(
         max = 7,
         desc = "Maximum number of rows that can be displayed in the talisman page. Lower will give more performance, but will render less items."
     )
-    private val themesList = arrayListOf("Classic", "Midnight", "Light", "Sunrise", "Custom")
+    private val themesList = arrayListOf("Odin", "Midnight", "Light", "Sunrise", "Custom")
     val themes by SelectorSetting("Theme", default = "Classic", themesList, desc = "Preferred theme")
     val main by ColorSetting(
-        "Main",
-        default = Colors.MINECRAFT_DARK_GRAY,
-        false,
-        desc = "Main color (primarily background)."
-    ).withDependency { themes == themesList.lastIndex }
-    val accent by ColorSetting(
-        "Accent",
-        default = Colors.MINECRAFT_BLUE,
+        "Background",
+        default = Colors.gray26,
         true,
-        desc = "Accent color (primarily outlines)."
+        desc = "Color for the background."
     ).withDependency { themes == themesList.lastIndex }
     val font by ColorSetting(
         "Font",
@@ -80,31 +72,31 @@ object ProfileViewer : Module(
     ).withDependency { themes == themesList.lastIndex }
     val items by ColorSetting(
         "Items",
-        default = Colors.MINECRAFT_GRAY,
+        default = Colors.gray38,
         true,
         desc = "Background color of items"
     ).withDependency { themes == themesList.lastIndex }
     val line by ColorSetting(
         "Line",
-        default = Colors.BLACK,
+        default = Colors.WHITE,
         true,
-        desc = "Line Color (primarily separators)."
+        desc = "Separator line color."
     ).withDependency { themes == themesList.lastIndex }
     val code by StringSetting(
         "Code",
         default = "f",
         1,
-        desc = "White Text Color Code (so white on white isn't bad)."
+        desc = "White text color code"
     ).withDependency { themes == themesList.lastIndex }
     val selected by ColorSetting(
         "Selected",
-        default = Colors.MINECRAFT_DARK_AQUA.withAlpha(0.8f),
+        default = Colors.MINECRAFT_DARK_AQUA,
         true,
         desc = "Color for selected buttons."
     ).withDependency { themes == themesList.lastIndex }
     val button by ColorSetting(
         "Button",
-        default = Color("A9A9A9FF"),
+        default = Colors.gray38,
         true,
         desc = "Color for buttons"
     ).withDependency { themes == themesList.lastIndex }
@@ -148,22 +140,20 @@ object ProfileViewer : Module(
 
     val themeEntries = listOf(
         Theme(
-            "Classic",
-            OdinGray,
-            Colors.MINECRAFT_BLUE,
+            "Odin",
+            Colors.gray26,
             Colors.WHITE,
-            Colors.MINECRAFT_GRAY,
+            Colors.gray38,
             Colors.WHITE,
             "f",
-            Colors.MINECRAFT_DARK_AQUA.withAlpha(0.8f),
-            Color(75, 75, 75),
-            10f,
+            Colors.MINECRAFT_DARK_AQUA,
+            Colors.gray38,
+            12f,
             0f,
         ),
         Theme(
             "Midnight",
             Color("151345FF"),  // main
-            Colors.TRANSPARENT,       // accent <- useless
             Colors.WHITE,             // font
             Color("1c1d54FF"),  // items
             Color("040622FF"),  // line
@@ -176,7 +166,6 @@ object ProfileViewer : Module(
         Theme(
             "Light",
             Colors.WHITE,        // main
-            Colors.MINECRAFT_DARK_GRAY,    // accent <- useless
             Colors.BLACK,        // font
             Colors.MINECRAFT_DARK_GRAY,    // items
             Colors.MINECRAFT_DARK_GRAY,    // line
@@ -189,7 +178,6 @@ object ProfileViewer : Module(
         Theme(
             "Sunrise",
             Color("fDf1CDFF"), // main
-            Colors.TRANSPARENT,      // accent <- useless
             Color("805690FF"), // font
             Color("f9dc90FF"), // items
             Color("805690FF"), // line
@@ -204,7 +192,6 @@ object ProfileViewer : Module(
     inline val currentTheme get() = themeEntries.getOrNull(themes) ?: Theme(
         "Custom",
         main,
-        accent,
         font,
         items,
         line,
@@ -236,7 +223,6 @@ fun launchPV(name: String? = null, profile: String? = null) {
 data class Theme(
     val name: String,
     val main: Color,
-    val accent: Color,
     val font: Color,
     val items: Color,
     val line: Color,

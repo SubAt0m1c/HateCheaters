@@ -38,9 +38,9 @@ object Inventory: Pages.PVPage("Inventory") {
         val inventoryPageHeight = ((totalHeight-lineY * (2 + 6 - 1)) * 0.9) / 6
 
         buttons(
-            Box(mainX, lineY, mainWidth, inventoryPageHeight), lineY, ot, default = "Basic",
+            Box(mainX, lineY, mainWidth, inventoryPageHeight), lineY, default = "Basic",
             InventoryPages.entries.map { it.name }, 2, ct.button.hc(),
-            ct.selected.hc(), ct.roundness, 1f,
+            ct.selected.hc(), ct.roundness,
         ) { onSelect { playClickSound() } }
     }
 
@@ -75,7 +75,17 @@ object Inventory: Pages.PVPage("Inventory") {
         private val itemGrid: ItemGridDSL by profileLazy {
             val inventory = invArmor.reversed() + listOf(null) + profile.inventory.equipment.itemStacks + fixFirstNine(profile.inventory.invContents.itemStacks)
 
-            itemGrid(listOf(GridItems(inventory, mainX, (startY + (mainHeight - ((separatorLineY)))/2).toInt(), mainWidth, 9)), ct.roundness, 1f, lineY.toFloat()) {
+            itemGrid(
+                listOf(
+                    GridItems(
+                        inventory,
+                        mainX,
+                        (startY + (mainHeight - ((separatorLineY))) / 2).toInt(),
+                        mainWidth,
+                        9
+                    )
+                ), ct.roundness, lineY.toFloat()
+            ) {
                 colorHandler { i, item ->
                     when {
                         i == 4 -> Colors.TRANSPARENT // this should be replaced by separate inventory grids at some point
@@ -112,16 +122,16 @@ object Inventory: Pages.PVPage("Inventory") {
         }
 
         private val itemGrid by profileLazy {
-            itemGrid(gridItems, ct.roundness, 1f, lineY.toFloat()) {
+            itemGrid(gridItems, ct.roundness, lineY.toFloat()) {
                 colorHandler { _, item -> if (item in invArmor.toSet()) Colors.BLUE else ct.items.hc() }
             }
         }
 
         private val buttons by profileLazy {
             buttons(
-                Box(mainX, startY, mainWidth, buttonHeight), lineY, ot, default = 1,
+                Box(mainX, startY, mainWidth, buttonHeight), lineY, default = 1,
                 (1..ceil(wardrobe.size.toDouble() / 36).toInt()).toList(), 2,
-                ct.button.hc(), ct.selected.hc(), ct.roundness, 1f,
+                ct.button.hc(), ct.selected.hc(), ct.roundness
             ) {
                 onSelect {
                     itemGrid.updateItems(getSubset(inventoryWithArmor, selectedButtonIndex))
@@ -155,7 +165,7 @@ object Inventory: Pages.PVPage("Inventory") {
         private inline val gridItems get() = listOf(GridItems(getSubset(talis, buttons.getSelected - 1, maxRows * 9), separatorX + lineY + ot, centerY.toInt(), width, 9))
 
         private val itemGrid by profileLazy {
-            itemGrid(gridItems, ct.roundness, 1f, lineY.toFloat()) {
+            itemGrid(gridItems, ct.roundness, lineY.toFloat()) {
                 colorHandler { _, item ->
                     if (rarityBackgrounds) item?.lore?.let { getRarity(it) }?.color?.hc()
                         ?: ct.items.hc() else ct.items.hc()
@@ -167,9 +177,8 @@ object Inventory: Pages.PVPage("Inventory") {
 
         private val buttons: ButtonDSL<Int> by profileLazy {
             buttons(
-                Box(separatorX + lineY, startY, width, buttonHeight), lineY, ot, default = 1,
-                (1..pages).toList(), 2, ct.button.hc(),
-                ct.selected.hc(), ct.roundness, 1f,
+                Box(separatorX + lineY, startY, width, buttonHeight), lineY, default = 1,
+                (1..pages).toList(), 2, ct.button.hc(), ct.selected.hc(), ct.roundness,
             ) {
                 onSelect {
                     itemGrid.updateItems(getSubset(talis, buttons.getSelected - 1, maxRows*9))
@@ -210,9 +219,9 @@ object Inventory: Pages.PVPage("Inventory") {
 
         private val buttons: ButtonDSL<Int> by profileLazy {
             buttons(
-                Box(mainX, startY, mainWidth, buttonHeight), lineY, ot, default = 1,
+                Box(mainX, startY, mainWidth, buttonHeight), lineY, default = 1,
                 profile.inventory.backpackContents.keys.mapNotNull { it.toIntOrNull()?.plus(1) }.sorted(), 2, // adding and subtracting so the display matches the game menu instead of index.
-                ct.button.hc(), ct.selected.hc(), ct.roundness, 1f,
+                ct.button.hc(), ct.selected.hc(), ct.roundness,
             ) {
                 onSelect {
                     itemGrid.updateItems(inventory)
@@ -222,7 +231,7 @@ object Inventory: Pages.PVPage("Inventory") {
         }
 
         private val itemGrid by profileLazy {
-            itemGrid(gridItems, ct.roundness, 1f, lineY.toFloat()) {
+            itemGrid(gridItems, ct.roundness, lineY.toFloat()) {
                 colorHandler { _, item ->
                     if (rarityBackgrounds) item?.lore?.let { getRarity(it) }?.color?.hc()
                         ?: ct.items.hc() else ct.items.hc()
@@ -247,9 +256,9 @@ object Inventory: Pages.PVPage("Inventory") {
 
         private val buttons: ButtonDSL<Int> by profileLazy {
             buttons(
-                Box(mainX, startY, mainWidth, buttonHeight), lineY, ot, default = 1,
+                Box(mainX, startY, mainWidth, buttonHeight), lineY, default = 1,
                 (1..pages).toList(), 2, ct.button.hc(),
-                ct.selected.hc(), ct.roundness, 1f,
+                ct.selected.hc(), ct.roundness,
             ) {
                 onSelect {
                     itemGrid.updateItems(getSubset(items, buttons.getSelected - 1, 45))
@@ -259,7 +268,7 @@ object Inventory: Pages.PVPage("Inventory") {
         }
 
         private val itemGrid: ItemGridDSL by profileLazy {
-            itemGrid(gridItems, ct.roundness, 1f, lineY.toFloat()) {
+            itemGrid(gridItems, ct.roundness, lineY.toFloat()) {
                 colorHandler { _, item ->
                     if (rarityBackgrounds) item?.lore?.let { getRarity(it) }?.color?.hc()
                         ?: ct.items.hc() else ct.items.hc()

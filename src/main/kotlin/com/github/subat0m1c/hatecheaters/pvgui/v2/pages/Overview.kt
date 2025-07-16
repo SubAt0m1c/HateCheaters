@@ -48,7 +48,8 @@ object Overview: Pages.PVPage("Overview") {
             longest + lineY * 2,
             floor(Text.textHeight(3.5) + lineY * 2)
         )
-        dropDownMenu(dropDownBox, ot, default, options, 3.5, ct.button.hc(), ct.accent.hc(), ct.roundness, 1f) {
+
+        dropDownMenu(dropDownBox, default, options, 3.5, ct.button.hc(), ct.roundness) {
             onSelect { selected ->
                 updateProfile(selected.substringAfter("§a").substringBefore("§r "))
                 playClickSound()

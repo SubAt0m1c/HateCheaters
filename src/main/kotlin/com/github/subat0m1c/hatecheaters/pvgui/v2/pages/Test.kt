@@ -23,7 +23,6 @@ object Test : Pages.PVPage("Test") {
         itemGrid(
             listOf(inventory),
             ProfileViewer.currentTheme.roundness,
-            1f,
             lineY.toFloat(),
         ) {
             colorHandler { i, _ ->

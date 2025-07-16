@@ -23,9 +23,9 @@ object Pets: Pages.PVPage("Pets") {
 
     private val buttons by profileLazy {
         buttons(
-            Box(mainX, mainLineY+lineY, mainWidth, buttonHeight), lineY, ot, 1,
+            Box(mainX, mainLineY + lineY, mainWidth, buttonHeight), lineY, 1,
             (1..<ceil(profile.pets.pets.size / 20.0).toInt()).toList(), 3f,
-            ct.button.hc(), ct.selected.hc(), ct.roundness, 1f, false
+            ct.button.hc(), ct.selected.hc(), ct.roundness, false
         ) { onSelect { playClickSound() } }
     }
 

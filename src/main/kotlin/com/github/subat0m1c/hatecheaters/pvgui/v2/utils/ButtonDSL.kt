@@ -10,29 +10,26 @@ import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Shaders
 fun <T> buttons(
     box: Box,
     padding: Int,
-    ot: Number,
     default: T,
     options: List<T>,
     textScale: Number,
     color: Color,
-    accent: Color,
+    selectedColor: Color,
     radius: Float = 0f,
-    edgeSoftness: Float = 0f,
     vertical: Boolean = false,
     buttonDSL: ButtonDSL<T>.() -> Unit
-): ButtonDSL<T> = ButtonDSL(box, padding, ot, default, options, textScale, color, accent, radius, edgeSoftness, vertical).apply(buttonDSL)
+): ButtonDSL<T> =
+    ButtonDSL(box, padding, default, options, textScale, color, selectedColor, radius, vertical).apply(buttonDSL)
 
 class ButtonDSL<T>(
     private val box: Box,
     private val padding: Int,
-    private val outlineThickness: Number,
     private val default: T,
     private val options: List<T>,
     private val textScale: Number,
     private val color: Color,
-    private val accent: Color,
+    private val selectedColor: Color,
     private val radius: Float = 0f,
-    private val edgeSoftness: Float = 0f,
     private val vertical: Boolean
 ) {
     private val lineY =
@@ -52,7 +49,7 @@ class ButtonDSL<T>(
         options.forEachIndexed { i, option ->
             val y = if (!vertical) box.y else box.y + (buttonHeight + lineY) * i
             val x = if (!vertical) box.x + (buttonWidth + lineY) * i else box.x
-            if (option == selected) Shaders.rect(x, y, buttonWidth, box.h, radius, accent)
+            if (option == selected) Shaders.rect(x, y, buttonWidth, box.h, radius, selectedColor)
             else Shaders.rect(x, y, buttonWidth, box.h, radius, color)
             centeredText(option.toString(), x + buttonWidth / 2, box.y + box.h / 2, textScale.toFloat(), Colors.WHITE)
         }

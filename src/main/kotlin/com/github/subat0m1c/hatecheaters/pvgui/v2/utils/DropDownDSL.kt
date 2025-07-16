@@ -7,27 +7,21 @@ import com.github.subat0m1c.hatecheaters.utils.odinwrappers.*
 
 fun <T> dropDownMenu(
     box: Box,
-    ot: Number,
     default: T,
     options: List<T>,
     textScale: Number,
     color: Color,
-    accent: Color,
     radius: Float = 0f,
-    edgeSoftness: Float = 0f,
     dropDown: DropDownDSL<T>.() -> Unit
-): DropDownDSL<T> = DropDownDSL(box, ot, default, options, textScale, color, accent, radius, edgeSoftness).apply(dropDown)
+): DropDownDSL<T> = DropDownDSL(box, default, options, textScale, color, radius).apply(dropDown)
 
 class DropDownDSL <T> (
     private val box: Box,
-    private val outlineThickness: Number,
     private val default: T,
     private val options: List<T>,
     private val textScale: Number,
     private val color: Color,
-    private val accent: Color,
     private val radius: Float = 0f,
-    private val edgeSoftness: Float = 0f,
 ) {
     private var scaledBox: Box? = null
 

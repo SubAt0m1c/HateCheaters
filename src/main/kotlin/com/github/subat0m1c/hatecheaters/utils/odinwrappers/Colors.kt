@@ -40,9 +40,10 @@ object Colors {
     val MAGENTA = Color(OdinColors.MINECRAFT_LIGHT_PURPLE)
     val DARKGREEN = Color(OdinColors.MINECRAFT_DARK_GREEN)
     val TRANSPARENT = Color(OdinColors.TRANSPARENT)
-}
 
-inline val OdinGray get() = OdinColor(35, 35, 35)
+    val gray38 = Color(OdinColors.gray38)
+    val gray26 = Color(OdinColors.gray26)
+}
 
 /**
  * this is so we can use odin's ColorSetting with our own wrapped class.

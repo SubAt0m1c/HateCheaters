@@ -73,7 +73,7 @@ object ToastRenderer {
 
         Shaders.rect(
             Box(x, mc.displayHeight - toast.toastHeight - y, toast.width, toast.toastHeight),
-            color = Color(38, 38, 38),
+            color = Colors.gray26,
             radius = 10f,
         )
 

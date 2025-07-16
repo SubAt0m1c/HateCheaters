@@ -9,7 +9,6 @@ import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Color
 import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Colors
 import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Shaders
 import me.odinmain.OdinMain.mc
-import me.odinmain.utils.render.RenderUtils.bind
 import me.odinmain.utils.skyblock.lore
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.gui.ScaledResolution
@@ -25,15 +24,13 @@ import kotlin.math.ceil
 fun itemGrid(
     items: List<GridItems>,
     radius: Float = 0f,
-    edgeSoftness: Float = 0f,
     padding: Float = 0f,
     itemGrid: ItemGridDSL.() -> Unit
-) = ItemGridDSL(items, radius, edgeSoftness, padding).apply(itemGrid)
+) = ItemGridDSL(items, radius, padding).apply(itemGrid)
 
 class ItemGridDSL(
     private val items: List<GridItems>,
     private val radius: Float,
-    private val edgeSoftness: Float,
     private val padding: Float,
 ) {
     private var tooltipHandler: (ItemStack) -> List<String> = { listOf(it.displayName) + it.lore }
@@ -43,12 +40,6 @@ class ItemGridDSL(
     fun draw(mouseX: Int, mouseY: Int) {
         GlStateManager.pushMatrix()
 
-        Colors.WHITE.bind()
-        GlStateManager.enableRescaleNormal()
-        RenderHelper.enableStandardItemLighting()
-        RenderHelper.enableGUIStandardItemLighting()
-
-        mc.renderItem.zLevel = 200f
         val toDraw = mutableListOf<DrawItem>()
         items.forEach { gridItems ->
             val itemWidth = (gridItems.width - (gridItems.columns - 1) * padding) / gridItems.columns.coerceAtLeast(1)
@@ -68,15 +59,17 @@ class ItemGridDSL(
 
         Shaders.stopDraw()
 
+        Colors.WHITE.bind()
+        RenderHelper.enableGUIStandardItemLighting()
         for (item in toDraw) {
+            GlStateManager.enableRescaleNormal()
             item.draw(fontRenderer)
         }
+        RenderHelper.disableStandardItemLighting()
+
+        GlStateManager.popMatrix()
 
         Shaders.startDraw()
-
-        RenderHelper.disableStandardItemLighting()
-        GlStateManager.disableRescaleNormal()
-        GlStateManager.popMatrix()
     }
     fun tooltipHandler(init: (ItemStack) -> List<String>) { tooltipHandler = init }
 
@@ -106,7 +99,7 @@ data class DrawItem(val item: ItemStack, val x: Float, val y: Float, val size: F
         GlStateManager.pushMatrix()
         GlStateManager.translate(x, y, 0f)
         GlStateManager.scale(size / 16f, size / 16f, 1f)
-        mc.renderItem.renderItemIntoGUI(item, 0, 0)
+        mc.renderItem.renderItemAndEffectIntoGUI(item, 0, 0)
         mc.renderItem.renderItemOverlayIntoGUI(font, item, 0, 0, null)
         GlStateManager.popMatrix()
     }
