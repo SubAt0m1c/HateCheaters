@@ -7,7 +7,6 @@ import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.centeredText
 import com.github.subat0m1c.hatecheaters.pvgui.v2.Pages.playClickSound
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.DropDownDSL
-import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.drawPlayerOnScreen
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.dropDownMenu
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.profileLazy
@@ -32,7 +31,6 @@ import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.client.resources.DefaultPlayerSkin
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.util.ResourceLocation
-import org.lwjgl.input.Mouse
 import java.util.*
 import kotlin.math.floor
 
@@ -101,7 +99,7 @@ object Overview: Pages.PVPage("Overview") {
 
         dropDown.draw()
 
-        playerEntity?.let { drawPlayerOnScreen(playerX.toDouble(), lineY + mainHeight / 2.0 + 100, 100, Mouse.getX(), Mouse.getY() - 200, it) }
+        // playerEntity?.let { drawPlayerOnScreen(playerX.toDouble(), lineY + mainHeight / 2.0 + 100, 100, Mouse.getX(), Mouse.getY() - 200, it) }
     }
 
     override fun mouseClick(x: Int, y: Int, button: Int) {
