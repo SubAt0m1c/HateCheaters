@@ -3,7 +3,6 @@ package com.github.subat0m1c.hatecheaters.modules.render
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.screen
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui
 import com.github.subat0m1c.hatecheaters.pvgui.v2.PVGui.loadPlayer
-import com.github.subat0m1c.hatecheaters.utils.ChatUtils.setHover
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import me.odinmain.clickgui.settings.AlwaysActive
 import me.odinmain.clickgui.settings.Setting.Companion.withDependency
@@ -11,9 +10,8 @@ import me.odinmain.clickgui.settings.impl.*
 import me.odinmain.features.Module
 import me.odinmain.utils.render.Color
 import me.odinmain.utils.render.Colors
-import net.minecraft.event.ClickEvent
-import net.minecraftforge.client.event.ClientChatReceivedEvent
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraft.entity.player.EntityPlayer
+import java.util.*
 
 @AlwaysActive
 object ProfileViewer : Module(
@@ -30,11 +28,14 @@ object ProfileViewer : Module(
         default = false,
         desc = "Uses /hcpv in the stats command instead of /pv."
     )
-    val messagePv by BooleanSetting(
-        "Message PV",
-        default = false,
-        desc = "Runs /pv when you click a name in chat. might have lots of compatibility issues."
-    )
+//    val messagePv by BooleanSetting(
+//        "Message PV",
+//        default = false,
+//        desc = "Runs /pv when you click a name in chat. might have lots of compatibility issues."
+//    )
+
+    val animations by BooleanSetting("Animations", default = true, desc = "Animations for the gui.")
+
     val invwalk by BooleanSetting(
         "GUI Move",
         default = false,
@@ -42,7 +43,7 @@ object ProfileViewer : Module(
     )
     val scale by NumberSetting(
         "Scale",
-        default = 1.5,
+        default = 1.0,
         increment = 0.1,
         min = 0.1,
         max = 1.5,
@@ -125,18 +126,18 @@ object ProfileViewer : Module(
     //https://regex101.com/r/dl1MqJ/1
     private inline val messageRegex get() = Regex("^(((?:Party|Guild|Co-op) >|(?:From|To)|(?:\\[\\d+])?) ?(\\[[^]]*?])? ?(\\w{1,16}) ?(\\[[^]]*?]|[ቾ⚒])?): ?(.+)$")
 
-    @SubscribeEvent
-    fun onMessage(event: ClientChatReceivedEvent) {
-        if (!messagePv) return
-        val (_, _, _, name) = messageRegex.matchEntire(event.message.unformattedText)?.destructured ?: return
-        event.message.siblings.find { it.unformattedText.contains(name) }?.chatStyle?.apply {
-            chatClickEvent = ClickEvent(
-                ClickEvent.Action.RUN_COMMAND,
-                "/${if (statsPv) "hcpv" else "pv"} $name"
-            )
-            setHover(listOf("Click to view ${name}'s profile"))
-        }
-    }
+//    @SubscribeEvent
+//    fun onMessage(event: ClientChatReceivedEvent) {
+//        if (!messagePv) return
+//        val (_, _, _, name) = messageRegex.matchEntire(event.message.unformattedText)?.destructured ?: return
+//        event.message.siblings.find { it.unformattedText.contains(name) }?.chatStyle?.apply {
+//            chatClickEvent = ClickEvent(
+//                ClickEvent.Action.RUN_COMMAND,
+//                "/${if (statsPv) "hcpv" else "pv"} $name"
+//            )
+//            setHover(listOf("Click to view ${name}'s profile"))
+//        }
+//    }
 
     val themeEntries = listOf(
         Theme(
@@ -202,20 +203,50 @@ object ProfileViewer : Module(
         inventoryRound
     )
 
+    data class PvPlayer(val name: String, val uuid: UUID? = null, val profile: String? = null)
+    data class LoadPlayer(var player: PvPlayer, var added: Long = System.currentTimeMillis())
+
+    private val toPv by lazy { LoadPlayer(PvPlayer(mc.thePlayer.name, mc.thePlayer.uniqueID), 0) }
+    private val lastLoaded by lazy { LoadPlayer(PvPlayer(mc.thePlayer.name, mc.thePlayer.uniqueID), 0) }
+
+    fun loaded(name: String, profile: String?) {
+        lastLoaded.player = PvPlayer(
+            name,
+            profile = profile
+        ) // we technically could pass uuid in, but it will be in the uuid cache here anyways.
+        lastLoaded.added = System.currentTimeMillis()
+    }
+
+    fun addForKeybind(player: String) {
+        toPv.player = PvPlayer(player) // we also have uuid here but it will be in the cache by now.
+        toPv.added = System.currentTimeMillis()
+    }
+
     override fun onKeybind() {
-        launchPV()
+        val entity = mc.objectMouseOver.entityHit
+        val player: PvPlayer = when {
+            System.currentTimeMillis() - toPv.added <= 5000 -> toPv.player
+            entity != null && entity is EntityPlayer && entity.uniqueID.version() != 2 -> PvPlayer(
+                entity.name,
+                entity.uniqueID
+            )
+
+            System.currentTimeMillis() - lastLoaded.added <= 5000 -> lastLoaded.player
+            else -> PvPlayer(mc.thePlayer.name, mc.thePlayer.uniqueID)
+        }
+
+        launchPV(player)
     }
 
     override fun onEnable() {
-        launchPV()
-        super.onEnable()
+        launchPV(PvPlayer(mc.thePlayer.name, mc.thePlayer.uniqueID))
         toggle()
     }
 
 }
 
-fun launchPV(name: String? = null, profile: String? = null) {
-    loadPlayer(name, profile)
+fun launchPV(player: ProfileViewer.PvPlayer) {
+    loadPlayer(player)
     screen = PVGui
     Logger.info("Trying to display pvgui")
 }

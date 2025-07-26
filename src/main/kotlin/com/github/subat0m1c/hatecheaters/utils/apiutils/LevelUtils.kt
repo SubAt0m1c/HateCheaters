@@ -99,6 +99,21 @@ object LevelUtils {
             else           -> -1
         }
 
+    fun getSkillColorCode(skill: String): String = when (skill) {
+        "taming" -> ProfileViewer.currentTheme.fontCode
+        "mining" -> "7"
+        "foraging" -> "2"
+        "enchanting" -> "5"
+        "carpentry" -> "e"
+        "farming" -> "6"
+        "combat" -> "c"
+        "fishing" -> "b"
+        "alchemy" -> "d"
+        "runecrafting" -> "3"
+        "social" -> "a"
+        else -> ProfileViewer.currentTheme.fontCode
+    }
+
     fun getSkillColor(skill: String): Color = when (skill) {
         "taming" -> ProfileViewer.currentTheme.font.hc()
         "mining" -> Colors.GRAY
@@ -131,6 +146,16 @@ object LevelUtils {
     fun getSlayerSkillLevel(exp: Double, slayer: String): Double =
         (if (slayer != "vampire") getLevelWithProgress(exp, slayerLevels) else getLevelWithProgress(exp, vampireLevels)).coerceAtMost(
             getSlayerCap(slayer).toDouble())
+
+    fun getSlayerColorCode(slayer: String): String = when (slayer) {
+        "wolf" -> ProfileViewer.currentTheme.fontCode
+        "zombie" -> "a"
+        "enderman" -> "5"
+        "vampire" -> "c"
+        "blaze" -> "6"
+        "spider" -> "8"
+        else -> ProfileViewer.currentTheme.fontCode
+    }
 
     fun getSlayerColor(slayer: String): Color = when (slayer) {
         "wolf" -> ProfileViewer.currentTheme.font.hc()

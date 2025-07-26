@@ -23,6 +23,11 @@ object HypixelApi {
         uuid ?: getUUIDbyName(playerName).getOrElse { e -> return Result.failure(e) }.uuid
     )
 
+    suspend fun getProfileUUID(uuid: String, name: String): Result<PlayerInfo> = withContext(Dispatchers.IO) {
+        getFromCache(name)?.let { cached -> return@withContext Result.success(cached) }
+        getProfileData(WebUtils.MojangData(name, uuid)).onSuccess { WebUtils.UuidCache.addToCache(name, uuid) }
+    }
+
     suspend fun getProfile(playerName: String): Result<PlayerInfo> = withContext(Dispatchers.IO) {
         getFromCache(playerName)?.let { cached -> return@withContext Result.success(cached) }
         getUUIDbyName(playerName).fold(

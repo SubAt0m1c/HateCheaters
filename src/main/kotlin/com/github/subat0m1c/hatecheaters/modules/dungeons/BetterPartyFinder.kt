@@ -1,6 +1,7 @@
 package com.github.subat0m1c.hatecheaters.modules.dungeons
 
 import com.github.subat0m1c.hatecheaters.HateCheaters.Companion.launch
+import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.formatted
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
@@ -312,6 +313,8 @@ object BetterPartyFinder : Module(
                         runIn(5) { sendCommand("party kick $name") }
                         partyMessage("Kicked $name for: ${kickedReasons.joinToString(", ")}")
                     } else sendCommand("party kick $name")
+
+                    ProfileViewer.addForKeybind(name)
 
                     return@launch modMessage("Kicking $name for: \n${kickedReasons.joinToString(" \n")}")
                 }

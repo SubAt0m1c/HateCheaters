@@ -16,6 +16,18 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 object WebUtils {
+    object UuidCache {
+        private val cache = HashMap<String, String>()
+
+        fun addToCache(name: String, uuid: String) {
+            val lowercase = name.lowercase()
+            if (lowercase in cache) return
+            cache[name.lowercase()] = uuid.replace("-", "")
+        }
+
+        fun getFromCache(name: String): String? = cache[name.lowercase()]
+    }
+
     private const val USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
 
     suspend inline fun <reified T> streamAndRead(url: String, json: Json = HateCheaters.json): Result<T> = runCatching {
@@ -30,10 +42,15 @@ object WebUtils {
             Request.Builder().url(url).build()
         ).onFailure { e -> Logger.warning("Failed to get input stream. Error: ${e.message}") }
 
-    suspend fun getUUIDbyName(name: String): Result<MojangData> =
-        streamAndRead<MojangData>("https://api.minecraftservices.com/minecraft/profile/lookup/name/$name")
+
+    suspend fun getUUIDbyName(name: String): Result<MojangData> {
+        UuidCache.getFromCache(name)?.let { return Result.success(MojangData(name, it)) }
+        return streamAndRead<MojangData>("https://api.minecraftservices.com/minecraft/profile/lookup/name/$name")
+            .onSuccess { UuidCache.addToCache(name, it.uuid) }
+    }
 
     private suspend fun clientCall(request: Request): Result<InputStream> = suspendCoroutine { cont ->
+        Logger.info("Making request to ${request.url}")
         client.newCall(request).enqueue(
             object : Callback {
                 override fun onFailure(call: Call, e: IOException) = cont.resume(Result.failure(e))

@@ -7,7 +7,9 @@ import com.github.subat0m1c.hatecheaters.utils.ChatUtils.chatConstructor
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.modMessage
 import com.github.subat0m1c.hatecheaters.utils.ExtraStatsHandler
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelApi.getSecrets
-import kotlinx.coroutines.*
+import com.github.subat0m1c.hatecheaters.utils.networkutils.WebUtils
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import me.odinmain.clickgui.settings.impl.BooleanSetting
 import me.odinmain.features.Module
 import me.odinmain.utils.noControlCodes
@@ -62,6 +64,9 @@ object ClearSecrets : Module(
         event.teammates.forEach {
             val teammate = it.asTeammate()
             if (teammate in teammateList) return@forEach
+            teammate.dungeonPlayer.entity?.uniqueID?.let { uuid ->
+                WebUtils.UuidCache.addToCache(teammate.name, uuid.toString())
+            }
             teammateList.add(teammate.apply { if (it.name != mc.thePlayer.name) pullSecrets() })
         }
     }

@@ -41,15 +41,9 @@ object Utils {
     //faster than filter i think probably maybe idk if it matters though
     // definitely wasnt
 
-    fun <T> List<T>.without(vararg items: T): List<T> = with(this.toMutableList()) {
-        removeAll { it in items }
-        return@with this
-    }
+    fun <T> List<T>.without(vararg items: T): List<T> = this.filter { it !in items }
 
-    fun <K, V> Map<K, V>.without(vararg items: K): Map<K, V> = with(this.toMutableMap()) {
-        keys.removeAll { it in items }
-        return@with this
-    }
+    fun <K, V> Map<K, V>.without(vararg items: K): Map<K, V> = this.filter { it.key !in items }
 
     fun isObjectHovered(box: Box, mouseX: Number, mouseY: Number): Boolean =
         (mouseX.toDouble() in box.x.toDouble()..box.x.toDouble() + box.w.toDouble() && mouseY.toDouble() in box.y.toDouble()..box.y.toDouble()+box.h.toDouble())
@@ -61,10 +55,13 @@ object Utils {
 //    inline val getMouseY: Double get() = Mouse.getY().toDouble()
 
     fun drawPlayerOnScreen(x: Double, y: Double, scale: Int, mouseX: Int, mouseY: Int, renderPlayer: EntityLivingBase) {
+        GlStateManager.pushMatrix() // stopdraw pops a matrix and attributes so we want to eat them for future rendering. This doesnt work perfectly though so its still weird...
+        GlStateManager.pushAttrib()
         Shaders.stopDraw()
         GlStateManager.pushMatrix()
         Colors.WHITE
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
+
         translate(x, y, 200.0)
         drawEntityOnScreen(0, 0, scale, ((x*2)-mouseX).toFloat(), (mouseY-y).toFloat(), renderPlayer)
         GlStateManager.popMatrix()

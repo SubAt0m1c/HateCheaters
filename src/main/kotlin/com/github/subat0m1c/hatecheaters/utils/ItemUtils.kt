@@ -1,6 +1,5 @@
 package com.github.subat0m1c.hatecheaters.utils
 
-import com.github.subat0m1c.hatecheaters.pvgui.v2.pages.Test.TALISMAN_BAG_TEXTURE
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.formatted
 import com.github.subat0m1c.hatecheaters.utils.ChatUtils.capitalizeWords
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelData.Pet
@@ -19,7 +18,7 @@ object ItemUtils {
     val petItemRegex = Regex("(?:PET_ITEM_)?([A-Z_]+?)(?:_(COMMON|UNCOMMON|RARE|EPIC|LEGENDARY|MYTHIC))?")
     val witherImpactRegex = Regex("(?:⦾ )?Ability: Wither Impact {2}RIGHT CLICK")
 
-    inline val maxMagicalPower get() = 1730
+    inline val maxMagicalPower get() = 1800
 
     inline val Pet.petItem: String? get() =
         heldItem?.let { petItemRegex.matchEntire(it)?.destructured?.let { (heldItem, rarity) -> "${getRarityColor(rarity)}${heldItem.lowercase().replace("_", " ").capitalizeWords()}" } }

@@ -21,7 +21,6 @@ object HateCheatersModule : Module(
         ArrayList(ToastRenderer.ToastCorner.entries.map { it.displayName }),
         desc = "The corner the toasts will be in."
     ).withDependency { toasts }
-
     // val logJson by BooleanSetting("Log Json", default = false, desc = "Logs requested json data to Config/hatecheaters/json_logs")
     val debugMessages by BooleanSetting(
         "Debug messages",

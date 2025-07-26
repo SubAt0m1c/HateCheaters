@@ -8,9 +8,9 @@ import kotlin.reflect.KProperty
  *
  * All values using player values at any point MUST use this.
  */
-fun <T> profileLazy(initializer: () -> T) = ProfileLazy.create(initializer)
+fun <T> resettableLazy(initializer: () -> T) = ResettableLazy.create(initializer)
 
-class ProfileLazy<out T>(private val initializer: () -> T) {
+class ResettableLazy<out T>(private val initializer: () -> T) {
     private var _value: T? = null
 
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T = _value ?: initializer().also { _value = it }
@@ -19,9 +19,14 @@ class ProfileLazy<out T>(private val initializer: () -> T) {
     fun noInit() = _value
 
     companion object {
-        private val allLazies = mutableListOf<ProfileLazy<*>>()
+        private val allLazies = mutableListOf<ResettableLazy<*>>()
 
-        fun <T> create(initializer: () -> T): ProfileLazy<T> = ProfileLazy(initializer).also { allLazies.add(it) }
+        fun <T> create(initializer: () -> T): ResettableLazy<T> = ResettableLazy(initializer).also { allLazies.add(it) }
+
+        /**
+         * creates a resettable lazy without adding it to the global lazy list.
+         */
+        fun <T> silentCreate(initializer: () -> T): ResettableLazy<T> = ResettableLazy(initializer)
 
         fun resetAll() = allLazies.forEach { it.reset() }
     }

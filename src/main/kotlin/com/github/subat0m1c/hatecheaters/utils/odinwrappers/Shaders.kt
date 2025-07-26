@@ -2,6 +2,7 @@ package com.github.subat0m1c.hatecheaters.utils.odinwrappers
 
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.ui.rendering.NVGRenderer
+import net.minecraft.client.renderer.GlStateManager
 
 object Shaders {
     fun scale(scale: Float) {
@@ -29,10 +30,33 @@ object Shaders {
 
     fun startDraw(x: Float = mc.displayWidth.toFloat(), y: Float = mc.displayHeight.toFloat()) {
         NVGRenderer.beginFrame(x, y)
+        GlStateManager.popMatrix()
+        GlStateManager.popAttrib()
     }
 
     fun stopDraw() {
         NVGRenderer.endFrame()
+    }
+
+    fun hollowRect(
+        x: Float, y: Float, width: Float, height: Float,
+        radius: Float = 0f, lineWidth: Float = 1f, color: Color
+    ) {
+        NVGRenderer.hollowRect(
+            x, y, width, height,
+            lineWidth, color.rgba, radius
+        )
+    }
+
+    fun hollowRect(box: Box, radius: Float = 0f, lineWidth: Float = 1f, color: Color) {
+        hollowRect(
+            box.x, box.y, box.w, box.h,
+            radius, lineWidth, color
+        )
+    }
+
+    fun globalAlpha(alpha: Float) {
+        NVGRenderer.globalAlpha(alpha)
     }
 
     fun rect(

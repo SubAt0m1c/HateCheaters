@@ -103,7 +103,7 @@ object ToastRenderer {
                 textY + 10 + (i * 10) + (i * Text.textHeight(toast.textScale * 1.5f)),
                 toast.textScale * 1.5f,
                 Colors.WHITE,
-                center = false
+                centering = Text.Centering.LEFT
             )
         }
 
@@ -114,7 +114,7 @@ object ToastRenderer {
                 textY + toast.titleHeight + 10 + (i * 10) + (i * Text.textHeight(toast.textScale)),
                 toast.textScale,
                 Colors.WHITE,
-                center = false
+                centering = Text.Centering.LEFT
             )
         }
     }

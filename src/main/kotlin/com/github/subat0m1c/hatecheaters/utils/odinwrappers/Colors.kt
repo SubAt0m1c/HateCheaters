@@ -1,5 +1,6 @@
 package com.github.subat0m1c.hatecheaters.utils.odinwrappers
 
+import me.odinmain.utils.render.Color.Companion.brighter
 import me.odinmain.utils.render.RenderUtils.bind
 import me.odinmain.utils.render.Color as OdinColor
 import me.odinmain.utils.render.Colors as OdinColors
@@ -12,9 +13,9 @@ import me.odinmain.utils.render.Colors as OdinColors
 class Color(val odin: OdinColor) {
     val rgba get() = odin.rgba
 
-    fun bind() {
-        odin.bind()
-    }
+    fun bind() = odin.bind()
+
+    fun brighter(factor: Float): Color = Color(odin.brighter(factor))
 
     constructor(
         r: Int, g: Int, b: Int, a: Float = 1f

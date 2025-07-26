@@ -1,6 +1,7 @@
 package com.github.subat0m1c.hatecheaters.utils
 
 import com.github.subat0m1c.hatecheaters.modules.dungeons.BetterPartyFinder.importantItems
+import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer
 import com.github.subat0m1c.hatecheaters.modules.render.ProfileViewer.statsPv
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.formatted
 import com.github.subat0m1c.hatecheaters.pvgui.v2.utils.Utils.without
@@ -27,6 +28,8 @@ object DungeonStats {
     private inline val petSet get() = setOf("ENDER_DRAGON", "SPIRIT", "GOLDEN_DRAGON", "JELLYFISH")
 
     fun displayDungeonData(currentProfile: HypixelData.MemberData, name: String, petMap: Set<String> = petSet, floor: Int) {
+        ProfileViewer.addForKeybind(name)
+
         val catacombs = currentProfile.dungeons
 
         val profileKills = currentProfile.playerStats.kills
@@ -141,7 +144,10 @@ object DungeonStats {
 
             if (importantItems.isNotEmpty() && currentProfile.inventoryApi) {
                 displayText("\n§3| Items:")
-                items.forEach { hoverText(it.displayName, (listOf(it.displayName) + it.lore)) }
+                items.forEach {
+                    displayText(" ")
+                    hoverText(it.displayName, (listOf(it.displayName) + it.lore))
+                }
             }
 
             displayText(getChatBreak())
