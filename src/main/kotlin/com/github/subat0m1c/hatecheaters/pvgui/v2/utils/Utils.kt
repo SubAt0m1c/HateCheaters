@@ -56,7 +56,6 @@ object Utils {
 
     fun drawPlayerOnScreen(x: Double, y: Double, scale: Int, mouseX: Int, mouseY: Int, renderPlayer: EntityLivingBase) {
         GlStateManager.pushMatrix() // stopdraw pops a matrix and attributes so we want to eat them for future rendering. This doesnt work perfectly though so its still weird...
-        GlStateManager.pushAttrib()
         Shaders.stopDraw()
         GlStateManager.pushMatrix()
         Colors.WHITE

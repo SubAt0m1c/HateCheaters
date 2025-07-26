@@ -2,7 +2,6 @@ package com.github.subat0m1c.hatecheaters.utils.odinwrappers
 
 import me.odinmain.OdinMain.mc
 import me.odinmain.utils.ui.rendering.NVGRenderer
-import net.minecraft.client.renderer.GlStateManager
 
 object Shaders {
     fun scale(scale: Float) {
@@ -30,8 +29,6 @@ object Shaders {
 
     fun startDraw(x: Float = mc.displayWidth.toFloat(), y: Float = mc.displayHeight.toFloat()) {
         NVGRenderer.beginFrame(x, y)
-        GlStateManager.popMatrix()
-        GlStateManager.popAttrib()
     }
 
     fun stopDraw() {
