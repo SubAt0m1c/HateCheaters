@@ -195,8 +195,8 @@ object Inventory : PVPage("Inventory") {
         private val itemGrid by resettableLazy {
             itemGrid(gridItems, ct.roundness, spacer.toFloat()) {
                 colorHandler { _, item ->
-                    if (rarityBackgrounds) item?.lore?.let { getRarity(it) }?.color?.hc()
-                        ?: ct.items.hc() else ct.items.hc()
+                    if (rarityBackgrounds) item?.lore?.let { getRarity(it) }?.color?.hc() ?: ct.items.hc()
+                    else ct.items.hc()
                 }
 
                 tooltipHandler { listOf("${it.displayName} §7(${it.getMagicalPower.colorize(22)}§7)") + it.lore }

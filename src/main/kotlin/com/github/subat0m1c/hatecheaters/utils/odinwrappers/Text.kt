@@ -16,17 +16,17 @@ object Text {
         text: String?,
         x: Number,
         y: Number,
-        width: Number,
-        maxHeight: Number,
+        maxWidth: Number,
+        size: Number,
         color: Color,
         alignment: Alignment = Alignment.MIDDLE
     ) {
-        val scaleFactor: Float = width.toFloat() / getWidthSized(text.toString().noControlCodes, maxHeight.toFloat())
+        val scaleFactor: Float = maxWidth.toFloat() / getWidthSized(text.toString().noControlCodes, size.toFloat())
         colorText(
             text,
             x.toFloat(),
             y.toFloat(),
-            maxHeight.toFloat() * scaleFactor.coerceAtMost(1f),
+            size.toFloat() * scaleFactor.coerceAtMost(1f),
             color,
             Centering.CENTER,
             alignment
