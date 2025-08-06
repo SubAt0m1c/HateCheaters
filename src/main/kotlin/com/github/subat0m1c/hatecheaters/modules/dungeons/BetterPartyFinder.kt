@@ -11,6 +11,7 @@ import com.github.subat0m1c.hatecheaters.utils.DungeonStats.displayDungeonData
 import com.github.subat0m1c.hatecheaters.utils.ItemUtils.witherImpactRegex
 import com.github.subat0m1c.hatecheaters.utils.LogHandler.Logger
 import com.github.subat0m1c.hatecheaters.utils.apiutils.HypixelApi.getProfile
+import com.github.subat0m1c.hatecheaters.utils.odinwrappers.Party
 import me.odinmain.clickgui.settings.Setting.Companion.withDependency
 import me.odinmain.clickgui.settings.impl.*
 import me.odinmain.features.Module
@@ -230,7 +231,7 @@ object BetterPartyFinder : Module(
             alert("§eYour party is full!")
         }
 
-        onMessage(pfRegex, { enabled && statsDisplay && !autokicktoggle }) { matchResult ->
+        onMessage(pfRegex, { enabled && statsDisplay && (!autokicktoggle || !Party.isLeader) }) { matchResult ->
             val name = matchResult.groupValues[1].takeUnless { it == mc.session.username } ?: return@onMessage
             if (joinSound) playCustomSound()
 
@@ -245,7 +246,7 @@ object BetterPartyFinder : Module(
         }
 
 
-        onMessage(pfRegex, { enabled && autokicktoggle }) { matchResult ->
+        onMessage(pfRegex, { enabled && autokicktoggle && Party.isLeader }) { matchResult ->
             val name = matchResult.groupValues[1].takeUnless { it == mc.session.username } ?: return@onMessage
             Logger.info("$name is being searched")
 
@@ -324,7 +325,7 @@ object BetterPartyFinder : Module(
             }
         }
 
-        onMessage(kickRegex, { kickCache && enabled }) { message ->
+        onMessage(kickRegex, { kickCache && enabled && autokicktoggle && Party.isLeader }) { message ->
             message.groupValues[1].takeUnless { name -> kickedList.contains(name) }?.let { name -> kickedList.add(name) }
         }
     }

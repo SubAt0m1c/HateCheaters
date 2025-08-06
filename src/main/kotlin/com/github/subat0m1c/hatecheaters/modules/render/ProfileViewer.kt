@@ -225,13 +225,13 @@ object ProfileViewer : Module(
     override fun onKeybind() {
         val entity = mc.objectMouseOver.entityHit
         val player: PvPlayer = when {
-            System.currentTimeMillis() - toPv.added <= 5000 -> toPv.player
+            System.currentTimeMillis() - toPv.added <= 10000 -> toPv.player
             entity != null && entity is EntityPlayer && entity.uniqueID.version() != 2 -> PvPlayer(
                 entity.name,
                 entity.uniqueID
             )
 
-            System.currentTimeMillis() - lastLoaded.added <= 5000 -> lastLoaded.player
+            System.currentTimeMillis() - lastLoaded.added <= 10000 -> lastLoaded.player
             else -> PvPlayer(mc.thePlayer.name, mc.thePlayer.uniqueID)
         }
 

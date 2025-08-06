@@ -74,20 +74,29 @@ object LevelUtils {
     )
 
     inline val PlayerData.skillAverage: Double get() =
-        experience.without("SKILL_SOCIAL", "SKILL_SOCIAL", "SKILL_DUNGEONEERING").let { skills -> skills.values.sumOf { getSkillLevel(it) }/skills.size }
+        experience.without("SKILL_SOCIAL", "SKILL_SOCIAL", "SKILL_DUNGEONEERING").let { skills ->
+            skills.entries.sumOf { skill ->
+                val name = skill.key.lowercase().substringAfter("skill_")
+                getSkillLevel(name, skill.value)
+            } / skills.size
+        }
 
     inline val PlayerData.cappedSkillAverage: Double get() =
-        experience.without("SKILL_SOCIAL", "SKILL_SOCIAL", "SKILL_DUNGEONEERING").let { skills -> skills.entries.sumOf { getSkillLevel(it.value).coerceAtMost(
-            getSkillCap(it.key.lowercase().substringAfter("skill_")).toDouble()) }/skills.size }
+        experience.without("SKILL_SOCIAL", "SKILL_SOCIAL", "SKILL_DUNGEONEERING").let { skills ->
+            skills.entries.sumOf { skill ->
+                val name = skill.key.lowercase().substringAfter("skill_")
+                getSkillLevel(name, skill.value).coerceAtMost(getSkillCap(name).toDouble())
+            } / skills.size
+        }
 
-    fun getSkillLevel(exp: Double): Double =
-        getLevelWithProgress(exp, skillLevels, 600000)
+    fun getSkillLevel(skill: String, exp: Double): Double =
+        getLevelWithProgress(exp, getSkillLevels(skill), 600000)
 
     fun getSkillCap(skill: String): Int =
         when (skill) {
             "taming"       -> 60
             "mining"       -> 60
-            "foraging"     -> 50
+            "foraging" -> 54 // whjat are we cooking admins
             "enchanting"   -> 60
             "carpentry"    -> 50
             "farming"      -> 60
@@ -95,8 +104,15 @@ object LevelUtils {
             "fishing"      -> 50
             "alchemy"      -> 50
             "runecrafting" -> 25
-            "social"       -> 20
+            "social" -> 25
             else           -> -1
+        }
+
+    fun getSkillLevels(skill: String): Array<Long> =
+        when (skill) {
+            "runecrafting" -> runeCraftingLevels
+            "social" -> socialLevels
+            else -> skillLevels
         }
 
     fun getSkillColorCode(skill: String): String = when (skill) {
@@ -141,6 +157,20 @@ object LevelUtils {
         3400000, 3700000, 4000000, 4300000, 4600000,
         4900000, 5200000, 5500000, 5800000, 6100000,
         6400000, 6700000, 7000000
+    )
+
+    // why are these so weird bro
+    private val socialLevels: Array<Long> = arrayOf(
+        50, 100, 150, 250, 500, 750, 1000, 1250, 1500,
+        2000, 2500, 3000, 3750, 4500, 6000, 8000, 10000,
+        12500, 15000, 20000, 25000, 30000, 35000, 40000,
+        50000
+    )
+
+    private val runeCraftingLevels: Array<Long> = arrayOf(
+        50, 100, 125, 160, 200, 250, 315, 400, 500, 625,
+        785, 1000, 1250, 1565, 2000, 2500, 3125, 4000,
+        5000, 6250, 7850, 9800, 12250, 15300, 19100
     )
 
     fun getSlayerSkillLevel(exp: Double, slayer: String): Double =

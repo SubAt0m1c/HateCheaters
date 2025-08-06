@@ -32,8 +32,8 @@ object Profile : PVPage("Profile") {
 
     private val skillText: List<String> by resettableLazy {
         profile.playerData.experience.without("SKILL_DUNGEONEERING").entries.sortedByDescending { it.value }.map {
-            val level = getSkillLevel(it.value).round(2).toDouble()
             val skill = it.key.lowercase().substringAfter("skill_")
+            val level = getSkillLevel(skill, it.value).round(2).toDouble()
             val cap = getSkillCap(skill).toDouble()
             "§${getSkillColorCode(skill)}${skill.capitalizeWords()}§7: ${
                 level.coerceAtMost(cap).colorize(cap)

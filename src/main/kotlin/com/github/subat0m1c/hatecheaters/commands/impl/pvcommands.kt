@@ -24,6 +24,7 @@ val PVCommand = Commodore("pv") {
     }
 }
 
+// this cant just be an alias because we disable the normal pv command.
 val HCPVCommand = Commodore("hcpv") {
     executable {
         param("name").suggests {
@@ -37,6 +38,7 @@ val HCPVCommand = Commodore("hcpv") {
         }
     }
 }
+
 
 val profileNames = setOf(
     "apple", "banana", "blueberry", "cucumber", "coconut",
