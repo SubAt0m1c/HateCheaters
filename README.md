@@ -1,3 +1,7 @@
+# UPDATE 2/24/2026:
+Hypixel Skyblock is exclusively 1.21 so there is no point in having a 1.8.9 mod. I will not be making a 1.21 port as hatecheaters features will be put into actual odin or other independant mods.
+
+
 # i hate cheaters 
 
 [![downloads](https://img.shields.io/github/downloads/SubAt0m1c/HateCheaters/total?style=for-the-badge)](https://github.com/SubAt0m1c/HateCheaters)
